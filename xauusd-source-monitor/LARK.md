@@ -169,15 +169,17 @@ never-sent).
 - **Demo:** **2026-11-25 10:00** Asia/Shanghai once (`LARK_OSC_DEMO_DAY` / `LARK_OSC_DEMO_START`); catch-up until 18:00 CST if the :00 cron is skipped
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true, "demo": true }`
 
-## Alert nudge (tomorrow-only group @mention loop)
+## Alert nudge (3-minute silence → minute @Yan loop)
 
-- **Campaign day only:** **2026-11-25** Asia/Shanghai (override `LARK_ALERT_NUDGE_DAY`)
-- **Start:** **08:30** CST; every ~1 min until **知道了** (or 18:00 safety stop)
-- **Cron:** `* * * * *` → `/api/lark/alert-nudge` (no-op on other days)
-- **Message:** @Haixiang +「新告警来啦 快来看看」
-- **Chat:** `LARK_ALERT_NUDGE_CHAT_ID` / `LARK_DAILY_MARKET_CHAT_ID` (default `oc_eb8eba24…`)
+- **Arm:** group alert auto-capture starts a silence timer
+- **Gate:** if **no human reply** (alerts don’t count) for **3 minutes**, start nudging
+- **Loop:** every ~1 min `@Yan Haixiang` (`LARK_ADMIN_OPEN_ID`) until **知道了**
+- **Count:** increments only on **successful** sends
+- **Ack:** stops the loop and reports **alert → 知道了** total latency + push count to Yan
+- **Cancel before first nudge:** any human (non-alert) group message clears the arm
+- **Cron:** `* * * * *` → `/api/lark/alert-nudge`
+- **Chat:** alert’s group chat id (fallback `LARK_ALERT_NUDGE_CHAT_ID` / `LARK_DAILY_MARKET_CHAT_ID`)
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true }`
-- Set `LARK_ADMIN_OPEN_ID` for a real @mention; text「知道了」also stops the loop
 
 ## Bot behaviour
 

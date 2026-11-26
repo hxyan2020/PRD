@@ -30,7 +30,11 @@ import {
   rememberEscalationPending,
   resolveEscalateOpenIds,
 } from './escalate.js'
-import { looksLikeGroupAutoAlert, sessionOpenIdFor } from './parse.js'
+import {
+  looksLikeGroupAutoAlert,
+  looksLikeOurOutboundCard,
+  sessionOpenIdFor,
+} from './parse.js'
 import {
   normalizeRiskVerdict,
   riskVerdictEmoji,
@@ -2637,13 +2641,35 @@ async function handleCardActionCore(args: {
   }
 
   if (action === 'alert_nudge_ack') {
-    const { ackAlertNudgeDurable } = await import('./alertNudge.js')
-    const { rememberAdminOpenId } = await import('./client.js')
+    const {
+      ackAlertNudgeDurable,
+      buildAlertNudgeAckCard,
+      loadNudgeState,
+    } = await import('./alertNudge.js')
+    const { rememberAdminOpenId, resolveAdminOpenId, sendCardToOpenId } =
+      await import('./client.js')
     rememberAdminOpenId(args.openId, 'nudge_ack')
-    await ackAlertNudgeDurable(args.openId)
-    return {
-      card: simpleCard('已收到', '知道了 ✅ 已停止提醒。有新告警再叫我。', 'green'),
+    const before = await loadNudgeState()
+    const st = await ackAlertNudgeDurable(args.openId)
+    const openId = st?.openId || before?.openId || args.openId
+    const ackCard = buildAlertNudgeAckCard({
+      openId,
+      alertAt: st?.alertAt || before?.alertAt || Date.now(),
+      ackedAt: st?.ackedAt || Date.now(),
+      sendCount: st?.sendCount ?? before?.sendCount ?? 0,
+      alertPreview: st?.alertPreview || before?.alertPreview,
+    })
+    // Report TTR to the @mentioned person (Yan).
+    try {
+      const admin = await resolveAdminOpenId({ preferChatId: args.chatId })
+      const target = admin.openId || openId
+      if (target && target.startsWith('ou_') && target !== args.openId) {
+        await sendCardToOpenId(target, ackCard)
+      }
+    } catch {
+      /* best-effort DM */
     }
+    return { card: ackCard }
   }
 
   // Market card: switch OKX K-line interval (15m / 1H / 4H / 1D) in place.
@@ -2700,8 +2726,45 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
   // Groups share one investigation session so auto-captured alerts + later @replies
   // from any participant continue the same case.
   const sessionUser = sessionOpenIdFor(inbound.chatType, inbound.openId)
+  const realOpenId = msg.openId
   if (sessionUser !== inbound.openId) {
     inbound = { ...inbound, openId: sessionUser }
+  }
+
+  // Group silence nudge: arm on alert; cancel arm on human (non-alert) reply before first nudge.
+  {
+    const ct = (inbound.chatType || '').toLowerCase()
+    const isGroup = ct === 'group' || ct === 'topic' || ct === 'topic_group'
+    if (isGroup && inbound.chatId) {
+      try {
+        const {
+          armAlertNudgeFromGroupAlert,
+          noteGroupHumanResponseDurable,
+          looksLikeNudgeAck,
+        } = await import('./alertNudge.js')
+        const { resolveAdminOpenId } = await import('./client.js')
+        const text = (inbound.text || '').trim()
+        if (looksLikeGroupAutoAlert(inbound)) {
+          const admin = await resolveAdminOpenId({ preferChatId: inbound.chatId })
+          await armAlertNudgeFromGroupAlert({
+            chatId: inbound.chatId,
+            openId: admin.openId,
+            alertAt: Date.now(),
+            alertPreview: text.slice(0, 200),
+          })
+        } else if (
+          text &&
+          !looksLikeOurOutboundCard(text) &&
+          !looksLikeNudgeAck(text) &&
+          realOpenId &&
+          realOpenId.startsWith('ou_')
+        ) {
+          await noteGroupHumanResponseDurable({ chatId: inbound.chatId })
+        }
+      } catch {
+        /* nudge arming must not block the main reply */
+      }
+    }
   }
 
   // Image / file / share first → understand & reiterate before relevance judgement
@@ -2799,37 +2862,51 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
   // Alert nudge —「知道了」must stop (never fall through to greeting soft-ack)
   {
     const {
-      ALERT_NUDGE_DAY,
       isNudgeActiveDurable,
+      isNudgeArmedOrActiveDurable,
       looksLikeNudgeAck,
       looksLikeNudgeExplainQuestion,
       formatNudgeExplainReply,
       ackAlertNudgeDurable,
+      buildAlertNudgeAckCard,
       loadNudgeState,
-      isCampaignDay,
     } = await import('./alertNudge.js')
     if (looksLikeNudgeAck(workingText)) {
-      const st = await loadNudgeState()
-      const todayNudge =
-        isCampaignDay() ||
-        st?.dayKey === ALERT_NUDGE_DAY ||
-        Boolean(st?.active) ||
-        Boolean(st?.sendCount) ||
-        (await isNudgeActiveDurable())
-      // Campaign day / any nudge state: always durable-ack + confirm. Do NOT greet.
-      if (todayNudge) {
-        const { rememberAdminOpenId } = await import('./client.js')
+      const st0 = await loadNudgeState()
+      const shouldAck =
+        Boolean(st0?.active) ||
+        Boolean(st0?.armed) ||
+        Boolean(st0?.sendCount) ||
+        (await isNudgeActiveDurable()) ||
+        (await isNudgeArmedOrActiveDurable())
+      if (shouldAck) {
+        const { rememberAdminOpenId, resolveAdminOpenId, sendCardToOpenId } =
+          await import('./client.js')
         rememberAdminOpenId(msg.openId, 'nudge_ack_text')
-        await ackAlertNudgeDurable(msg.openId)
-        return {
-          card: simpleCard('已收到', '知道了 ✅ 已停止提醒。有新告警再叫我。', 'green'),
+        const st = await ackAlertNudgeDurable(msg.openId)
+        const openId = st?.openId || st0?.openId || msg.openId
+        const ackCard = buildAlertNudgeAckCard({
+          openId,
+          alertAt: st?.alertAt || st0?.alertAt || Date.now(),
+          ackedAt: st?.ackedAt || Date.now(),
+          sendCount: st?.sendCount ?? st0?.sendCount ?? 0,
+          alertPreview: st?.alertPreview || st0?.alertPreview,
+        })
+        try {
+          const admin = await resolveAdminOpenId({ preferChatId: inbound.chatId })
+          const target = admin.openId || openId
+          if (target && target.startsWith('ou_') && target !== msg.openId) {
+            await sendCardToOpenId(target, ackCard)
+          }
+        } catch {
+          /* best-effort */
         }
+        return { card: ackCard }
       }
     }
     if (looksLikeNudgeExplainQuestion(workingText)) {
       const st = await loadNudgeState()
-      const explainToday = isCampaignDay() || Boolean(st?.dayKey)
-      if (explainToday || (await isNudgeActiveDurable())) {
+      if (st || (await isNudgeActiveDurable()) || (await isNudgeArmedOrActiveDurable())) {
         return {
           card: simpleCard(
             lang === 'zh-Hans' || lang === 'zh-Hant' ? '关于「新告警」提醒' : 'About the alert nudge',

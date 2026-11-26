@@ -2,7 +2,7 @@
  * Half-hourly cron / bot health snapshot for Yan Haixiang.
  * Flags jobs that should have fired but have no proof of delivery.
  */
-import { ALERT_NUDGE_DAY, ALERT_NUDGE_START_HM, loadNudgeState } from './alertNudge.js'
+import { loadNudgeState } from './alertNudge.js'
 import { atOpenIdMarkdown } from './client.js'
 import { simpleCard } from './cards.js'
 import { readCronBeatStore, type CronBeatStore } from './cronHeartbeat.js'
@@ -316,35 +316,37 @@ export async function buildCronHealthReport(args?: {
     })
   }
 
-  // —— alert nudge ——
+  // —— alert nudge (3min silence → minute @Yan until 知道了) ——
   {
-    const campaign =
-      day === ALERT_NUDGE_DAY &&
-      hm >= ALERT_NUDGE_START_HM &&
-      hm < '18:00'
     const acked = Boolean(nudge?.acked)
+    const armed = Boolean(nudge?.armed && !acked)
+    const active = Boolean(nudge?.active && !acked)
     const b = beats['/api/lark/alert-nudge']
     const last = nudge?.lastCronAt || nudge?.lastSentAt || b?.at
-    const activeLoop = campaign && !acked && Boolean(nudge?.active)
-    const loopOk = !activeLoop || Boolean(last && now - last <= 3 * 60_000)
-    const ok = !campaign || acked || loopOk
+    const expected = armed || active
+    const loopOk = !active || Boolean(last && now - last <= 3 * 60_000)
+    const ok = !expected || acked || loopOk || armed
     jobs.push({
       id: 'alert-nudge',
-      label: '告警提醒 DEMO',
-      schedule: `${ALERT_NUDGE_DAY} ${ALERT_NUDGE_START_HM} 起每分钟`,
-      expected: campaign && !acked,
+      label: '告警静默提醒',
+      schedule: '告警后 3 分钟无人响应 → 每分钟 @Yan',
+      expected,
       ok,
       detail: acked
-        ? `已 ack（推送 ${nudge?.sendCount ?? 0} 次）`
-        : !campaign
-          ? day === ALERT_NUDGE_DAY
-            ? hm < ALERT_NUDGE_START_HM
-              ? `未到 ${ALERT_NUDGE_START_HM}`
-              : `已过窗口`
-            : `非活动日`
-          : loopOk
-            ? `循环中 · 最近 ${ageMin(last, now)}`
-            : `循环中断 · 最近 ${ageMin(last, now)}`,
+        ? `已 ack（推送 ${nudge?.sendCount ?? 0} 次${
+            nudge?.ackLatencyMs != null
+              ? ` · 用时 ${Math.round((nudge.ackLatencyMs || 0) / 1000)}s`
+              : ''
+          }）`
+        : active
+          ? loopOk
+            ? `提醒中 · 第 ${nudge?.sendCount ?? 0} 次 · 最近 ${ageMin(last, now)}`
+            : `循环中断 · 最近 ${ageMin(last, now)}`
+          : armed
+            ? `静默等待中（告警 ${ageMin(nudge?.alertAt, now)}）`
+            : nudge?.humanRespondedAt
+              ? `已有人类响应 · 未触发`
+              : `空闲`,
       lastAt: last,
     })
   }

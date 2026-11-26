@@ -1,39 +1,65 @@
 /**
- * Tomorrow-only group alert nudge: from 08:30 CST, @mention every ~1 min
- * until「知道了」. Default day: 2026-11-25 Asia/Shanghai.
- *
- * State is stored in Vercel Blob (durable across instances). /tmp is only a cache.
+ * Group alert silence nudge:
+ * After a group alert, if no human (non-alert) reply for 3 minutes, @Yan every ~1 min
+ * until「知道了」. Send count increments only on successful pushes.
+ * On ack, report alert→ack latency to the @mentioned person.
  */
 import { shanghaiDayKey } from './market.js'
 import { readDurableJson, readTmpJson, writeDurableJson, writeTmpJson } from './durableJson.js'
 
 export const DEFAULT_ALERT_NUDGE_CHAT_ID = 'oc_eb8eba24ff99a2c3ea3c9439750d65cd'
 
-export const ALERT_NUDGE_DAY =
-  (process.env.LARK_ALERT_NUDGE_DAY || '').trim() || '2026-11-25'
-export const ALERT_NUDGE_START_HM =
-  (process.env.LARK_ALERT_NUDGE_START || '').trim() || '08:30'
+/** Silence after alert before first nudge (ms). */
+export const ALERT_NUDGE_SILENCE_MS = Math.max(
+  30_000,
+  Number(process.env.LARK_ALERT_NUDGE_SILENCE_MS || '') || 3 * 60_000,
+)
+
+/** Min gap between successful nudge pushes (ms). */
+export const ALERT_NUDGE_MIN_GAP_MS = Math.max(
+  30_000,
+  Number(process.env.LARK_ALERT_NUDGE_MIN_GAP_MS || '') || 55_000,
+)
+
 export const ALERT_NUDGE_MESSAGE =
   (process.env.LARK_ALERT_NUDGE_MESSAGE || '').trim() ||
-  'Haixiang 新告警来啦 快来看看'
+  '新告警已超过 3 分钟无人响应，请尽快查看'
+
+/** @deprecated campaign-day demo; kept for smoke/cron-health compat. */
+export const ALERT_NUDGE_DAY =
+  (process.env.LARK_ALERT_NUDGE_DAY || '').trim() || '2026-11-25'
+/** @deprecated */
+export const ALERT_NUDGE_START_HM =
+  (process.env.LARK_ALERT_NUDGE_START || '').trim() || '08:30'
 
 const STATE_NAME = 'alert-nudge-state.json'
 
 export type AlertNudgeState = {
   dayKey: string
   chatId: string
+  /** Yan Haixiang open_id (ou_…) */
   openId: string
   message: string
-  /** Cron keeps sending while active && !acked */
+  /** Alert seen; waiting for 3min silence */
+  armed: boolean
+  /** Actively sending minute nudges */
   active: boolean
   acked: boolean
   ackedAt?: number
   ackedBy?: string
-  startedAt?: number
+  /** When the arming alert arrived */
+  alertAt: number
+  alertPreview?: string
+  /** Human non-alert reply before first nudge → cancel arm */
+  humanRespondedAt?: number
+  /** First successful nudge send */
+  nudgeStartedAt?: number
   lastSentAt?: number
-  /** Last time Vercel Cron actually reached this handler (even if skipped). */
   lastCronAt?: number
+  /** Successful push count only */
   sendCount: number
+  /** alertAt → ackedAt */
+  ackLatencyMs?: number
 }
 
 /** Sync tmp cache — smoke / same-instance only. Prefer loadNudgeState in handlers. */
@@ -77,17 +103,18 @@ function hmToMinutes(hm: string): number {
   return Number(m[1]) * 60 + Number(m[2])
 }
 
+/** @deprecated campaign helpers — always false for day gating in new model. */
 export function isCampaignDay(ts: number = Date.now()): boolean {
   return shanghaiDayKey(ts) === ALERT_NUDGE_DAY
 }
 
-/** Campaign day after 08:30 CST (inclusive). */
+/** @deprecated */
 export function nudgeWindowOpen(ts: number = Date.now()): boolean {
   if (!isCampaignDay(ts)) return false
   return hmToMinutes(shanghaiHm(ts)) >= hmToMinutes(ALERT_NUDGE_START_HM)
 }
 
-/** Safety stop end of campaign day 18:00 CST. */
+/** @deprecated */
 export function nudgeWindowExpired(ts: number = Date.now()): boolean {
   const day = shanghaiDayKey(ts)
   if (day > ALERT_NUDGE_DAY) return true
@@ -95,19 +122,34 @@ export function nudgeWindowExpired(ts: number = Date.now()): boolean {
   return hmToMinutes(shanghaiHm(ts)) >= hmToMinutes('18:00')
 }
 
+export function formatDurationMs(ms: number): string {
+  const totalSec = Math.max(0, Math.round(ms / 1000))
+  const h = Math.floor(totalSec / 3600)
+  const m = Math.floor((totalSec % 3600) / 60)
+  const s = totalSec % 60
+  if (h > 0) return `${h} 小时 ${m} 分 ${s} 秒`
+  if (m > 0) return `${m} 分 ${s} 秒`
+  return `${s} 秒`
+}
+
 export function buildAlertNudgeCard(args: {
   openId: string
   message: string
   sendCount: number
+  alertAt?: number
 }): Record<string, unknown> {
   const at =
-    args.openId && args.openId !== 'unknown'
+    args.openId && args.openId.startsWith('ou_')
       ? `<at id="${args.openId}"></at>`
-      : '**@Haixiang**'
+      : '**@Yan Haixiang**'
+  const silenceMin = Math.round(ALERT_NUDGE_SILENCE_MS / 60_000)
   const body = [
-    `🚨 **新告警提醒**（第 ${args.sendCount} 次）`,
+    `🚨 **新告警无人响应提醒**（第 **${args.sendCount}** 次）`,
     '',
     `${at} ${args.message}`,
+    args.alertAt
+      ? `• 告警触发：${shanghaiHm(args.alertAt)}（东八区）· 已静默 ≥${silenceMin} 分钟`
+      : `• 告警后静默 ≥${silenceMin} 分钟仍无人响应`,
     '',
     '点下面 **知道了** 停止提醒；或直接回复：**知道了**',
   ].join('\n')
@@ -135,24 +177,70 @@ export function buildAlertNudgeCard(args: {
   }
 }
 
+/** Ack confirmation + TTR for the @mentioned person. */
+export function buildAlertNudgeAckCard(args: {
+  openId: string
+  alertAt: number
+  ackedAt: number
+  sendCount: number
+  alertPreview?: string
+}): Record<string, unknown> {
+  const latency = Math.max(0, args.ackedAt - args.alertAt)
+  const at =
+    args.openId && args.openId.startsWith('ou_')
+      ? `<at id="${args.openId}"></at>`
+      : '**@Yan Haixiang**'
+  const preview = (args.alertPreview || '').replace(/\s+/g, ' ').trim().slice(0, 120)
+  const body = [
+    `${at} ✅ **已停止提醒**`,
+    '',
+    `• 告警触发：**${shanghaiHm(args.alertAt)}**（东八区）`,
+    `• 点击知道了：**${shanghaiHm(args.ackedAt)}**（东八区）`,
+    `• 总用时：**${formatDurationMs(latency)}**`,
+    `• 提醒推送：**${args.sendCount}** 次（仅成功送达计数）`,
+    preview ? `• 告警摘要：_${preview}_` : '',
+  ]
+    .filter(Boolean)
+    .join('\n')
+
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'green',
+      title: { tag: 'plain_text', content: '提醒已确认' },
+    },
+    elements: [{ tag: 'div', text: { tag: 'lark_md', content: body } }],
+  }
+}
+
+function emptyState(partial?: Partial<AlertNudgeState>): AlertNudgeState {
+  return {
+    dayKey: shanghaiDayKey(Date.now()),
+    chatId: DEFAULT_ALERT_NUDGE_CHAT_ID,
+    openId: '',
+    message: ALERT_NUDGE_MESSAGE,
+    armed: false,
+    active: false,
+    acked: false,
+    alertAt: 0,
+    sendCount: 0,
+    ...partial,
+  }
+}
+
 /** Sync ack for smoke — tmp only. */
 export function ackAlertNudge(openId: string): AlertNudgeState | null {
   const cur = readNudgeState()
-  const base: AlertNudgeState = cur || {
-    dayKey: ALERT_NUDGE_DAY,
-    chatId: DEFAULT_ALERT_NUDGE_CHAT_ID,
-    openId: openId || '',
-    message: ALERT_NUDGE_MESSAGE,
-    active: false,
-    acked: false,
-    sendCount: 0,
-  }
+  const base = cur || emptyState({ openId: openId || '' })
+  const ackedAt = Date.now()
   const next: AlertNudgeState = {
     ...base,
+    armed: false,
     active: false,
     acked: true,
-    ackedAt: Date.now(),
+    ackedAt,
     ackedBy: openId || base.ackedBy,
+    ackLatencyMs: base.alertAt ? Math.max(0, ackedAt - base.alertAt) : undefined,
   }
   writeNudgeState(next)
   return next
@@ -160,21 +248,16 @@ export function ackAlertNudge(openId: string): AlertNudgeState | null {
 
 export async function ackAlertNudgeDurable(openId: string): Promise<AlertNudgeState | null> {
   const cur = await loadNudgeState()
-  const base: AlertNudgeState = cur || {
-    dayKey: ALERT_NUDGE_DAY,
-    chatId: DEFAULT_ALERT_NUDGE_CHAT_ID,
-    openId: openId || '',
-    message: ALERT_NUDGE_MESSAGE,
-    active: false,
-    acked: false,
-    sendCount: 0,
-  }
+  const base = cur || emptyState({ openId: openId || '' })
+  const ackedAt = Date.now()
   const next: AlertNudgeState = {
     ...base,
+    armed: false,
     active: false,
     acked: true,
-    ackedAt: Date.now(),
+    ackedAt,
     ackedBy: openId || base.ackedBy,
+    ackLatencyMs: base.alertAt ? Math.max(0, ackedAt - base.alertAt) : undefined,
   }
   await saveNudgeState(next)
   return next
@@ -182,12 +265,137 @@ export async function ackAlertNudgeDurable(openId: string): Promise<AlertNudgeSt
 
 export function isNudgeActive(): boolean {
   const s = readNudgeState()
-  return Boolean(s?.active && !s.acked && s.dayKey === ALERT_NUDGE_DAY)
+  return Boolean(s?.active && !s.acked)
 }
 
 export async function isNudgeActiveDurable(): Promise<boolean> {
   const s = await loadNudgeState()
-  return Boolean(s?.active && !s.acked && s.dayKey === ALERT_NUDGE_DAY)
+  return Boolean(s?.active && !s.acked)
+}
+
+export async function isNudgeArmedOrActiveDurable(): Promise<boolean> {
+  const s = await loadNudgeState()
+  return Boolean(s && !s.acked && (s.armed || s.active))
+}
+
+/**
+ * Arm (or re-arm) after a group alert. Resets the 3-minute silence clock.
+ * If already actively nudging, keep the loop (do not reset sendCount).
+ */
+export async function armAlertNudgeFromGroupAlert(args: {
+  chatId: string
+  openId: string
+  alertAt?: number
+  alertPreview?: string
+}): Promise<AlertNudgeState> {
+  const now = args.alertAt || Date.now()
+  const cur = await loadNudgeState()
+  if (cur?.active && !cur.acked) {
+    // Keep nudging; refresh preview only.
+    const next: AlertNudgeState = {
+      ...cur,
+      chatId: args.chatId || cur.chatId,
+      openId: args.openId || cur.openId,
+      alertPreview: args.alertPreview || cur.alertPreview,
+      lastCronAt: cur.lastCronAt,
+    }
+    await saveNudgeState(next)
+    return next
+  }
+  const next: AlertNudgeState = {
+    dayKey: shanghaiDayKey(now),
+    chatId: args.chatId,
+    openId: args.openId,
+    message: ALERT_NUDGE_MESSAGE,
+    armed: true,
+    active: false,
+    acked: false,
+    alertAt: now,
+    alertPreview: (args.alertPreview || '').slice(0, 200),
+    humanRespondedAt: undefined,
+    nudgeStartedAt: undefined,
+    lastSentAt: undefined,
+    sendCount: 0,
+    ackLatencyMs: undefined,
+    ackedAt: undefined,
+    ackedBy: undefined,
+  }
+  await saveNudgeState(next)
+  return next
+}
+
+/** Sync variant for smoke. */
+export function armAlertNudge(args: {
+  chatId: string
+  openId: string
+  alertAt?: number
+  alertPreview?: string
+}): AlertNudgeState {
+  const now = args.alertAt || Date.now()
+  const cur = readNudgeState()
+  if (cur?.active && !cur.acked) {
+    const next = { ...cur, chatId: args.chatId || cur.chatId, openId: args.openId || cur.openId }
+    writeNudgeState(next)
+    return next
+  }
+  const next: AlertNudgeState = {
+    dayKey: shanghaiDayKey(now),
+    chatId: args.chatId,
+    openId: args.openId,
+    message: ALERT_NUDGE_MESSAGE,
+    armed: true,
+    active: false,
+    acked: false,
+    alertAt: now,
+    alertPreview: (args.alertPreview || '').slice(0, 200),
+    sendCount: 0,
+  }
+  writeNudgeState(next)
+  return next
+}
+
+/**
+ * Human (non-alert) message in the group before nudging starts → cancel arm.
+ * Does not stop an already-active nudge loop (only 知道了 does).
+ */
+export async function noteGroupHumanResponseDurable(args: {
+  chatId: string
+  at?: number
+}): Promise<AlertNudgeState | null> {
+  const cur = await loadNudgeState()
+  if (!cur || cur.acked) return cur
+  if (cur.chatId && args.chatId && cur.chatId !== args.chatId) return cur
+  if (cur.active) return cur
+  if (!cur.armed) return cur
+  const next: AlertNudgeState = {
+    ...cur,
+    armed: false,
+    humanRespondedAt: args.at || Date.now(),
+  }
+  await saveNudgeState(next)
+  return next
+}
+
+export function noteGroupHumanResponse(args: { chatId: string; at?: number }): AlertNudgeState | null {
+  const cur = readNudgeState()
+  if (!cur || cur.acked || cur.active || !cur.armed) return cur
+  if (cur.chatId && args.chatId && cur.chatId !== args.chatId) return cur
+  const next: AlertNudgeState = {
+    ...cur,
+    armed: false,
+    humanRespondedAt: args.at || Date.now(),
+  }
+  writeNudgeState(next)
+  return next
+}
+
+/** Whether silence has elapsed and we should start / continue nudging. */
+export function shouldNudgeNow(state: AlertNudgeState, now: number = Date.now()): boolean {
+  if (state.acked) return false
+  if (state.active) return true
+  if (!state.armed || !state.alertAt) return false
+  if (state.humanRespondedAt) return false
+  return now - state.alertAt >= ALERT_NUDGE_SILENCE_MS
 }
 
 /**
@@ -228,52 +436,40 @@ export function formatNudgeExplainReply(
 ): string {
   const count = state?.sendCount || 0
   const active = Boolean(state?.active && !state?.acked)
-  const msg = state?.message || ALERT_NUDGE_MESSAGE
+  const armed = Boolean(state?.armed && !state?.acked && !state?.active)
+  const silenceMin = Math.round(ALERT_NUDGE_SILENCE_MS / 60_000)
   if (lang === 'zh-Hans') {
     return [
-      '🚨 **刚才那条「新告警来啦」是什么**',
+      '🚨 **「新告警来啦」提醒是什么**',
       '',
-      '• **不是**某条具体的 Mark／Index／Funding 生产告警正文。',
-      `• **是**今天（${ALERT_NUDGE_DAY}）东八区 **${ALERT_NUDGE_START_HM}** 起的定时提醒 DEMO：在测试群里 @Haixiang「${msg}」。`,
-      count > 0 ? `• 目前已推送 **${count}** 次${active ? '，仍在每分钟提醒中' : ''}。` : '',
-      active
-        ? '• 点卡片 **知道了**，或直接回复 **知道了**，即可停止。'
-        : '• 提醒已停止（已点过知道了，或已过窗口）。',
-      '',
-      '若要排查**真实告警**，请把 Lark 告警原文／截图贴过来，或发 **排查**。',
+      `• 群里出现告警后，若 **${silenceMin} 分钟内**没有任何人类回复（报警本身不计），就会 @Yan 每分钟提醒。`,
+      '• 点 **知道了**（或回复「知道了」）才停止；点击后会回报从告警到确认的总用时与推送次数。',
+      armed ? `• 当前：已记录告警，静默倒计时中。` : '',
+      count > 0 ? `• 目前已成功推送 **${count}** 次${active ? '，仍在提醒中' : ''}。` : '',
+      !armed && !active ? '• 当前没有进行中的提醒。' : '',
     ]
       .filter(Boolean)
       .join('\n')
   }
   if (lang === 'zh-Hant') {
     return [
-      '🚨 **剛才那條「新告警來啦」是什麼**',
+      '🚨 **「新告警來啦」提醒是什麼**',
       '',
-      '• **不是**某條具體的 Mark／Index／Funding 生產告警正文。',
-      `• **是**今天（${ALERT_NUDGE_DAY}）東八區 **${ALERT_NUDGE_START_HM}** 起的定時提醒 DEMO：在測試群裡 @Haixiang「${msg}」。`,
-      count > 0 ? `• 目前已推送 **${count}** 次${active ? '，仍在每分鐘提醒中' : ''}。` : '',
-      active
-        ? '• 點卡片 **知道了**，或直接回覆 **知道了**，即可停止。'
-        : '• 提醒已停止。',
-      '',
-      '若要排查**真實告警**，請把告警原文／截圖貼過來，或發 **排查**。',
+      `• 群裡出現告警後，若 **${silenceMin} 分鐘內**沒有任何人類回覆（報警本身不計），就會 @Yan 每分鐘提醒。`,
+      '• 點 **知道了** 才停止；會回報從告警到確認的總用時與推送次數。',
+      count > 0 ? `• 目前已成功推送 **${count}** 次${active ? '，仍在提醒中' : ''}。` : '',
     ]
       .filter(Boolean)
       .join('\n')
   }
   return [
-    '🚨 **What that “new alert” card is**',
+    '🚨 **What the alert nudge is**',
     '',
-    '• It is **not** a specific Mark/Index/Funding production alert body.',
-    `• It is today’s (${ALERT_NUDGE_DAY}) scheduled DEMO nudge from **${ALERT_NUDGE_START_HM}** Asia/Shanghai: @Haixiang “${msg}” in the test group.`,
+    `• After a group alert, if no human reply for **${silenceMin} minutes** (alerts don’t count), @Yan is nudged every minute.`,
+    '• Tap **知道了** to stop; you’ll get alert→ack latency and push count.',
     count > 0
-      ? `• Sent **${count}** time(s)${active ? '; still nudging every minute' : ''}.`
+      ? `• Sent **${count}** successful push(es)${active ? '; still nudging' : ''}.`
       : '',
-    active
-      ? '• Tap **知道了** / reply **知道了** to stop.'
-      : '• Nudge already stopped.',
-    '',
-    'For a **real** alert investigation, paste the alert text/screenshot or type **investigate**.',
   ]
     .filter(Boolean)
     .join('\n')

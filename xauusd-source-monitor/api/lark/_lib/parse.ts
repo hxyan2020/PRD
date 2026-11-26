@@ -3,7 +3,7 @@ import { fetchMessageItems, type LarkMessageItem } from './client.js'
 import { looksLikeIncidentEvidence } from './scope.js'
 
 /** Our own cron / desk pushes — never treat as inbound alerts (echo loop). */
-function looksLikeOurOutboundCard(text: string): boolean {
+export function looksLikeOurOutboundCard(text: string): boolean {
   return /小时行情|小時行情|Half-hourly market|每日\s*24h|每日早报|每日早報|Cron 健康|震荡行情|震盪行情|每周复盘|每週複盤|告警提醒|知道了|已升级等待反馈|已升級等待反饋|Investigation escalate|排查升级|排查升級|V Exchange Risk Copilot/i.test(
     text,
   )

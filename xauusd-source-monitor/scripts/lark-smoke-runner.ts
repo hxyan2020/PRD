@@ -2913,40 +2913,56 @@ async function main() {
     JSON.stringify(nudgeCron || {}),
   )
   const {
-    ALERT_NUDGE_DAY,
     ALERT_NUDGE_MESSAGE,
+    ALERT_NUDGE_SILENCE_MS,
     ackAlertNudge,
+    armAlertNudge,
+    buildAlertNudgeAckCard,
     buildAlertNudgeCard,
-    isCampaignDay,
+    formatDurationMs,
     isNudgeActive,
     looksLikeNudgeAck,
-    nudgeWindowExpired,
-    nudgeWindowOpen,
+    noteGroupHumanResponse,
+    shouldNudgeNow,
     writeNudgeState,
   } = await import('../api/lark/_lib/alertNudge')
-  // 2026-11-25 00:30 UTC = 08:30 CST
-  const atStart = Date.parse('2026-11-25T00:30:00Z')
-  const before = Date.parse('2026-11-25T00:29:00Z')
-  const otherDay = Date.parse('2026-11-26T00:30:00Z')
   record(
-    'nudge.tomorrow_only_after_0830',
-    isCampaignDay(atStart) &&
-      nudgeWindowOpen(atStart) &&
-      !nudgeWindowOpen(before) &&
-      !isCampaignDay(otherDay) &&
-      !nudgeWindowOpen(otherDay),
-    '',
+    'nudge.silence_default_3min',
+    ALERT_NUDGE_SILENCE_MS === 3 * 60_000,
+    String(ALERT_NUDGE_SILENCE_MS),
+  )
+  const alertAt = Date.now() - 4 * 60_000
+  const armed = armAlertNudge({
+    chatId: 'oc_smoke',
+    openId: 'ou_smoke_haixiang',
+    alertAt,
+    alertPreview: 'Mark deviation 48bps',
+  })
+  record(
+    'nudge.arm_after_alert',
+    Boolean(armed.armed && !armed.active && armed.sendCount === 0 && armed.alertAt === alertAt),
+    JSON.stringify({ armed: armed.armed, sendCount: armed.sendCount }),
   )
   record(
-    'nudge.expires_1800_same_day',
-    nudgeWindowExpired(Date.parse('2026-11-25T10:00:00Z')) &&
-      !nudgeWindowExpired(Date.parse('2026-11-25T09:59:00Z')),
+    'nudge.should_fire_after_silence',
+    shouldNudgeNow(armed, Date.now()) &&
+      !shouldNudgeNow(
+        { ...armed, alertAt: Date.now() - 60_000, armed: true, active: false, acked: false },
+        Date.now(),
+      ),
     '',
+  )
+  const humanCancel = noteGroupHumanResponse({ chatId: 'oc_smoke' })
+  record(
+    'nudge.human_reply_cancels_arm',
+    Boolean(humanCancel && !humanCancel.armed && humanCancel.humanRespondedAt),
+    JSON.stringify(humanCancel && { armed: humanCancel.armed, at: humanCancel.humanRespondedAt }),
   )
   const nudgeCard = buildAlertNudgeCard({
     openId: 'ou_smoke_haixiang',
     message: ALERT_NUDGE_MESSAGE,
     sendCount: 3,
+    alertAt,
   })
   const nudgeJson = JSON.stringify(nudgeCard)
   record(
@@ -2954,9 +2970,8 @@ async function main() {
     nudgeJson.includes('ou_smoke_haixiang') &&
       nudgeJson.includes('alert_nudge_ack') &&
       nudgeJson.includes('知道了') &&
-      nudgeJson.includes('第 3 次') &&
-      nudgeJson.includes(ALERT_NUDGE_MESSAGE) &&
-      ALERT_NUDGE_DAY === '2026-11-25',
+      nudgeJson.includes('第 **3** 次') &&
+      nudgeJson.includes(ALERT_NUDGE_MESSAGE),
     nudgeJson.slice(0, 220),
   )
   record(
@@ -2978,29 +2993,33 @@ async function main() {
     '',
   )
   writeNudgeState({
-    dayKey: '2026-11-25',
+    dayKey: '2026-11-26',
     chatId: 'oc_smoke',
     openId: 'ou_smoke',
     message: ALERT_NUDGE_MESSAGE,
+    armed: false,
     active: true,
     acked: false,
+    alertAt: Date.now() - 10 * 60_000,
     sendCount: 2,
   })
   const explain = formatNudgeExplainReply('zh-Hans', {
-    dayKey: '2026-11-25',
+    dayKey: '2026-11-26',
     chatId: 'oc_smoke',
     openId: 'ou_smoke',
     message: ALERT_NUDGE_MESSAGE,
+    armed: false,
     active: true,
     acked: false,
+    alertAt: Date.now() - 10 * 60_000,
     sendCount: 2,
   })
   record(
     'nudge.explain_answers_what',
-    explain.includes('不是') &&
-      explain.includes('DEMO') &&
+    explain.includes('3 分钟') &&
       explain.includes('知道了') &&
-      !explain.includes('闲聊也陪'),
+      explain.includes('推送') &&
+      !explain.includes('DEMO'),
     explain.slice(0, 180),
   )
   // Private Blob must round-trip ack — public put silently failed and cron kept firing
@@ -3021,8 +3040,24 @@ async function main() {
   const acked = ackAlertNudge('ou_smoke')
   record(
     'nudge.ack_stops_loop',
-    Boolean(acked?.acked && !acked.active && !isNudgeActive()),
-    JSON.stringify(acked),
+    Boolean(acked?.acked && !acked.active && !isNudgeActive() && typeof acked.ackLatencyMs === 'number'),
+    JSON.stringify({ acked: acked?.acked, latency: acked?.ackLatencyMs, count: acked?.sendCount }),
+  )
+  const ackCard = buildAlertNudgeAckCard({
+    openId: 'ou_smoke_haixiang',
+    alertAt: Date.now() - 125_000,
+    ackedAt: Date.now(),
+    sendCount: 2,
+    alertPreview: 'Mark 48bps',
+  })
+  const ackJson = JSON.stringify(ackCard)
+  record(
+    'nudge.ack_reports_ttr',
+    ackJson.includes('总用时') &&
+      ackJson.includes(formatDurationMs(125_000)) &&
+      ackJson.includes('2') &&
+      ackJson.includes('ou_smoke_haixiang'),
+    ackJson.slice(0, 200),
   )
 
   const oscCron = (vercelCrons.crons || []).find((c) =>

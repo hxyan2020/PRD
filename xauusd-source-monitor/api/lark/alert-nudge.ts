@@ -1,8 +1,9 @@
 /**
  * GET/POST /api/lark/alert-nudge
- * - Vercel Cron every minute: on campaign day (default 2026-11-25) after 08:30 CST,
- *   @mention in group every ~60s until「知道了」(or 18:00 CST safety stop).
- * - Other days: no-op. Manual: GET ?dry=1; POST { force: true }.
+ * Vercel Cron every minute:
+ * - If an alert armed silence and ≥3 min with no human reply → start @Yan nudges
+ * - While active && !acked → push every ~1 min (count only on successful send)
+ * Manual: GET ?dry=1; POST { force: true } to send immediately.
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import {
@@ -11,18 +12,16 @@ import {
   sendCardToChat,
 } from './_lib/client.js'
 import {
-  ALERT_NUDGE_DAY,
   ALERT_NUDGE_MESSAGE,
-  ALERT_NUDGE_START_HM,
+  ALERT_NUDGE_MIN_GAP_MS,
+  ALERT_NUDGE_SILENCE_MS,
   DEFAULT_ALERT_NUDGE_CHAT_ID,
   ackAlertNudgeDurable,
   buildAlertNudgeCard,
-  isCampaignDay,
   loadNudgeState,
-  nudgeWindowExpired,
-  nudgeWindowOpen,
   saveNudgeState,
   shanghaiHm,
+  shouldNudgeNow,
   type AlertNudgeState,
 } from './_lib/alertNudge.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
@@ -45,44 +44,19 @@ function resolveChatId(reqChatId?: string): { chatId: string; source: string } {
   return { chatId: DEFAULT_ALERT_NUDGE_CHAT_ID, source: 'default' }
 }
 
-async function ensureActiveState(args: {
-  chatId: string
-  force: boolean
-  now: number
-}): Promise<AlertNudgeState | null> {
-  let state = await loadNudgeState()
-
-  if (state?.acked && state.dayKey === ALERT_NUDGE_DAY && !args.force) return state
-
-  if (args.force || (nudgeWindowOpen(args.now) && !nudgeWindowExpired(args.now))) {
-    const admin = await resolveAdminOpenId({ preferChatId: args.chatId })
-    if (!state || state.dayKey !== ALERT_NUDGE_DAY) {
-      // New campaign day — start count at 0
-      state = {
-        dayKey: ALERT_NUDGE_DAY,
-        chatId: args.chatId,
-        openId: admin.openId || state?.openId || '',
-        message: ALERT_NUDGE_MESSAGE,
-        active: true,
-        acked: false,
-        startedAt: Date.now(),
-        sendCount: 0,
-      }
-      await saveNudgeState(state)
-    } else {
-      // Same day: never reset sendCount; never clear acked via force
-      state = {
-        ...state,
-        chatId: args.chatId || state.chatId,
-        openId: admin.openId || state.openId,
-        message: state.message || ALERT_NUDGE_MESSAGE,
-        active: !state.acked,
-        startedAt: state.startedAt || Date.now(),
-      }
-      await saveNudgeState(state)
-    }
+async function activateIfSilent(state: AlertNudgeState, now: number): Promise<AlertNudgeState> {
+  if (state.acked || state.active) return state
+  if (!shouldNudgeNow(state, now)) return state
+  const admin = await resolveAdminOpenId({ preferChatId: state.chatId })
+  const next: AlertNudgeState = {
+    ...state,
+    openId: admin.openId || state.openId,
+    active: true,
+    armed: false,
+    message: state.message || ALERT_NUDGE_MESSAGE,
   }
-  return state
+  await saveNudgeState(next)
+  return next
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -120,7 +94,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ ok: true, acked: true, state: st })
   }
 
-  // Touch heartbeat only on real cron fires (not dry probes).
   if (cron && !dry) {
     await touchCronHeartbeat('/api/lark/alert-nudge')
     const st = await loadNudgeState()
@@ -129,74 +102,81 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // dry=1 always previews (even with cron header) so we can read heartbeat.
+  let state = await loadNudgeState()
+
   if (dry && !force) {
-    const state = await loadNudgeState()
+    const previewCount = (state?.sendCount || 0) + 1
     const card = buildAlertNudgeCard({
       openId: state?.openId || '',
       message: ALERT_NUDGE_MESSAGE,
-      sendCount: (state?.sendCount || 0) + 1,
+      sendCount: previewCount,
+      alertAt: state?.alertAt,
     })
     return res.status(200).json({
       ok: true,
       dry: true,
       day,
       hm,
-      campaignDay: ALERT_NUDGE_DAY,
-      startHm: ALERT_NUDGE_START_HM,
-      isCampaignDay: isCampaignDay(now),
-      windowOpen: nudgeWindowOpen(now),
-      windowExpired: nudgeWindowExpired(now),
+      silenceMs: ALERT_NUDGE_SILENCE_MS,
+      minGapMs: ALERT_NUDGE_MIN_GAP_MS,
       chatId: chat.chatId,
       chatSource: chat.source,
       state,
+      shouldNudge: state ? shouldNudgeNow(state, now) : false,
       cronHeartbeat: await readCronHeartbeat(),
       card,
-      schedule: `Every minute on ${ALERT_NUDGE_DAY} from ${ALERT_NUDGE_START_HM} until 知道了 (or 18:00)`,
+      schedule: `After alert + ${Math.round(ALERT_NUDGE_SILENCE_MS / 60_000)}min silence → @Yan every ~1min until 知道了`,
     })
   }
 
-  if (cron && !force) {
-    if (!isCampaignDay(now)) {
-      return res.status(200).json({
-        ok: true,
-        skipped: true,
-        reason: 'not_campaign_day',
-        day,
-        hm,
-        campaignDay: ALERT_NUDGE_DAY,
-      })
-    }
-    if (!nudgeWindowOpen(now) || nudgeWindowExpired(now)) {
-      const st = await loadNudgeState()
-      if (st?.active && nudgeWindowExpired(now)) {
-        await saveNudgeState({ ...st, active: false })
-      }
-      return res.status(200).json({
-        ok: true,
-        skipped: true,
-        reason: nudgeWindowExpired(now) ? 'expired' : 'before_start',
-        day,
-        hm,
-      })
-    }
+  if (!state || state.acked) {
+    return res.status(200).json({
+      ok: true,
+      skipped: true,
+      reason: !state ? 'no_state' : 'acked',
+      state,
+      day,
+      hm,
+    })
   }
 
-  const state = await ensureActiveState({ chatId: chat.chatId, force, now })
-  if (!state) {
-    return res.status(200).json({ ok: true, skipped: true, reason: 'no_state', day, hm })
+  // Force: activate immediately even if silence not elapsed.
+  if (force && !state.active && !state.acked) {
+    const admin = await resolveAdminOpenId({ preferChatId: state.chatId || chat.chatId })
+    state = {
+      ...state,
+      chatId: state.chatId || chat.chatId,
+      openId: admin.openId || state.openId,
+      active: true,
+      armed: false,
+      alertAt: state.alertAt || now,
+    }
+    await saveNudgeState(state)
+  } else {
+    state = await activateIfSilent(state, now)
   }
 
   if (state.acked || !state.active) {
     return res.status(200).json({
       ok: true,
       skipped: true,
-      reason: state.acked ? 'acked' : 'inactive',
+      reason: state.acked
+        ? 'acked'
+        : state.armed
+          ? 'waiting_silence'
+          : state.humanRespondedAt
+            ? 'human_responded'
+            : 'inactive',
+      silenceMs: ALERT_NUDGE_SILENCE_MS,
+      waitLeftMs:
+        state.armed && state.alertAt
+          ? Math.max(0, ALERT_NUDGE_SILENCE_MS - (now - state.alertAt))
+          : 0,
       state,
     })
   }
 
-  if (!force && state.lastSentAt && now - state.lastSentAt < 55_000) {
+  if (!force && state.lastSentAt && now - state.lastSentAt < ALERT_NUDGE_MIN_GAP_MS) {
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -209,11 +189,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(503).json({ ok: false, error: 'Lark not configured' })
   }
 
+  // Resolve Yan open_id right before send so @mention is real.
+  const admin = await resolveAdminOpenId({ preferChatId: state.chatId || chat.chatId })
+  const openId = admin.openId || state.openId
   const sendCount = (state.sendCount || 0) + 1
   const card = buildAlertNudgeCard({
-    openId: state.openId,
+    openId,
     message: state.message || ALERT_NUDGE_MESSAGE,
     sendCount,
+    alertAt: state.alertAt,
   })
 
   try {
@@ -221,10 +205,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const next: AlertNudgeState = {
       ...state,
       chatId: state.chatId || chat.chatId,
+      openId,
       sendCount,
       lastSentAt: Date.now(),
-      startedAt: state.startedAt || Date.now(),
+      nudgeStartedAt: state.nudgeStartedAt || Date.now(),
       active: true,
+      armed: false,
     }
     await saveNudgeState(next)
     return res.status(200).json({
@@ -236,6 +222,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       hm,
     })
   } catch (e) {
+    // Do NOT increment sendCount on failure — count stays accurate.
     return res.status(502).json({
       ok: false,
       error: e instanceof Error ? e.message : 'send failed',
