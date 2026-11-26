@@ -1,5 +1,6 @@
 import { downloadMessageImage, fetchUserDisplayName } from './client.js'
 import {
+  alertGatherCard,
   alertOptimizeCard,
   greetingCard,
   helpCard,
@@ -1361,6 +1362,33 @@ async function ingestEscalateeFeedback(args: {
   }
 }
 
+async function replyAlertGather(args: {
+  msg: IncomingMessage
+  lang: Lang
+  session: InvestigationState
+  newFact: string
+}): Promise<BotReply> {
+  const fact = args.newFact.trim()
+  if (fact) {
+    args.session.facts.push(fact)
+    pushInteraction(args.session, {
+      role: 'user',
+      kind: 'evidence',
+      text: fact.slice(0, 2000),
+      messageId: args.msg.messageId,
+    })
+  }
+  args.session.mode = 'gather_alerts'
+  args.session.preferredLang = args.lang
+  args.session.pathSteps = undefined
+  args.session.pathStepIndex = undefined
+  args.session.stepAwaiting = 'none'
+  args.session.pendingPrompt = undefined
+  await saveSessionDurable(args.msg.chatId, args.msg.openId, args.session)
+  const alerts = args.session.facts.filter((f) => !f.startsWith('[chat-history]'))
+  return { card: alertGatherCard({ lang: args.lang, alerts }) }
+}
+
 async function runInvestigation(args: {
   msg: IncomingMessage
   lang: Lang
@@ -1368,25 +1396,29 @@ async function runInvestigation(args: {
   markStepDone?: boolean
   /** After Done/Skip evidence — send only the next step card (path already shown). */
   guideAdvanceOnly?: boolean
+  /** Start analysis from gather_alerts (facts already stashed; open guide at step 1). */
+  fromGather?: boolean
 }): Promise<BotReply> {
   const session = await getSessionDurable(args.msg.chatId, args.msg.openId)
   session.mode = 'investigate'
   // Questions / confusion unlock reasoning; evidence pastes stay Skills-path only.
   const questionMode =
     !args.markStepDone &&
+    !args.fromGather &&
     looksLikeInvestigationQuestion(args.newFact) &&
     !looksLikeIncidentEvidence(args.newFact)
   const userFactCountBefore = session.facts.filter((f) => !f.startsWith('[chat-history]')).length
   // Do not treat clarifying questions as investigation evidence / coverage.
-  if (args.newFact.trim() && !questionMode) {
+  if (args.newFact.trim() && !questionMode && !args.fromGather) {
     session.facts.push(args.newFact.trim())
   }
-  // First generation of a case — remind that more alerts can join this review.
+  // First generation of a case — open guided step 1 (gather phase already collected alerts).
   const showAddAlertHint =
-    Boolean(args.newFact.trim()) &&
-    !questionMode &&
-    userFactCountBefore === 0 &&
-    !args.markStepDone
+    Boolean(args.fromGather) ||
+    (Boolean(args.newFact.trim()) &&
+      !questionMode &&
+      userFactCountBefore === 0 &&
+      !args.markStepDone)
   if (args.markStepDone && session.pendingPrompt) {
     session.checkedSteps.push(session.pendingPrompt)
   }
@@ -1654,6 +1686,41 @@ async function handleCardActionCore(args: {
     text: '',
     mentionedBot: true,
     rawContent: '',
+  }
+
+  if (action === 'start_analysis') {
+    if (
+      session.mode !== 'gather_alerts' &&
+      !session.facts.some((f) => !f.startsWith('[chat-history]'))
+    ) {
+      const title =
+        lang === 'zh-Hans' ? '还没有告警' : lang === 'zh-Hant' ? '還沒有告警' : 'No alerts yet'
+      const body =
+        lang === 'zh-Hans'
+          ? '请先粘贴一条告警，再点 **开始分析**。'
+          : lang === 'zh-Hant'
+            ? '請先貼上一條告警，再點 **開始分析**。'
+            : 'Paste an alert first, then tap **Start analysis**.'
+      return { card: simpleCard(title, body, 'orange') }
+    }
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'command',
+      text:
+        lang === 'zh-Hans'
+          ? '开始分析'
+          : lang === 'zh-Hant'
+            ? '開始分析'
+            : 'Start analysis',
+      messageId: args.messageId,
+    })
+    await saveSessionDurable(args.chatId, sessionUser, session)
+    return runInvestigation({
+      msg: fakeMsg,
+      lang,
+      newFact: '',
+      fromGather: true,
+    })
   }
 
   if (action === 'review') {
@@ -2277,7 +2344,9 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
     forcedIntent ||
     classifyIntent(workingText, {
       inInvestigateSession:
-        session.mode === 'investigate' || session.mode === 'report_draft',
+        session.mode === 'investigate' ||
+        session.mode === 'gather_alerts' ||
+        session.mode === 'report_draft',
       mentionedBot: inbound.mentionedBot,
       chatType: inbound.chatType,
     })
@@ -2751,7 +2820,27 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       .replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '')
       .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
       .trim()
+    // Text command while gathering → same as tapping 开始分析.
+    if (
+      session.mode === 'gather_alerts' &&
+      /^(开始分析|開始分析|start\s*analysis|start\s*investigat)/i.test(fact)
+    ) {
+      return runInvestigation({
+        msg: inbound,
+        lang,
+        newFact: '',
+        fromGather: true,
+      })
+    }
     if (!fact) {
+      if (session.mode === 'gather_alerts' && session.facts.some((f) => !f.startsWith('[chat-history]'))) {
+        return {
+          card: alertGatherCard({
+            lang,
+            alerts: session.facts.filter((f) => !f.startsWith('[chat-history]')),
+          }),
+        }
+      }
       const title =
         lang === 'zh-Hans' ? '开始排查' : lang === 'zh-Hant' ? '開始排查' : 'Start investigation'
       const body =
@@ -2783,8 +2872,17 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
               ].join('\n')
       return { card: simpleCard(title, body, 'wathet') }
     }
+    // Idle / gather: stash alert(s) and wait for 开始分析 — do not open the path yet.
+    if (session.mode === 'idle' || session.mode === 'gather_alerts') {
+      return replyAlertGather({
+        msg: inbound,
+        lang,
+        session,
+        newFact: fact,
+      })
+    }
     return runInvestigation({
-      msg,
+      msg: inbound,
       lang,
       newFact: fact,
     })

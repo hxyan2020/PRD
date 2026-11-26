@@ -118,8 +118,9 @@ async function turn(
   text: string,
   openId = 'smoke_user',
   chatId = 'smoke_chat',
-  extra?: Partial<IncomingMessage>,
+  extra?: Partial<IncomingMessage> & { keepGather?: boolean },
 ) {
+  const { keepGather, ...msgExtra } = extra || {}
   const msg: IncomingMessage = {
     messageId: `smoke_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     chatId,
@@ -129,9 +130,19 @@ async function turn(
     text,
     mentionedBot: true,
     rawContent: JSON.stringify({ text }),
-    ...extra,
+    ...msgExtra,
   }
-  const reply = await handleMessage(msg)
+  let reply = await handleMessage(msg)
+  // Default: gather gate → auto Start analysis so existing smokes still exercise the path.
+  if (!keepGather && reply?.card && JSON.stringify(reply.card).includes('"start_analysis"')) {
+    reply = await handleCardAction({
+      openId,
+      chatId,
+      messageId: `${msg.messageId}_start`,
+      value: { action: 'start_analysis' },
+      chatType: msg.chatType,
+    })
+  }
   const kind = reply?.text ? 'text' : reply?.card ? 'card' : 'empty'
   const follow =
     reply?.followUpCards?.length
@@ -753,6 +764,56 @@ async function main() {
       /可能原因|Skills|告警/i.test(t.blob)
     record(`turn.${label}_not_greeting`, Boolean(t.reply?.card) && okTitle && !isGreet, t.blob.slice(0, 200))
   }
+
+  // Paste alert → gather gate (ask for more) until 开始分析.
+  clearSession('smoke_chat', 'gather_zh')
+  const gather1 = await turn(
+    'inv-gather-first-alert',
+    '告警：XAU_USD Mark 偏离 48bps，IDX-01 被剔除',
+    'gather_zh',
+    'smoke_chat',
+    { keepGather: true },
+  )
+  record(
+    'turn.alert_gather_asks_before_analysis',
+    Boolean(gather1.reply?.card) &&
+      gather1.blob.includes('start_analysis') &&
+      (gather1.blob.includes('还有其他') ||
+        gather1.blob.includes('開始分析') ||
+        gather1.blob.includes('Start analysis')) &&
+      !gather1.blob.includes('排查步骤'),
+    gather1.blob.slice(0, 160),
+  )
+  const gather2 = await turn(
+    'inv-gather-second-alert',
+    '又一条：外部 Funding 偏差超阈',
+    'gather_zh',
+    'smoke_chat',
+    { keepGather: true },
+  )
+  record(
+    'turn.alert_gather_appends_second',
+    gather2.blob.includes('已收集 2') &&
+      gather2.blob.includes('start_analysis') &&
+      getSession('smoke_chat', 'gather_zh').mode === 'gather_alerts',
+    gather2.blob.slice(0, 160),
+  )
+  const started = await handleCardAction({
+    openId: 'gather_zh',
+    chatId: 'smoke_chat',
+    messageId: 'smoke_start_analysis',
+    value: { action: 'start_analysis' },
+  })
+  const startedBlob =
+    (started?.card ? JSON.stringify(started.card) : '') +
+    (started?.followUpCards || []).map((c) => JSON.stringify(c)).join('\n')
+  record(
+    'turn.start_analysis_opens_step_guide',
+    Boolean(started?.card) &&
+      (startedBlob.includes('排查步骤') || startedBlob.includes('Investigation step')) &&
+      getSession('smoke_chat', 'gather_zh').mode === 'investigate',
+    startedBlob.slice(0, 160),
+  )
 
   // First investigation generation reminds user they can add another alert to the same case.
   clearSession('smoke_chat', 'hint_first_zh')

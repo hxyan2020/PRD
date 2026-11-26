@@ -108,8 +108,11 @@ export interface EscalationState {
 }
 
 export interface InvestigationState {
-  /** report_draft = full report shown; chat edits the draft until archive. */
-  mode: 'idle' | 'investigate' | 'report_draft'
+  /**
+   * gather_alerts = collecting alert(s) before analysis starts;
+   * report_draft = full report shown; chat edits the draft until archive.
+   */
+  mode: 'idle' | 'gather_alerts' | 'investigate' | 'report_draft'
   facts: string[]
   checkedSteps: string[]
   /** Full turn log for proceed-based investigation reports. */

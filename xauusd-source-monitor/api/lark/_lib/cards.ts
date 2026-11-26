@@ -325,6 +325,77 @@ function formatGuidePathLines(steps: GuideStep[], lang: Lang): string {
 }
 
 /**
+ * Pre-analysis gate: stash alert(s), ask for more, start only on button.
+ */
+export function alertGatherCard(args: {
+  lang: Lang
+  alerts: string[]
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const n = args.alerts.length
+  const title = hans
+    ? '收到告警 — 是否还有其他？'
+    : zh
+      ? '收到告警 — 是否還有其他？'
+      : 'Alert received — any more?'
+  const list =
+    args.alerts
+      .map((a, i) => {
+        const one = a.replace(/\s+/g, ' ').trim().slice(0, 160)
+        return `${i + 1}. ${one}${a.trim().length > 160 ? '…' : ''}`
+      })
+      .join('\n') || (hans ? '（暂无）' : zh ? '（暫無）' : '(none)')
+  const body = hans
+    ? [
+        `📥 **已收集 ${n} 条告警**（可继续粘贴更多，串联分析）`,
+        '',
+        list,
+        '',
+        '还有其他告警要一起看吗？没有的话点 **开始分析**。',
+      ].join('\n')
+    : zh
+      ? [
+          `📥 **已收集 ${n} 條告警**（可繼續貼上更多，串聯分析）`,
+          '',
+          list,
+          '',
+          '還有其他告警要一起看嗎？沒有的話點 **開始分析**。',
+        ].join('\n')
+      : [
+          `📥 **Collected ${n} alert(s)** — paste more to analyze together.`,
+          '',
+          list,
+          '',
+          'Any more alerts? If not, tap **Start analysis**.',
+        ].join('\n')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'wathet',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '开始分析' : zh ? '開始分析' : 'Start analysis',
+            },
+            type: 'primary',
+            value: { action: 'start_analysis' },
+          },
+        ],
+      },
+    ],
+  }
+}
+
+/**
  * Message 1: full排查链路 overview (path listed once).
  * Followed by investigationStepGuideCard as a second message.
  */
