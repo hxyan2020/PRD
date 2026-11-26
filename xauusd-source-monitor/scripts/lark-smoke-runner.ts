@@ -3454,7 +3454,9 @@ async function main() {
     Boolean(escAction?.card) &&
       (escBlob.includes('已升级等待反馈') ||
         escBlob.includes('已升級等待反饋') ||
-        escBlob.includes('Escalated — awaiting feedback')),
+        escBlob.includes('Escalated — awaiting feedback')) &&
+      escBlob.includes('guide_step_cancel_await') &&
+      escBlob.includes('end_and_report'),
     escBlob.slice(0, 160),
   )
   record(
