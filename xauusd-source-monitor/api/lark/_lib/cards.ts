@@ -340,6 +340,8 @@ export function investigationPathOverviewCard(args: {
   incidentId?: string
   riskVerdict?: RiskVerdict
   showAddAlertHint?: boolean
+  /** 1-based index promised for the follow-up step card (defaults to 1). */
+  nextStepNumber?: number
 }): Record<string, unknown> {
   const zh = isZh(args.lang)
   const hans = args.lang === 'zh-Hans'
@@ -475,11 +477,14 @@ export function investigationPathOverviewCard(args: {
               tag: 'div',
               text: {
                 tag: 'lark_md',
-                content: hans
-                  ? '💡 **下一条消息**会给出第 1 步；点 **已完成** 需补证据，点 **跳过** 时必做步必须回复说明。'
-                  : zh
-                    ? '💡 **下一則訊息**會給出第 1 步；點 **已完成** 需補證據，點 **跳過** 時必做步必須回覆說明。'
-                    : '💡 **Next message** starts step 1 — **Done** needs evidence; **Skip** on required steps needs a reply.',
+                content: (() => {
+                  const n = Math.max(1, Math.floor(args.nextStepNumber || 1))
+                  return hans
+                    ? `💡 **下一条消息**会给出第 ${n} 步；点 **已完成** 需补证据，点 **跳过** 时必做步必须回复说明。`
+                    : zh
+                      ? `💡 **下一則訊息**會給出第 ${n} 步；點 **已完成** 需補證據，點 **跳過** 時必做步必須回覆說明。`
+                      : `💡 **Next message** starts step ${n} — **Done** needs evidence; **Skip** on required steps needs a reply.`
+                })(),
               },
             },
           ]

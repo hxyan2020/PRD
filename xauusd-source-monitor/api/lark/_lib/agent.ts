@@ -1128,6 +1128,7 @@ function guideStepReply(args: {
     incidentId: args.incidentId,
     riskVerdict: args.riskVerdict,
     showAddAlertHint: args.showAddAlertHint,
+    nextStepNumber: idx >= 0 ? idx + 1 : 1,
   })
 
   if (!steps.length || idx < 0) {
@@ -1414,6 +1415,10 @@ async function runInvestigation(args: {
   session.lastKb = kb
   session.lastSeverity = severity
 
+  // Case open: never infer coverage / never re-rank away from Skill.check step 1.
+  // Opening alerts often echo Bid1/Ask1/Spread (or operator paraphrase) and would
+  // otherwise mark early atoms done → tip says「第 1 步」while push is 4/4.
+  const openCaseGuide = showAddAlertHint
   const pathPlan = planInvestigationPath({
     facts: session.facts,
     hits,
@@ -1421,23 +1426,32 @@ async function runInvestigation(args: {
     lang: args.lang,
     max: 3,
     latestFact: args.newFact,
+    inferCoverage: !openCaseGuide,
   })
   // Persist evidence-inferred coverage so out-of-order pastes stick across turns.
-  for (const c of pathPlan.newlyCovered) {
-    if (!session.checkedSteps.some((s) => s.toLowerCase() === c.toLowerCase())) {
-      session.checkedSteps.push(c)
+  if (!openCaseGuide) {
+    for (const c of pathPlan.newlyCovered) {
+      if (!session.checkedSteps.some((s) => s.toLowerCase() === c.toLowerCase())) {
+        session.checkedSteps.push(c)
+      }
     }
   }
   const hadPath = Boolean(session.pathSteps?.length)
-  session.pathSteps = mergeGuideSteps(pathPlan.fullSteps, session.pathSteps)
-  // Prefer re-ranked remaining steps when latest evidence points elsewhere.
-  const preferIds = pathPlan.fullSteps
-    .filter((s) => !s.covered)
-    .sort((a, b) => {
-      if (b.latestScore !== a.latestScore) return b.latestScore - a.latestScore
-      return a.authorIdx - b.authorIdx
-    })
-    .map((s) => s.id)
+  // Case open ignores prior step statuses (stale durable sessions / cleared facts).
+  session.pathSteps = mergeGuideSteps(
+    pathPlan.fullSteps,
+    openCaseGuide ? undefined : session.pathSteps,
+  )
+  // Prefer re-ranked remaining steps when latest evidence points elsewhere (mid-case only).
+  const preferIds = openCaseGuide
+    ? undefined
+    : pathPlan.fullSteps
+        .filter((s) => !s.covered)
+        .sort((a, b) => {
+          if (b.latestScore !== a.latestScore) return b.latestScore - a.latestScore
+          return a.authorIdx - b.authorIdx
+        })
+        .map((s) => s.id)
   session.pathStepIndex = firstPendingGuideIndex(session.pathSteps, preferIds)
   session.stepAwaiting = session.stepAwaiting || 'none'
   if (session.pathStepIndex < 0) {

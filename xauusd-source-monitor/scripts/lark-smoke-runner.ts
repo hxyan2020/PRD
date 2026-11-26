@@ -776,6 +776,43 @@ async function main() {
         firstInv.blob.includes('Skip')),
     firstInv.blob.match(/💡[\s\S]{0,160}/)?.[0] || firstInv.blob.slice(0, 160),
   )
+  // Case open must push step 1/N even when the opening paste paraphrases later checks.
+  clearSession('smoke_chat', 'open_step1_zh')
+  const openStep1 = await turn(
+    'inv-open-must-step1',
+    [
+      '告警：盘口价差预警 L1-03 Bid1 Ask1 Spread 超阈值',
+      '我已经看完 Lark Bid1 Ask1 Spread 阈值时间',
+      '前端各档深度 Spread 也看了',
+      'Index Mark 成交价K线同期深度告警对比完了',
+    ].join('\n'),
+    'open_step1_zh',
+  )
+  const openSess = getSession('smoke_chat', 'open_step1_zh')
+  record(
+    'turn.investigate_open_starts_step1_not_last',
+    Boolean(openStep1.reply?.card) &&
+      openStep1.blob.includes('排查步骤 1/') &&
+      openStep1.blob.includes('第 1 步') &&
+      !openStep1.blob.includes('排查步骤 4/') &&
+      openSess.pathStepIndex === 0 &&
+      (openSess.pathSteps || []).every((s) => s.status === 'pending'),
+    `idx=${openSess.pathStepIndex}; titles=${openStep1.blob.match(/排查步骤[^"\\]+/g)?.join('|') || ''}`,
+  )
+  record(
+    'path.inferCoverage_false_skips_evidence_on_open',
+    planInvestigationPath({
+      facts: [
+        '告警：盘口价差 L1-03',
+        '我已经看完 Lark Bid1 Ask1 Spread；前端深度也看了；Index Mark K线对比完了',
+      ],
+      hits: retrieveRag('盘口价差预警 L1-03 Bid1 Ask1 Spread').hits,
+      checkedSteps: [],
+      lang: 'zh-Hans',
+      inferCoverage: false,
+    }).covered.length === 0,
+    'open plan must not auto-cover',
+  )
   const secondInv = await turn(
     'inv-second-no-repeat-hint',
     '又一条告警：外部 Funding 偏差超阈 XAU-USDT-SWAP',

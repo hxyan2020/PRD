@@ -606,12 +606,19 @@ export function planInvestigationPath(args: {
   lang: 'en' | 'zh-Hans' | 'zh-Hant'
   max?: number
   latestFact?: string
+  /**
+   * When false, do not infer coverage from free-text evidence (only explicit
+   * checkedSteps). Use on case open so the opening alert / paraphrase cannot
+   * auto-skip to a later Skill.check atom while the card promises step 1.
+   */
+  inferCoverage?: boolean
 }): InvestigationPathPlan {
   const max = args.max ?? 3
   const zh = args.lang === 'zh-Hans' || args.lang === 'zh-Hant'
   const blob = args.facts.join('\n')
   const latest = (args.latestFact || args.facts.filter((f) => !f.startsWith('[chat-history]')).at(-1) || '').trim()
   const checkedLower = new Set(args.checkedSteps.map((s) => s.toLowerCase().trim()))
+  const inferCoverage = args.inferCoverage !== false
 
   type Ranked = {
     label: string
@@ -640,7 +647,7 @@ export function planInvestigationPath(args: {
         checkedLower.has(raw.toLowerCase()) ||
         checkedLower.has(`${h.id}:${raw}`.toLowerCase()) ||
         checkedLower.has(h.id.toLowerCase())
-      const covered = wasChecked || evidenceCoversStep(raw, blob)
+      const covered = wasChecked || (inferCoverage && evidenceCoversStep(raw, blob))
       ranked.push({
         label,
         raw,
