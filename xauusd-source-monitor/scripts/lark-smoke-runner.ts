@@ -2793,6 +2793,27 @@ async function main() {
     'daily 18:00 SGT token DM → Yan',
   )
   record(
+    'cron.token_usage_prefers_open_id_dm',
+    tokenUsageSrc.includes("finishSent('open_id'") &&
+      tokenUsageSrc.includes("finishSent('chat_id'") &&
+      tokenUsageSrc.indexOf('await sendCardToOpenId(admin.openId, card)') <
+        tokenUsageSrc.indexOf('await sendCardToChat(chat.chatId, card)') &&
+      tokenUsageSrc.includes('私聊'),
+    'token daily prefers Yan open_id; chat_id fallback',
+  )
+  const oscHandlerSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/oscillation-alert.ts', import.meta.url),
+    'utf8',
+  )
+  record(
+    'cron.oscillation_heartbeats_no_trigger',
+    oscHandlerSrc.includes("reason: 'no_trigger'") &&
+      oscHandlerSrc.includes("touchCronHeartbeat('/api/lark/oscillation-alert'") &&
+      oscHandlerSrc.includes('if (!dry)') &&
+      oscHandlerSrc.indexOf('if (!dry)') < oscHandlerSrc.indexOf("reason: 'no_trigger'"),
+    'oscillation records beat on invoke and no_trigger skip',
+  )
+  record(
     'cron.health_stale_catchup',
     cronHealthSrc.includes('STALE_CATCHUP_MS') &&
       cronHealthSrc.includes('staleCatchup') &&
