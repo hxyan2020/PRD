@@ -1493,6 +1493,7 @@ async function advanceGuideAfterUserInput(args: {
   const step = idx >= 0 ? steps[idx] : undefined
   const fact = args.text.trim()
   if (!fact) {
+    const caseId = session.lastReportId || ''
     if (args.kind === 'evidence' && step) {
       return {
         card: investigationEvidencePromptCard({
@@ -1500,6 +1501,7 @@ async function advanceGuideAfterUserInput(args: {
           step,
           stepIndex: idx,
           totalSteps: steps.length,
+          incidentId: caseId,
         }),
       }
     }
@@ -1512,6 +1514,7 @@ async function advanceGuideAfterUserInput(args: {
           totalSteps: steps.length,
           roles: session.escalation?.roles || ['RC'],
           notifiedCount: session.escalation?.openIds?.length || 0,
+          incidentId: caseId,
         }),
       }
     }
@@ -1522,6 +1525,7 @@ async function advanceGuideAfterUserInput(args: {
           step,
           stepIndex: idx,
           totalSteps: steps.length,
+          incidentId: caseId,
         }),
       }
     }
@@ -2192,6 +2196,7 @@ async function handleCardActionCore(args: {
   }
 
   if (action === 'end_without_report') {
+    const endedId = incidentId || session.lastReportId || ''
     pushInteraction(session, {
       role: 'user',
       kind: 'command',
@@ -2205,20 +2210,47 @@ async function handleCardActionCore(args: {
     session.pendingPrompt = undefined
     session.escalation = undefined
     await saveSessionDurable(args.chatId, sessionUser, session)
+    const title =
+      lang === 'zh-Hans'
+        ? '排查已结束'
+        : lang === 'zh-Hant'
+          ? '排查已結束'
+          : 'Investigation ended'
+    const body =
+      lang === 'zh-Hans'
+        ? '已结束排查，**未生成报告**。**下一步：** 可贴新告警重新开始；或点下方归档写入复盘看板。'
+        : lang === 'zh-Hant'
+          ? '已結束排查，**未生成報告**。**下一步：** 可貼新告警重新開始；或點下方歸檔寫入複盤看板。'
+          : 'Ended without a report. **Next:** paste a new alert to restart, or archive below for the review board.'
+    const actions: Record<string, unknown>[] = []
+    if (endedId) {
+      actions.push({
+        tag: 'button',
+        text: {
+          tag: 'plain_text',
+          content:
+            lang === 'zh-Hans'
+              ? '归档并完成复盘'
+              : lang === 'zh-Hant'
+                ? '歸檔並完成複盤'
+                : 'Archive & finish review',
+        },
+        type: 'primary',
+        value: { action: 'archive', incidentId: endedId },
+      })
+    }
     return {
-      card: simpleCard(
-        lang === 'zh-Hans'
-          ? '排查已结束'
-          : lang === 'zh-Hant'
-            ? '排查已結束'
-            : 'Investigation ended',
-        lang === 'zh-Hans'
-          ? '已结束排查，**未生成报告**。可贴新告警重新开始；如需归档复盘请再说 **归档**。'
-          : lang === 'zh-Hant'
-            ? '已結束排查，**未生成報告**。可貼新告警重新開始；如需歸檔複盤請再說 **歸檔**。'
-            : 'Ended without a report. Paste a new alert to start again, or say **archive** to close the case.',
-        'grey',
-      ),
+      card: {
+        config: { wide_screen_mode: true },
+        header: {
+          template: 'grey',
+          title: { tag: 'plain_text', content: title },
+        },
+        elements: [
+          { tag: 'div', text: { tag: 'lark_md', content: body } },
+          ...(actions.length ? [{ tag: 'action', actions }] : []),
+        ],
+      },
     }
   }
 
@@ -2257,6 +2289,55 @@ async function handleCardActionCore(args: {
         step,
         stepIndex: idx,
         totalSteps: steps.length,
+        incidentId: incidentId || session.lastReportId || '',
+      }),
+    }
+  }
+
+  if (action === 'guide_step_cancel_await') {
+    const steps = session.pathSteps || []
+    const stepId = String(args.value.stepId || '')
+    let idx = steps.findIndex((s) => s.id === stepId)
+    if (idx < 0) idx = session.pathStepIndex ?? firstPendingGuideIndex(steps)
+    const step = idx >= 0 ? steps[idx] : undefined
+    if (!step) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' ? '无当前步骤' : lang === 'zh-Hant' ? '無當前步驟' : 'No current step',
+          lang === 'zh-Hans'
+            ? '请先贴告警开始排查。'
+            : lang === 'zh-Hant'
+              ? '請先貼告警開始排查。'
+              : 'Paste an alert to start investigation.',
+          'wathet',
+        ),
+      }
+    }
+    session.pathStepIndex = idx
+    session.stepAwaiting = 'none'
+    session.pendingPrompt = step.label
+    session.escalation = undefined
+    pushInteraction(session, {
+      role: 'user',
+      kind: 'command',
+      text: `guide_step_cancel_await:${step.id}`,
+      messageId: args.messageId,
+    })
+    await clearEscalationsForOperator(args.chatId, sessionUser)
+    await saveSessionDurable(args.chatId, sessionUser, session)
+    const skillAction =
+      session.lastHits.find((h) => h.id === step.skillId)?.action ||
+      loadSkills().find((s) => s.id === step.skillId)?.action ||
+      ''
+    return {
+      card: investigationStepGuideCard({
+        lang,
+        step,
+        stepIndex: idx,
+        totalSteps: steps.length,
+        incidentId: incidentId || session.lastReportId || '',
+        escalateRoles: escalateRolesForStep(step, skillAction),
+        decisionBranches: decisionBranchesForStep(session, step.skillId),
       }),
     }
   }
@@ -2336,6 +2417,7 @@ async function handleCardActionCore(args: {
           step,
           stepIndex: idx,
           totalSteps: steps.length,
+          incidentId: incidentId || session.lastReportId || '',
         }),
       }
     }
@@ -2499,6 +2581,7 @@ async function handleCardActionCore(args: {
         totalSteps: steps.length,
         roles: rolesFinal,
         notifiedCount: notified,
+        incidentId: caseId || undefined,
       }),
     }
   }

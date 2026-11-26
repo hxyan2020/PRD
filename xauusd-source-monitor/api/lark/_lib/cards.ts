@@ -740,12 +740,70 @@ export function investigationSupplementAckCard(args: {
   }
 }
 
+/** Escape hatches while waiting for text (evidence / skip reason / escalate feedback). */
+function awaitingEscapeActions(args: {
+  lang: Lang
+  step: GuideStep
+  incidentId?: string
+}): Record<string, unknown>[] {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  return [
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans ? '返回步骤选项' : zh ? '返回步驟選項' : 'Back to step options',
+      },
+      type: 'default',
+      value: {
+        action: 'guide_step_cancel_await',
+        stepId: args.step.id,
+        incidentId: args.incidentId || '',
+      },
+    },
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans
+          ? '结束排查并生成报告'
+          : zh
+            ? '結束排查並生成報告'
+            : 'End & generate report',
+      },
+      type: 'primary',
+      value: {
+        action: 'end_and_report',
+        incidentId: args.incidentId || '',
+      },
+    },
+    {
+      tag: 'button',
+      text: {
+        tag: 'plain_text',
+        content: hans
+          ? '结束排查不生成报告'
+          : zh
+            ? '結束排查不生成報告'
+            : 'End without report',
+      },
+      type: 'default',
+      value: {
+        action: 'end_without_report',
+        incidentId: args.incidentId || '',
+      },
+    },
+  ]
+}
+
 /** After Done: require evidence before advancing. */
 export function investigationEvidencePromptCard(args: {
   lang: Lang
   step: GuideStep
   stepIndex: number
   totalSteps: number
+  incidentId?: string
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
@@ -760,7 +818,9 @@ export function investigationEvidencePromptCard(args: {
         '',
         `步骤：${args.step.label}`,
         '',
-        '请直接回复本步的 **证据**（截图说明／数值／核对结论）。收到后我会进入下一步。',
+        '**下一步：** 请直接回复本步的 **证据**（截图说明／数值／核对结论）。收到后我会进入下一步。',
+        '',
+        '_也可点下方返回六个选项，或结束排查。_',
       ].join('\n')
     : zh
       ? [
@@ -768,16 +828,37 @@ export function investigationEvidencePromptCard(args: {
           '',
           `步驟：${args.step.label}`,
           '',
-          '請直接回覆本步的 **證據**。收到後我會進入下一步。',
+          '**下一步：** 請直接回覆本步的 **證據**。收到後我會進入下一步。',
+          '',
+          '_也可點下方返回六個選項，或結束排查。_',
         ].join('\n')
       : [
           `✅ Marked step **${args.stepIndex + 1}/${args.totalSteps}** done.`,
           '',
           `Step: ${args.step.label}`,
           '',
-          'Reply with **evidence** for this step (screenshot notes / numbers / findings). I’ll advance after that.',
+          '**Next:** Reply with **evidence** for this step. I’ll advance after that.',
+          '',
+          '_Or tap below to return to the six options / end the case._',
         ].join('\n')
-  return simpleCard(title, body, 'wathet')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'wathet',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: awaitingEscapeActions({
+          lang: args.lang,
+          step: args.step,
+          incidentId: args.incidentId,
+        }),
+      },
+    ],
+  }
 }
 
 /** Operator side after tapping 升级. */
@@ -788,6 +869,7 @@ export function investigationEscalatedWaitingCard(args: {
   totalSteps: number
   roles: string[]
   notifiedCount: number
+  incidentId?: string
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
@@ -805,7 +887,9 @@ export function investigationEscalatedWaitingCard(args: {
         '',
         '对方会收到本步说明与完整排查时间线／记录。',
         '',
-        '⏳ **已升级等待反馈** — 收到对方结论后，请直接回复本对话；我会记入时间线并继续下一步。',
+        '**下一步：** 收到对方结论后，请直接回复本对话；我会记入时间线并继续下一步。',
+        '',
+        '_也可返回步骤六个选项，或结束排查。_',
       ].join('\n')
     : zh
       ? [
@@ -815,7 +899,9 @@ export function investigationEscalatedWaitingCard(args: {
           '',
           '對方會收到本步說明與完整排查時間線／記錄。',
           '',
-          '⏳ **已升級等待反饋** — 收到對方結論後，請直接回覆本對話；我會記入時間線並繼續下一步。',
+          '**下一步：** 收到對方結論後，請直接回覆本對話；我會記入時間線並繼續下一步。',
+          '',
+          '_也可返回步驟六個選項，或結束排查。_',
         ].join('\n')
       : [
           `🚨 Step **${args.stepIndex + 1}/${args.totalSteps}** escalated to **${rolesLabel}** (notified ${args.notifiedCount}).`,
@@ -824,9 +910,28 @@ export function investigationEscalatedWaitingCard(args: {
           '',
           'They received this step plus the full investigation timeline.',
           '',
-          '⏳ **Escalated — awaiting feedback.** Paste their reply here to log it and advance.',
+          '**Next:** Paste their reply here to log it and advance.',
+          '',
+          '_Or return to the six step options / end the case._',
         ].join('\n')
-  return simpleCard(title, body, 'red')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'red',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: awaitingEscapeActions({
+          lang: args.lang,
+          step: args.step,
+          incidentId: args.incidentId,
+        }),
+      },
+    ],
+  }
 }
 
 /** Escalatee DM: current step + facts + full interaction timeline. */
@@ -912,6 +1017,7 @@ export function investigationRequiredSkipPromptCard(args: {
   step: GuideStep
   stepIndex: number
   totalSteps: number
+  incidentId?: string
 }): Record<string, unknown> {
   const hans = args.lang === 'zh-Hans'
   const zh = isZh(args.lang)
@@ -926,7 +1032,9 @@ export function investigationRequiredSkipPromptCard(args: {
         '',
         `步骤：${args.step.label}`,
         '',
-        '请回复跳过原因或替代核对结论；收到后才会进入下一步。',
+        '**下一步：** 请回复跳过原因或替代核对结论；收到后才会进入下一步。',
+        '',
+        '_也可点下方返回六个选项，或结束排查。_',
       ].join('\n')
     : zh
       ? [
@@ -934,16 +1042,37 @@ export function investigationRequiredSkipPromptCard(args: {
           '',
           `步驟：${args.step.label}`,
           '',
-          '請回覆跳過原因或替代核對結論；收到後才會進入下一步。',
+          '**下一步：** 請回覆跳過原因或替代核對結論；收到後才會進入下一步。',
+          '',
+          '_也可點下方返回六個選項，或結束排查。_',
         ].join('\n')
       : [
           `⏭ Step **${args.stepIndex + 1}/${args.totalSteps}** is **required** — cannot skip silently.`,
           '',
           `Step: ${args.step.label}`,
           '',
-          'Reply with why you’re skipping or an alternate check result; then I’ll advance.',
+          '**Next:** Reply with why you’re skipping or an alternate check result; then I’ll advance.',
+          '',
+          '_Or tap below to return to the six options / end the case._',
         ].join('\n')
-  return simpleCard(title, body, 'orange')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'orange',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: awaitingEscapeActions({
+          lang: args.lang,
+          step: args.step,
+          incidentId: args.incidentId,
+        }),
+      },
+    ],
+  }
 }
 
 /** All guide steps finished — assistant recommends; user still rules. */
