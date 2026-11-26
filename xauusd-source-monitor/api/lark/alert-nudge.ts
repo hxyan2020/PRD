@@ -10,6 +10,7 @@ import {
   larkConfigured,
   resolveAdminOpenId,
   sendCardToChat,
+  sendCardToOpenId,
 } from './_lib/client.js'
 import {
   ALERT_NUDGE_MESSAGE,
@@ -17,6 +18,7 @@ import {
   ALERT_NUDGE_SILENCE_MS,
   DEFAULT_ALERT_NUDGE_CHAT_ID,
   ackAlertNudgeDurable,
+  armAlertNudgeP2pDemo,
   buildAlertNudgeCard,
   loadNudgeState,
   saveNudgeState,
@@ -76,6 +78,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     dry?: boolean
     chatId?: string
     ack?: boolean
+    /** Private DM demo to Yan — arms + activates p2p delivery. */
+    demo?: boolean | string
   }
   const dry =
     String(q.dry || '') === '1' ||
@@ -83,6 +87,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (req.method === 'GET' && !cron && String(q.send || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
   const ack = body.ack === true || String(q.ack || '') === '1'
+  const demoP2p =
+    body.demo === true ||
+    body.demo === 'p2p' ||
+    String(q.demo || '') === '1' ||
+    String(q.demo || '') === 'p2p'
 
   const now = Date.now()
   const chat = resolveChatId(body.chatId || String(q.chatId || ''))
@@ -104,7 +113,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   let state = await loadNudgeState()
 
-  if (dry && !force) {
+  // Private-chat demo: DM Yan immediately (skips 3min silence).
+  if (demoP2p && !dry) {
+    const admin = await resolveAdminOpenId({ preferChatId: chat.chatId })
+    if (!admin.openId || !admin.openId.startsWith('ou_')) {
+      return res.status(400).json({
+        ok: false,
+        error: 'LARK_ADMIN_OPEN_ID missing — cannot DM Yan for p2p demo',
+      })
+    }
+    state = await armAlertNudgeP2pDemo({
+      openId: admin.openId,
+      alertPreview: 'DEMO · 私聊每分钟提醒',
+    })
+  }
+
+  if (dry && !force && !demoP2p) {
     const previewCount = (state?.sendCount || 0) + 1
     const card = buildAlertNudgeCard({
       openId: state?.openId || '',
@@ -201,11 +225,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   })
 
   try {
-    const sent = await sendCardToChat(state.chatId || chat.chatId, card)
+    const delivery = state.delivery === 'p2p' ? 'p2p' : 'group'
+    const sent =
+      delivery === 'p2p'
+        ? await sendCardToOpenId(openId, card)
+        : await sendCardToChat(state.chatId || chat.chatId, card)
     const next: AlertNudgeState = {
       ...state,
-      chatId: state.chatId || chat.chatId,
+      chatId: delivery === 'p2p' ? openId : state.chatId || chat.chatId,
       openId,
+      delivery,
       sendCount,
       lastSentAt: Date.now(),
       nudgeStartedAt: state.nudgeStartedAt || Date.now(),
@@ -216,6 +245,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({
       ok: true,
       sent: true,
+      delivery,
+      demo: demoP2p || undefined,
       messageId: sent.messageId,
       state: next,
       day,

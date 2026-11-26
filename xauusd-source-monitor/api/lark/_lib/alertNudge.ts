@@ -40,6 +40,8 @@ export type AlertNudgeState = {
   /** Yan Haixiang open_id (ou_…) */
   openId: string
   message: string
+  /** group = send to chat_id; p2p = DM open_id (private demo) */
+  delivery?: 'group' | 'p2p'
   /** Alert seen; waiting for 3min silence */
   armed: boolean
   /** Actively sending minute nudges */
@@ -287,6 +289,7 @@ export async function armAlertNudgeFromGroupAlert(args: {
   openId: string
   alertAt?: number
   alertPreview?: string
+  delivery?: 'group' | 'p2p'
 }): Promise<AlertNudgeState> {
   const now = args.alertAt || Date.now()
   const cur = await loadNudgeState()
@@ -296,6 +299,7 @@ export async function armAlertNudgeFromGroupAlert(args: {
       ...cur,
       chatId: args.chatId || cur.chatId,
       openId: args.openId || cur.openId,
+      delivery: args.delivery || cur.delivery || 'group',
       alertPreview: args.alertPreview || cur.alertPreview,
       lastCronAt: cur.lastCronAt,
     }
@@ -307,6 +311,7 @@ export async function armAlertNudgeFromGroupAlert(args: {
     chatId: args.chatId,
     openId: args.openId,
     message: ALERT_NUDGE_MESSAGE,
+    delivery: args.delivery || 'group',
     armed: true,
     active: false,
     acked: false,
@@ -319,6 +324,31 @@ export async function armAlertNudgeFromGroupAlert(args: {
     ackLatencyMs: undefined,
     ackedAt: undefined,
     ackedBy: undefined,
+  }
+  await saveNudgeState(next)
+  return next
+}
+
+/** Private-chat demo: arm + activate immediately for DM to Yan. */
+export async function armAlertNudgeP2pDemo(args: {
+  openId: string
+  alertAt?: number
+  alertPreview?: string
+  message?: string
+}): Promise<AlertNudgeState> {
+  const now = args.alertAt || Date.now() - ALERT_NUDGE_SILENCE_MS - 5_000
+  const next: AlertNudgeState = {
+    dayKey: shanghaiDayKey(Date.now()),
+    chatId: args.openId,
+    openId: args.openId,
+    message: args.message || '【私聊演示】模拟告警后 3 分钟无人响应 — 请点知道了停止',
+    delivery: 'p2p',
+    armed: false,
+    active: true,
+    acked: false,
+    alertAt: now,
+    alertPreview: args.alertPreview || 'DEMO · Mark vs Index 48bps（私聊）',
+    sendCount: 0,
   }
   await saveNudgeState(next)
   return next
