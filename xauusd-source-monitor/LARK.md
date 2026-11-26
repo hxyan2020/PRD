@@ -174,13 +174,15 @@ never-sent).
 - **Arm:** group alert auto-capture starts a silence timer
 - **Gate:** if **no human reply** (alerts don’t count) for **3 minutes**, start nudging
 - **Loop:** every ~1 min `@Yan Haixiang` (`LARK_ADMIN_OPEN_ID`) until **知道了**
-- **Count:** increments only on **successful** sends
+- **Gap:** ≥45s between pushes (fits Vercel minute cron; avoids skipping the next tick)
+- **Count:** increments only on **successful** sends; slot claimed before Lark send (no duplicate 序号)
 - **Ack:** stops the loop and reports **alert → 知道了** total latency + push count to Yan
 - **Cancel before first nudge:** any human (non-alert) group message clears the arm
 - **Cron:** `* * * * *` → `/api/lark/alert-nudge`
 - **Chat:** alert’s group chat id (fallback `LARK_ALERT_NUDGE_CHAT_ID` / `LARK_DAILY_MARKET_CHAT_ID`)
 - **Delivery:** default **group**; optional private DM demo (`delivery=p2p`)
-- **Preview / force / demo:** `GET ?dry=1` · `POST { "force": true }` · `POST { "demo": "group" }` (group) · `POST { "demo": "p2p" }` (DM Yan)
+- **Demo:** `demo=group` / `demo=p2p` are **idempotent** while active (do not reset sendCount)
+- **Preview / force / demo:** `GET ?dry=1` · `POST { "force": true }` · `POST { "demo": "group" }` · `POST { "demo": "p2p" }`
 - **Local desk scripts:** `npx tsx scripts/demo-nudge-group.ts` · `npx tsx scripts/demo-nudge-p2p.ts`
 
 ## Bot behaviour

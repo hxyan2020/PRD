@@ -15,10 +15,14 @@ export const ALERT_NUDGE_SILENCE_MS = Math.max(
   Number(process.env.LARK_ALERT_NUDGE_SILENCE_MS || '') || 3 * 60_000,
 )
 
-/** Min gap between successful nudge pushes (ms). */
+/**
+ * Min gap between nudge pushes (ms).
+ * Default 45s so a Vercel `* * * * *` tick after a send near :59 still fires
+ * the next minute (55s was skipping the immediate next cron → “missing #3”).
+ */
 export const ALERT_NUDGE_MIN_GAP_MS = Math.max(
   30_000,
-  Number(process.env.LARK_ALERT_NUDGE_MIN_GAP_MS || '') || 55_000,
+  Number(process.env.LARK_ALERT_NUDGE_MIN_GAP_MS || '') || 45_000,
 )
 
 export const ALERT_NUDGE_MESSAGE =
@@ -336,6 +340,19 @@ export async function armAlertNudgeP2pDemo(args: {
   alertPreview?: string
   message?: string
 }): Promise<AlertNudgeState> {
+  const cur = await loadNudgeState()
+  // Idempotent: re-demo must NOT reset sendCount (that caused duplicate「第 1 次」).
+  if (cur?.active && !cur.acked && cur.delivery === 'p2p') {
+    const kept: AlertNudgeState = {
+      ...cur,
+      openId: args.openId || cur.openId,
+      chatId: args.openId || cur.chatId,
+      alertPreview: args.alertPreview || cur.alertPreview,
+      message: args.message || cur.message,
+    }
+    await saveNudgeState(kept)
+    return kept
+  }
   const now = args.alertAt || Date.now() - ALERT_NUDGE_SILENCE_MS - 5_000
   const next: AlertNudgeState = {
     dayKey: shanghaiDayKey(Date.now()),
@@ -362,6 +379,20 @@ export async function armAlertNudgeGroupDemo(args: {
   alertPreview?: string
   message?: string
 }): Promise<AlertNudgeState> {
+  const cur = await loadNudgeState()
+  // Idempotent: concurrent/repeat demo=group must keep sendCount + lastSentAt.
+  if (cur?.active && !cur.acked && (cur.delivery || 'group') === 'group') {
+    const kept: AlertNudgeState = {
+      ...cur,
+      chatId: args.chatId || cur.chatId,
+      openId: args.openId || cur.openId,
+      delivery: 'group',
+      alertPreview: args.alertPreview || cur.alertPreview,
+      message: args.message || cur.message,
+    }
+    await saveNudgeState(kept)
+    return kept
+  }
   const now = args.alertAt || Date.now() - ALERT_NUDGE_SILENCE_MS - 5_000
   const next: AlertNudgeState = {
     dayKey: shanghaiDayKey(Date.now()),
@@ -379,6 +410,83 @@ export async function armAlertNudgeGroupDemo(args: {
   }
   await saveNudgeState(next)
   return next
+}
+
+/**
+ * Reserve the next send slot before calling Lark.
+ * Sets lastSentAt immediately so a concurrent cron/demo cannot emit the same序号.
+ * On send failure, call releaseNudgeSendSlot with the prior lastSentAt.
+ */
+export async function claimNudgeSendSlot(args?: {
+  force?: boolean
+  now?: number
+  minGapMs?: number
+}): Promise<
+  | { ok: true; state: AlertNudgeState; sendCount: number; priorLastSentAt?: number }
+  | { ok: false; reason: string; state: AlertNudgeState | null }
+> {
+  const now = args?.now || Date.now()
+  const minGap = args?.minGapMs ?? ALERT_NUDGE_MIN_GAP_MS
+  const cur = await loadNudgeState()
+  if (!cur || cur.acked || !cur.active) {
+    return {
+      ok: false,
+      reason: !cur ? 'no_state' : cur.acked ? 'acked' : 'inactive',
+      state: cur,
+    }
+  }
+  if (!args?.force && cur.lastSentAt && now - cur.lastSentAt < minGap) {
+    return { ok: false, reason: 'throttle', state: cur }
+  }
+  const sendCount = (cur.sendCount || 0) + 1
+  const reserved: AlertNudgeState = {
+    ...cur,
+    lastSentAt: now,
+    // Keep sendCount until success — card uses claimed sendCount; durable count
+    // advances only in commitNudgeSendSlot after Lark returns OK.
+  }
+  await saveNudgeState(reserved)
+  return {
+    ok: true,
+    state: reserved,
+    sendCount,
+    priorLastSentAt: cur.lastSentAt,
+  }
+}
+
+/** Commit sendCount after a successful Lark push. */
+export async function commitNudgeSendSlot(args: {
+  sendCount: number
+  openId: string
+  chatId: string
+  delivery: 'group' | 'p2p'
+  lastSentAt?: number
+}): Promise<AlertNudgeState | null> {
+  const cur = await loadNudgeState()
+  if (!cur) return null
+  const next: AlertNudgeState = {
+    ...cur,
+    openId: args.openId || cur.openId,
+    chatId: args.chatId || cur.chatId,
+    delivery: args.delivery,
+    sendCount: Math.max(cur.sendCount || 0, args.sendCount),
+    lastSentAt: args.lastSentAt || cur.lastSentAt || Date.now(),
+    nudgeStartedAt: cur.nudgeStartedAt || args.lastSentAt || Date.now(),
+    active: true,
+    armed: false,
+  }
+  await saveNudgeState(next)
+  return next
+}
+
+/** Roll back lastSentAt if Lark send failed after claim. */
+export async function releaseNudgeSendSlot(priorLastSentAt?: number): Promise<void> {
+  const cur = await loadNudgeState()
+  if (!cur) return
+  await saveNudgeState({
+    ...cur,
+    lastSentAt: priorLastSentAt,
+  })
 }
 
 /** Sync variant for smoke. */

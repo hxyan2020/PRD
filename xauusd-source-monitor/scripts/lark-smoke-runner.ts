@@ -2914,12 +2914,14 @@ async function main() {
   )
   const {
     ALERT_NUDGE_MESSAGE,
+    ALERT_NUDGE_MIN_GAP_MS,
     ALERT_NUDGE_SILENCE_MS,
     ackAlertNudge,
     armAlertNudge,
     armAlertNudgeGroupDemo,
     buildAlertNudgeAckCard,
     buildAlertNudgeCard,
+    claimNudgeSendSlot,
     formatDurationMs,
     isNudgeActive,
     looksLikeNudgeAck,
@@ -2932,6 +2934,23 @@ async function main() {
     ALERT_NUDGE_SILENCE_MS === 3 * 60_000,
     String(ALERT_NUDGE_SILENCE_MS),
   )
+  record(
+    'nudge.min_gap_fits_minute_cron',
+    ALERT_NUDGE_MIN_GAP_MS === 45_000,
+    String(ALERT_NUDGE_MIN_GAP_MS),
+  )
+  // Clear tmp leftover from prior nudge/demo claims so arm starts clean.
+  writeNudgeState({
+    dayKey: '2026-11-26',
+    chatId: 'oc_clear',
+    openId: 'ou_clear',
+    message: ALERT_NUDGE_MESSAGE,
+    armed: false,
+    active: false,
+    acked: true,
+    alertAt: 0,
+    sendCount: 0,
+  })
   const alertAt = Date.now() - 4 * 60_000
   const armed = armAlertNudge({
     chatId: 'oc_smoke',
@@ -3061,6 +3080,18 @@ async function main() {
     ackJson.slice(0, 200),
   )
   {
+    writeNudgeState({
+      dayKey: '2026-11-26',
+      chatId: 'oc_old',
+      openId: 'ou_smoke_haixiang',
+      message: ALERT_NUDGE_MESSAGE,
+      delivery: 'group',
+      armed: false,
+      active: false,
+      acked: true,
+      alertAt: Date.now() - 60_000,
+      sendCount: 9,
+    })
     const groupDemo = await armAlertNudgeGroupDemo({
       chatId: 'oc_smoke_group',
       openId: 'ou_smoke_haixiang',
@@ -3078,6 +3109,36 @@ async function main() {
         active: groupDemo.active,
         chatId: groupDemo.chatId,
       }),
+    )
+    writeNudgeState({
+      ...groupDemo,
+      sendCount: 2,
+      lastSentAt: Date.now(),
+    })
+    const again = await armAlertNudgeGroupDemo({
+      chatId: 'oc_smoke_group',
+      openId: 'ou_smoke_haixiang',
+      alertPreview: 'DEMO group again',
+    })
+    record(
+      'nudge.group_demo_idempotent_keeps_count',
+      again.active === true &&
+        again.sendCount === 2 &&
+        again.delivery === 'group' &&
+        Boolean(again.lastSentAt),
+      JSON.stringify({ sendCount: again.sendCount, lastSentAt: again.lastSentAt }),
+    )
+    const claimed = await claimNudgeSendSlot({ force: false, now: Date.now() })
+    record(
+      'nudge.claim_throttles_within_gap',
+      claimed.ok === false && claimed.reason === 'throttle',
+      JSON.stringify(claimed),
+    )
+    const forced = await claimNudgeSendSlot({ force: true, now: Date.now() })
+    record(
+      'nudge.claim_force_reserves_next',
+      forced.ok === true && forced.sendCount === 3,
+      JSON.stringify(forced.ok ? { sendCount: forced.sendCount } : forced),
     )
   }
 

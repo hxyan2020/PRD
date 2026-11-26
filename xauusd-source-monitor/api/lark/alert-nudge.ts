@@ -21,7 +21,10 @@ import {
   armAlertNudgeGroupDemo,
   armAlertNudgeP2pDemo,
   buildAlertNudgeCard,
+  claimNudgeSendSlot,
+  commitNudgeSendSlot,
   loadNudgeState,
+  releaseNudgeSendSlot,
   saveNudgeState,
   shanghaiHm,
   shouldNudgeNow,
@@ -60,6 +63,13 @@ async function activateIfSilent(state: AlertNudgeState, now: number): Promise<Al
   }
   await saveNudgeState(next)
   return next
+}
+
+/** Patch lastCronAt without clobbering a newer send from a concurrent instance. */
+async function touchNudgeLastCron(now: number): Promise<void> {
+  const st = await loadNudgeState()
+  if (!st) return
+  await saveNudgeState({ ...st, lastCronAt: now })
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -104,15 +114,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (cron && !dry) {
     await touchCronHeartbeat('/api/lark/alert-nudge')
-    const st = await loadNudgeState()
-    if (st) {
-      await saveNudgeState({ ...st, lastCronAt: now })
-    }
   }
 
   let state = await loadNudgeState()
 
   // Demo: activate immediately (skips 3min silence). p2p → DM Yan; group → chat card.
+  // Re-arm is idempotent when already active (keeps sendCount).
   if ((demoP2p || demoGroup) && !dry) {
     const admin = await resolveAdminOpenId({ preferChatId: chat.chatId })
     if (!admin.openId || !admin.openId.startsWith('ou_')) {
@@ -161,6 +168,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!state || state.acked) {
+    if (cron && !dry) await touchNudgeLastCron(now)
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -188,6 +196,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (state.acked || !state.active) {
+    if (cron && !dry) await touchNudgeLastCron(now)
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -207,48 +216,50 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  if (!force && state.lastSentAt && now - state.lastSentAt < ALERT_NUDGE_MIN_GAP_MS) {
-    return res.status(200).json({
-      ok: true,
-      skipped: true,
-      reason: 'throttle',
-      state,
-    })
-  }
-
   if (!larkConfigured()) {
+    if (cron && !dry) await touchNudgeLastCron(now)
     return res.status(503).json({ ok: false, error: 'Lark not configured' })
   }
 
-  // Resolve Yan open_id right before send so @mention is real.
-  const admin = await resolveAdminOpenId({ preferChatId: state.chatId || chat.chatId })
-  const openId = admin.openId || state.openId
-  const sendCount = (state.sendCount || 0) + 1
+  // Claim slot BEFORE Lark send so concurrent cron/demo cannot emit the same 序号.
+  const claim = await claimNudgeSendSlot({ force, now })
+  if (!claim.ok) {
+    if (cron && !dry) await touchNudgeLastCron(now)
+    return res.status(200).json({
+      ok: true,
+      skipped: true,
+      reason: claim.reason,
+      state: claim.state,
+    })
+  }
+
+  const admin = await resolveAdminOpenId({
+    preferChatId: claim.state.chatId || chat.chatId,
+  })
+  const openId = admin.openId || claim.state.openId
+  const delivery = claim.state.delivery === 'p2p' ? 'p2p' : 'group'
   const card = buildAlertNudgeCard({
     openId,
-    message: state.message || ALERT_NUDGE_MESSAGE,
-    sendCount,
-    alertAt: state.alertAt,
+    message: claim.state.message || ALERT_NUDGE_MESSAGE,
+    sendCount: claim.sendCount,
+    alertAt: claim.state.alertAt,
   })
 
   try {
-    const delivery = state.delivery === 'p2p' ? 'p2p' : 'group'
     const sent =
       delivery === 'p2p'
         ? await sendCardToOpenId(openId, card)
-        : await sendCardToChat(state.chatId || chat.chatId, card)
-    const next: AlertNudgeState = {
-      ...state,
-      chatId: delivery === 'p2p' ? openId : state.chatId || chat.chatId,
+        : await sendCardToChat(claim.state.chatId || chat.chatId, card)
+    const next = await commitNudgeSendSlot({
+      sendCount: claim.sendCount,
       openId,
+      chatId: delivery === 'p2p' ? openId : claim.state.chatId || chat.chatId,
       delivery,
-      sendCount,
-      lastSentAt: Date.now(),
-      nudgeStartedAt: state.nudgeStartedAt || Date.now(),
-      active: true,
-      armed: false,
+      lastSentAt: now,
+    })
+    if (cron && next) {
+      await saveNudgeState({ ...next, lastCronAt: now })
     }
-    await saveNudgeState(next)
     return res.status(200).json({
       ok: true,
       sent: true,
@@ -260,11 +271,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       hm,
     })
   } catch (e) {
-    // Do NOT increment sendCount on failure — count stays accurate.
+    await releaseNudgeSendSlot(claim.priorLastSentAt)
+    if (cron && !dry) await touchNudgeLastCron(now)
     return res.status(502).json({
       ok: false,
       error: e instanceof Error ? e.message : 'send failed',
-      state,
+      state: await loadNudgeState(),
     })
   }
 }
