@@ -72,16 +72,41 @@ function mean(xs: number[]): number | null {
   return xs.reduce((a, b) => a + b, 0) / xs.length
 }
 
+/** Keep each venue probe short so cron-tick's child budget cannot starve the beat. */
+const FETCH_TIMEOUT_MS = 4_000
+/** Hard ceiling for the whole evaluate (Binance + OKX + news in parallel). */
+export const OSC_EVAL_BUDGET_MS = 12_000
+
 async function fetchJson(url: string): Promise<unknown | null> {
   try {
     const r = await fetch(url, {
       headers: { 'User-Agent': 'VE-Risk-Copilot/1.0 (+oscillation)' },
-      signal: AbortSignal.timeout(12_000),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
     if (!r.ok) return null
     return await r.json()
   } catch {
     return null
+  }
+}
+
+function emptySnap(demo: boolean, news?: { title: string; url: string } | null): OscillationSnapshot {
+  return {
+    fetchedAt: Date.now(),
+    venue: 'binance',
+    venueLabel: 'Binance XAUUSDT',
+    last: null,
+    volRecentPct: null,
+    volMeanPct: null,
+    volRatio: null,
+    fundingPct: null,
+    fundingMeanAbsPct: null,
+    fundingRatio: null,
+    oi: null,
+    newsHeadline: news?.title || null,
+    newsUrl: news?.url || null,
+    triggers: demo ? ['demo'] : news ? ['breaking_news'] : [],
+    demo,
   }
 }
 
@@ -286,6 +311,9 @@ export async function evaluateOscillation(opts?: {
   demo?: boolean
 }): Promise<OscillationSnapshot> {
   const demo = Boolean(opts?.demo)
+  // Never let venue/news probes hang past OSC_EVAL_BUDGET_MS — a hung evaluate
+  // is what made cron-tick abort and left 震荡预警 heartbeats silent.
+  const run = async (): Promise<OscillationSnapshot> => {
   const [binanceTape, okxTape, news] = await Promise.all([
     fetchBinanceTape(),
     fetchOkxTape(),
@@ -294,23 +322,7 @@ export async function evaluateOscillation(opts?: {
   // Binance primary; OKX backup when Binance tape is thin / unreachable.
   const tape = binanceTape || okxTape
   if (!tape) {
-    return {
-      fetchedAt: Date.now(),
-      venue: 'binance',
-      venueLabel: 'Binance XAUUSDT',
-      last: null,
-      volRecentPct: null,
-      volMeanPct: null,
-      volRatio: null,
-      fundingPct: null,
-      fundingMeanAbsPct: null,
-      fundingRatio: null,
-      oi: null,
-      newsHeadline: news?.title || null,
-      newsUrl: news?.url || null,
-      triggers: demo ? ['demo'] : news ? ['breaking_news'] : [],
-      demo,
-    }
+    return emptySnap(demo, news)
   }
 
   const recent = tape.ranges.slice(0, 6).map((r) => r.rangePct)
@@ -353,6 +365,18 @@ export async function evaluateOscillation(opts?: {
     newsUrl: news?.url || null,
     triggers,
     demo,
+  }
+  }
+
+  try {
+    return await Promise.race([
+      run(),
+      new Promise<OscillationSnapshot>((resolve) =>
+        setTimeout(() => resolve(emptySnap(demo)), OSC_EVAL_BUDGET_MS),
+      ),
+    ])
+  } catch {
+    return emptySnap(demo)
   }
 }
 

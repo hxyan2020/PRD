@@ -279,7 +279,8 @@ export async function buildCronHealthReport(args?: {
   // —— oscillation ——
   {
     const b = beats['/api/lark/oscillation-alert']
-    const maxAge = 20 * 60_000
+    // cron-tick every 5m + Vercel */10 + ping fallback — 22m is the miss bar.
+    const maxAge = 22 * 60_000
     const heartOk = Boolean(b?.at && now - b.at <= maxAge)
     const demoExpected =
       day === OSC_DEMO_DAY &&
@@ -290,7 +291,7 @@ export async function buildCronHealthReport(args?: {
     jobs.push({
       id: 'oscillation-alert',
       label: '震荡预警',
-      schedule: '每 15 分钟（有触发才推）',
+      schedule: '每 10 分钟探测（有触发才推卡）',
       expected: true,
       ok,
       detail: [
