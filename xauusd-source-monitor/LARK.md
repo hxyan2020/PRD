@@ -120,14 +120,14 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 | GET/POST | `/api/lark/cron-tick` | Every 5 min fan-out of all push jobs on public alias |
 | GET/POST | `/api/lark/cron-health` | Every 30m + :05/:35 health DM to Yan (open_id+chat_id); red @raise on miss |
 
-## Weekly report (Yan Haixiang)
+## Weekly report (group + Yan Haixiang)
 
 - **Schedule:** every **Friday 16:00 Asia/Shanghai** (Vercel cron `0 8 * * 5` UTC)
 - **Content:** this week’s handled incidents + aggregated recommendations / Skills
-- **Delivery:** Feishu DM card to `LARK_ADMIN_OPEN_ID` (Yan Haixiang)
+- **Delivery:** Feishu **group** (`LARK_WEEKLY_GROUP_CHAT_ID` → `LARK_DAILY_MARKET_CHAT_ID` → default risk group) **+** Yan DM (`LARK_ADMIN_OPEN_ID`)
 - **On-demand:** send `weekly` / `周报` in chat
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
-- **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token
+- **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token / cron header
 
 ## Market report (half-hourly DM) — **disabled**
 
@@ -160,7 +160,7 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 - **Once:** **2026-11-25 16:00** Asia/Shanghai → group `oc_eb8eba24…`（【DEMO】每周复盘）
 - **Cron:** `*/15 * * * *` → `/api/lark/weekly-demo`（demo 日 16:00 起至 18:00 补发，已发送则跳过）
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true }`
-- Regular Friday 16:00 weekly still goes to Yan via `/api/lark/weekly-report`
+- Regular Friday 16:00 weekly goes to **group + Yan** via `/api/lark/weekly-report`
 
 ## Oscillation alert (vol / leverage / news)
 
