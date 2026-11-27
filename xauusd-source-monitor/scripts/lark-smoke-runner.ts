@@ -2802,6 +2802,16 @@ async function main() {
     'every cron handler records a durable beat on invoke',
   )
   record(
+    'cron.weekly_report_dual_group_and_yan',
+    weeklySrc.includes('sendCardToChat') &&
+      weeklySrc.includes('sendCardToOpenId') &&
+      weeklySrc.includes('DEFAULT_WEEKLY_GROUP_CHAT_ID') &&
+      weeklySrc.includes('async function dualPush') &&
+      weeklySrc.includes('group + Yan Haixiang') &&
+      cronHealthLibSrc.includes('群 + Yan DM'),
+    'Friday weekly cron pushes group + Yan DM',
+  )
+  record(
     'cron.token_usage_daily_scheduled',
     (vercelCrons.crons || []).some(
       (c) =>

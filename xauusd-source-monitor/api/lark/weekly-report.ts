@@ -1,10 +1,16 @@
 /**
  * GET/POST /api/lark/weekly-report
- * - Vercel Cron (Fridays 08:00 UTC = 16:00 Asia/Shanghai) pushes digest to Yan Haixiang.
+ * - Vercel Cron (Fridays 08:00 UTC = 16:00 Asia/Shanghai) pushes digest to
+ *   Feishu group + Yan Haixiang DM.
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { larkConfigured, resolveAdminOpenId, sendCardToOpenId } from './_lib/client.js'
+import {
+  larkConfigured,
+  resolveAdminOpenId,
+  sendCardToChat,
+  sendCardToOpenId,
+} from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
@@ -16,6 +22,9 @@ import {
   weeklyDemoCard,
   weeklyReportCard,
 } from './_lib/weeklyReport.js'
+
+/** Same risk group as daily morning / oscillation alerts. */
+export const DEFAULT_WEEKLY_GROUP_CHAT_ID = 'oc_eb8eba24ff99a2c3ea3c9439750d65cd'
 
 /** Friday in Asia/Shanghai (0=Sun … 5=Fri). */
 function isShanghaiFriday(ts: number = Date.now()): boolean {
@@ -42,6 +51,46 @@ async function markSent(weekKey: string): Promise<boolean> {
   return writeDurableJson(SENT_NAME, map)
 }
 
+function resolveGroupChatId(req?: string): string {
+  return (
+    (req || '').trim() ||
+    (process.env.LARK_WEEKLY_GROUP_CHAT_ID || '').trim() ||
+    (process.env.LARK_DAILY_MARKET_CHAT_ID || '').trim() ||
+    DEFAULT_WEEKLY_GROUP_CHAT_ID
+  )
+}
+
+async function dualPush(
+  card: Record<string, unknown>,
+  groupId: string,
+  openId: string | undefined,
+): Promise<{ channel: string; ok: boolean; error?: string }[]> {
+  const results: { channel: string; ok: boolean; error?: string }[] = []
+  try {
+    await sendCardToChat(groupId, card)
+    results.push({ channel: 'group', ok: true })
+  } catch (e) {
+    results.push({
+      channel: 'group',
+      ok: false,
+      error: e instanceof Error ? e.message : 'group send failed',
+    })
+  }
+  if (openId) {
+    try {
+      await sendCardToOpenId(openId, card)
+      results.push({ channel: 'dm_open_id', ok: true })
+    } catch (e) {
+      results.push({
+        channel: 'dm_open_id',
+        ok: false,
+        error: e instanceof Error ? e.message : 'open_id send failed',
+      })
+    }
+  }
+  return results
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setCronRouteHeaders(res)
   if (req.method === 'OPTIONS') return res.status(204).end()
@@ -59,6 +108,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     dry?: boolean
     demo?: boolean
     openId?: string
+    groupChatId?: string
   }
   const dry =
     String(q.dry || '') === '1' ||
@@ -66,6 +116,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (req.method === 'GET' && !cron && String(q.send || '') !== '1' && String(q.demo || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
   const demo = body.demo === true || String(q.demo || '') === '1'
+  const groupId = resolveGroupChatId(
+    body.groupChatId || String(q.groupChatId || ''),
+  )
 
   if (cron && !dry) {
     await touchCronHeartbeat('/api/lark/weekly-report', {
@@ -77,7 +130,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const now = Date.now()
   const resolvedEarly = body.openId?.trim()
     ? { openId: body.openId.trim(), source: 'request' }
-    : await resolveAdminOpenId()
+    : await resolveAdminOpenId({ preferChatId: groupId })
   const incidents = await listIncidentsDurable({ status: 'all', limit: 200 })
   const report = demo
     ? buildWeeklyDemoReport(now, 'zh-Hans', resolvedEarly.openId)
@@ -96,9 +149,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       markdown: report.markdown,
       card,
       schedule: demo
-        ? 'Manual DEMO → Yan Haixiang DM (virtual incidents)'
-        : 'Fridays 16:00 Asia/Shanghai (cron: 0 8 * * 5 UTC)',
-      recipient: 'Yan Haixiang',
+        ? 'Manual DEMO → group + Yan DM (virtual incidents)'
+        : 'Fridays 16:00 Asia/Shanghai → group + Yan DM (cron: 0 8 * * 5 UTC)',
+      recipient: 'group + Yan Haixiang',
+      groupChatId: groupId.slice(0, 10) + '…',
       recipientOpenId: resolvedEarly.openId
         ? resolvedEarly.openId.slice(0, 8) + '…'
         : null,
@@ -150,19 +204,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const resolved = resolvedEarly
-
-  if (!resolved.openId) {
+  if (!groupId && !resolved.openId) {
     return res.status(400).json({
       ok: false,
       error:
-        'Admin open_id missing. Set LARK_ADMIN_OPEN_ID (Yan Haixiang) or LARK_ADMIN_EMAIL on Vercel.',
+        'No weekly recipient. Set LARK_WEEKLY_GROUP_CHAT_ID / LARK_DAILY_MARKET_CHAT_ID or LARK_ADMIN_OPEN_ID.',
       weekKey: report.window.weekKey,
       dryPreview: report.markdown,
     })
   }
 
   try {
-    await sendCardToOpenId(resolved.openId, card)
+    const results = await dualPush(card, groupId, resolved.openId)
+    const anyOk = results.some((r) => r.ok)
+    if (!anyOk) {
+      await touchCronHeartbeat('/api/lark/weekly-report', {
+        status: 502,
+        outcome: 'error',
+        reason: 'send_failed',
+      })
+      return res.status(502).json({
+        ok: false,
+        error: 'send failed',
+        results,
+        weekKey: report.window.weekKey,
+      })
+    }
+
     // DEMO must not consume the real Friday weekly-sent slot.
     let persisted = true
     if (!demo) persisted = await markSent(report.window.weekKey)
@@ -177,6 +245,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         sent: true,
         error: 'weekly_sent_state_blob_failed',
         weekKey: report.window.weekKey,
+        results,
       })
     }
     return res.status(200).json({
@@ -187,7 +256,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       label: report.window.label,
       count: report.incidents.length,
       empty: report.empty,
-      recipientOpenId: resolved.openId.slice(0, 8) + '…',
+      results,
+      via: results
+        .filter((r) => r.ok)
+        .map((r) => r.channel)
+        .join('+'),
+      groupChatId: groupId.slice(0, 10) + '…',
+      recipientOpenId: resolved.openId
+        ? resolved.openId.slice(0, 8) + '…'
+        : null,
       recipientSource: resolved.source,
     })
   } catch (e) {

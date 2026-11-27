@@ -423,7 +423,7 @@ export function weeklyReportCard(markdown: string, empty: boolean): Record<strin
         elements: [
           {
             tag: 'plain_text',
-            content: '推送对象：Yan Haixiang · 时区：东八区 · 周期：近 7 日',
+            content: '推送对象：风控群 + Yan Haixiang · 时区：东八区 · 周期：近 7 日',
           },
         ],
       },

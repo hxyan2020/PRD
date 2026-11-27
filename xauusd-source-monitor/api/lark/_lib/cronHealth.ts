@@ -235,7 +235,7 @@ export async function buildCronHealthReport(args?: {
     jobs.push({
       id: 'weekly-report',
       label: '正式周报',
-      schedule: '每周五 16:00 CST → Yan DM',
+      schedule: '每周五 16:00 CST → 群 + Yan DM',
       expected,
       ok,
       detail: sentAt
