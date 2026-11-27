@@ -1,33 +1,41 @@
 {
-  "day": "2026-11-26",
-  "scannedAt": "2026-11-26T04:35:38.871Z",
+  "day": "2026-11-27",
+  "scannedAt": "2026-11-27T04:39:32.375Z",
   "timezone": "Asia/Shanghai",
   "todaySlugs": [
     "elevenlabs-voice",
-    "linear-issue-ops",
-    "swan-baas",
-    "resend-email-api",
-    "sylvera-carbon",
-    "cuecraft-ads",
-    "nightshift-nursing-ai",
     "runway-ml",
-    "magicschool-ai",
-    "farmstack-coldchain",
-    "posthog-product-os",
-    "heaptrace-observability",
-    "clerk-auth",
-    "antora-heat-battery",
-    "playpane-classroom",
-    "ledgerlane-freight",
-    "carbonfact-fashion",
-    "watershed-climate",
     "piggyvest-savings",
-    "neon-serverless-postgres"
+    "playpane-classroom",
+    "sideshift-care",
+    "swan-baas",
+    "incident-ops",
+    "qonto-sme-bank",
+    "cuecraft-ads",
+    "resend-email-api",
+    "tabby-bnpl-gcc",
+    "linear-issue-ops",
+    "brex-finance",
+    "motherduck-analytics",
+    "kiln-microfactory",
+    "hanok-energy-retrofit",
+    "magicschool-ai",
+    "ledgerlane-freight",
+    "cashfree-merchant",
+    "harbor-legal-ops",
+    "iron-dome-devsecops",
+    "fjord-battery-secondlife",
+    "elderloop-companion",
+    "cape-clinic-triage",
+    "posthog-product-os",
+    "reef-credit-exchange",
+    "watershed-climate",
+    "atelier-carbon-ledger"
   ],
   "headlineCount": 40,
   "feedsOk": 6,
   "feedsTotal": 8,
-  "matchedIdeaCount": 1,
+  "matchedIdeaCount": 2,
   "headlines": [
     {
       "id": "techcrunch-0",
@@ -39,16 +47,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "techcrunch-1",
-      "sourceId": "techcrunch",
-      "title": "Flipkart CEO Kalyan Krishnamurthy to step down next week amid IPO uncertainty",
-      "url": "https://techcrunch.com/2026/11/25/flipkart-ceo-kalyan-krishnamurthy-to-step-down-next-week-amid-ipo-uncertainty/",
-      "excerpt": "Flipkart's product and technology chief Balaji Thiagarajan will lead the company alongside its board until a successor is found.",
-      "publishedAt": "Wed, 25 Nov 2026 13:08:19 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "crunchbase-news-2",
+      "id": "crunchbase-news-1",
       "sourceId": "crunchbase-news",
       "title": "The Art of The Terrible Startup Name",
       "url": "https://news.crunchbase.com/startups/bad-startup-name-examples-advice-grok/",
@@ -57,7 +56,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-3",
+      "id": "crunchbase-news-2",
       "sourceId": "crunchbase-news",
       "title": "Your AI Startup’s Exit Is Being Shaped By The Deals You Sign Today",
       "url": "https://news.crunchbase.com/ma/your-ai-startups-exit-is-being-shaped-by-the-deals-you-sign-today/",
@@ -66,7 +65,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-4",
+      "id": "crunchbase-news-3",
       "sourceId": "crunchbase-news",
       "title": "Startups Are Picking Names That Can Work Even If The Original Business Model Doesn’t",
       "url": "https://news.crunchbase.com/startups/startup-name-trends-2026-ai/",
@@ -75,7 +74,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-5",
+      "id": "crunchbase-news-4",
       "sourceId": "crunchbase-news",
       "title": "Most Unicorns Are Worth More Than Their Last Funding-Round Valuations, Crunchbase Estimates",
       "url": "https://news.crunchbase.com/venture/unicorn-startup-current-valuations-thinking-machines-sierra-crunchbase/",
@@ -84,7 +83,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-6",
+      "id": "crunchbase-news-5",
       "sourceId": "crunchbase-news",
       "title": "The Week’s 10 Biggest Funding Rounds: $400M For Neurotech Leads, Followed By Big Deals For AI, Fintech, Biotech And More",
       "url": "https://news.crunchbase.com/venture/biggest-startup-rounds-science-neurotech-model-ml-galvanize-therapeutics/",
@@ -93,7 +92,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-7",
+      "id": "crunchbase-news-6",
       "sourceId": "crunchbase-news",
       "title": "5 Interesting Startup Deals You May Have Missed: Reflecting Sunlight From Space, Better Breathing And Smarter Garbage Trucks",
       "url": "https://news.crunchbase.com/venture/interesting-startup-deals-ai-solar-healthcare-space-tech/",
@@ -102,7 +101,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-8",
+      "id": "crunchbase-news-7",
       "sourceId": "crunchbase-news",
       "title": "The Blue Economy: The World’s Quietest Economic Engine And Its Smartest Cities",
       "url": "https://news.crunchbase.com/startups/blue-economy-technology-defense-energy-onetti-mind-the-bridge/",
@@ -111,7 +110,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "crunchbase-news-9",
+      "id": "crunchbase-news-8",
       "sourceId": "crunchbase-news",
       "title": "What’s Next For Recruiting, Job Hunting And HR? More AI, Of Course",
       "url": "https://news.crunchbase.com/venture/data-recruiting-job-hunting-hr-ai-startups-mercor/",
@@ -120,7 +119,27 @@
       "matchedSlugs": []
     },
     {
+      "id": "sifted-9",
+      "sourceId": "sifted",
+      "title": "ElevenLabs in talks to raise funding at $33bn valuation, reports say",
+      "url": "https://sifted.eu/articles/elevenlabs-funding-round-raise-33-bn-latest/",
+      "excerpt": "",
+      "publishedAt": "Thu, 26 Nov 2026 10:48:32 GMT",
+      "matchedSlugs": [
+        "elevenlabs-voice"
+      ]
+    },
+    {
       "id": "sifted-10",
+      "sourceId": "sifted",
+      "title": "Exclusive: Starforge raises €6.6m to build nuclear fusion reactors at scale",
+      "url": "https://sifted.eu/articles/exclusive-starforge-fundraise-nuclear-fusion-reactors/",
+      "excerpt": "",
+      "publishedAt": "Thu, 26 Nov 2026 05:00:51 GMT",
+      "matchedSlugs": []
+    },
+    {
+      "id": "sifted-11",
       "sourceId": "sifted",
       "title": "PolyAI’s ex-machine learning chief raises $20m for new robotics startup",
       "url": "https://sifted.eu/articles/polyais-ex-machine-learning-chief-raises-20m-for-new-robotics-startup/",
@@ -129,7 +148,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-11",
+      "id": "sifted-12",
       "sourceId": "sifted",
       "title": "EU unveils Quantum Act with ‘plans for €50bn fund’ to boost sovereign tech",
       "url": "https://sifted.eu/articles/au-quantum-act-sovereign-tech-fund/",
@@ -138,7 +157,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-12",
+      "id": "sifted-13",
       "sourceId": "sifted",
       "title": "How to build an AI-native VC fund",
       "url": "https://sifted.eu/articles/how-to-build-an-ai-native-vc-fund/",
@@ -147,7 +166,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-13",
+      "id": "sifted-14",
       "sourceId": "sifted",
       "title": "Defence startup Agon raises $70m backed by Northzone and Lakestar",
       "url": "https://sifted.eu/articles/agon-raise-northzone-lakestar-defence/",
@@ -156,7 +175,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-14",
+      "id": "sifted-15",
       "sourceId": "sifted",
       "title": "Plural’s Sten Tamkivi on its €1bn fund, defence tech and why Europe didn’t miss the AI wave",
       "url": "https://sifted.eu/articles/plural-fund-ai-podcast/",
@@ -165,7 +184,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-15",
+      "id": "sifted-16",
       "sourceId": "sifted",
       "title": "Eileen Burbidge backs Monzo alums’ anti-fraud startup in £1.8m pre-seed",
       "url": "https://sifted.eu/articles/acorda-pre-seed/",
@@ -174,7 +193,7 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-16",
+      "id": "sifted-17",
       "sourceId": "sifted",
       "title": "Exclusive: Storonsky-backed Aikido seeks €4bn valuation",
       "url": "https://sifted.eu/articles/exclusive-aikido-4bn-valuation/",
@@ -183,25 +202,117 @@
       "matchedSlugs": []
     },
     {
-      "id": "sifted-17",
-      "sourceId": "sifted",
-      "title": "Exclusive: Stripe founders and Paul Graham back AI agent swarm startup Hoplite with $5.5m",
-      "url": "https://sifted.eu/articles/hoplite-raise-stripe-founders/",
-      "excerpt": "",
-      "publishedAt": "Fri, 20 Nov 2026 13:00:51 GMT",
-      "matchedSlugs": []
-    },
-    {
-      "id": "sifted-18",
-      "sourceId": "sifted",
-      "title": "13 pre-seed fintechs to watch, according to VCs",
-      "url": "https://sifted.eu/articles/pre-seed-fintechs-to-watch/",
-      "excerpt": "",
-      "publishedAt": "Fri, 20 Nov 2026 05:00:48 GMT",
+      "id": "techinasia-18",
+      "sourceId": "techinasia",
+      "title": "AI-powered platform moves Indian nurses abroad",
+      "url": "https://www.techinasia.com/aipowered-platform-moves-indian-nurses",
+      "excerpt": "Founded by former upGrad and OYO executives, BorderPlus recently raised US$7 million to manage end-to-end relocation for healthcare talent.",
+      "publishedAt": "Fri, 27 Nov 2026 03:00:43 +0000",
       "matchedSlugs": []
     },
     {
       "id": "techinasia-19",
+      "sourceId": "techinasia",
+      "title": "Who’s investing in India’s fintech startups?",
+      "url": "https://www.techinasia.com/whos-investing-indias-fintech-startups",
+      "excerpt": "We've compiled a list of investors pouring money into India’s fintech startups.",
+      "publishedAt": "Fri, 27 Nov 2026 02:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-20",
+      "sourceId": "techinasia",
+      "title": "Israeli chipmaker Altair raises $100m in series A",
+      "url": "https://www.techinasia.com/news/israeli-chipmaker-altair-raises-100m-series",
+      "excerpt": "Altair is targeting devices such as wearables and smart glasses that could connect to cloud-based AI services without relying on a smartphone.",
+      "publishedAt": "Fri, 27 Nov 2026 01:03:14 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-21",
+      "sourceId": "techinasia",
+      "title": "Southeast Asian startups that raised funds over 18 months ago",
+      "url": "https://www.techinasia.com/visual-story/southeast-asian-startups-raised-funds-18-months",
+      "excerpt": "Common wisdom suggests that having at least 18 months of runway provides a sense of security for startups to continue shipping at full speed.",
+      "publishedAt": "Fri, 27 Nov 2026 00:00:00 +0000",
+      "matchedSlugs": [
+        "runway-ml"
+      ]
+    },
+    {
+      "id": "techinasia-22",
+      "sourceId": "techinasia",
+      "title": "PE firm GEF hits $615m first close for India climate fund",
+      "url": "https://www.techinasia.com/news/pe-firm-gef-hits-615m-close-india-climate-fund",
+      "excerpt": "The fund will back mid-market growth companies in India and South Asia.",
+      "publishedAt": "Thu, 26 Nov 2026 09:49:47 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-23",
+      "sourceId": "techinasia",
+      "title": "SoftBank’s credit risk rises as investors question AI bets",
+      "url": "https://www.techinasia.com/news/softbanks-credit-risk-rises-as-investors-question-ai-bets",
+      "excerpt": "SoftBank and OpenAI have agreed to invest US$1 billion together in SB Energy.",
+      "publishedAt": "Thu, 26 Nov 2026 09:15:28 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-24",
+      "sourceId": "techinasia",
+      "title": "Indian digital lending firm Finnable raises $43.8m in series C",
+      "url": "https://www.techinasia.com/news/indian-digital-lending-firm-finnable-raises-438m-series",
+      "excerpt": "Finnable said its consumer finance business operates under India’s digital lending rules, which are set by the Reserve Bank of India.",
+      "publishedAt": "Thu, 26 Nov 2026 08:58:33 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-25",
+      "sourceId": "techinasia",
+      "title": "India attracts $31b in climate equity funding: report",
+      "url": "https://www.techinasia.com/news/india-attracts-31b-climate-equity-funding-report",
+      "excerpt": "Separately, India’s private equity and venture capital investments reached US$8.7 billion in October 2026, a five-year monthly high.",
+      "publishedAt": "Thu, 26 Nov 2026 08:40:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-26",
+      "sourceId": "techinasia",
+      "title": "Indonesian SaaS firm Mekari hit by outage after malware attack",
+      "url": "https://www.techinasia.com/news/indonesian-saas-firm-mekari-hit-by-outage-after-malware-attack",
+      "excerpt": "Mekari said it had identified malware as the source of the attack and had shut down its systems to prevent data movement.",
+      "publishedAt": "Thu, 26 Nov 2026 08:03:47 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-27",
+      "sourceId": "techinasia",
+      "title": "Indian defense startup Green Aero secures $14m funding",
+      "url": "https://www.techinasia.com/news/indian-defense-startup-green-aero-secures-14m-funding",
+      "excerpt": "Green Aero said it runs an 87,000 sq ft research and testing facility in Bengaluru.",
+      "publishedAt": "Thu, 26 Nov 2026 07:57:22 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-28",
+      "sourceId": "techinasia",
+      "title": "This startup turns seaweed into crop boosters",
+      "url": "https://www.techinasia.com/building-biostimulant-market-tropical-crops",
+      "excerpt": "AquaBloom transforms locally grown seaweed into biological tools to help tropical farmers increase crop yields by up to 30%.",
+      "publishedAt": "Thu, 26 Nov 2026 07:00:38 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-29",
+      "sourceId": "techinasia",
+      "title": "Series SEA: Who&#8217;s investing in the region&#8217;s SaaS startups?",
+      "url": "https://www.techinasia.com/top-sea-investors-saas",
+      "excerpt": "We've compiled a list of investors that are pouring money into Southeast Asia’s software-as-a-service startups.",
+      "publishedAt": "Thu, 26 Nov 2026 07:00:00 +0000",
+      "matchedSlugs": []
+    },
+    {
+      "id": "techinasia-30",
       "sourceId": "techinasia",
       "title": "Grab&#8217;s $500m fintech target rests on lending to the unbanked",
       "url": "https://www.techinasia.com/grabs-500m-fintech-target-rests-lending-unbanked",
@@ -210,185 +321,84 @@
       "matchedSlugs": []
     },
     {
-      "id": "techinasia-20",
-      "sourceId": "techinasia",
-      "title": "Japanese medical AI startup Nihin Media raises $3.3m",
-      "url": "https://www.techinasia.com/news/japanese-medical-ai-startup-nihin-media-raises-33m",
-      "excerpt": "Nihin Media aims to reach 100,000 physician users by 2027.",
-      "publishedAt": "Thu, 26 Nov 2026 03:49:27 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-21",
-      "sourceId": "techinasia",
-      "title": "Singapore’s Igloo acquires UAE insurtech Democrance",
-      "url": "https://www.techinasia.com/news/singapores-igloo-acquires-uae-insurtech-democrance",
-      "excerpt": "The initial rollout will target Saudi Arabia, the United Arab Emirates, and Egypt, following Igloo’s entry into Turkey in October.",
-      "publishedAt": "Thu, 26 Nov 2026 03:15:09 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-22",
-      "sourceId": "techinasia",
-      "title": "ElevenLabs eyes $33b valuation in early funding talks: sources",
-      "url": "https://www.techinasia.com/news/elevenlabs-eyes-33b-valuation-early-funding-talks-sources",
-      "excerpt": "ElevenLabs previously announced it raised US$500 million in a series D round at a US$11 billion valuation on February 4, 2026.",
-      "publishedAt": "Thu, 26 Nov 2026 00:39:39 +0000",
-      "matchedSlugs": [
-        "elevenlabs-voice"
-      ]
-    },
-    {
-      "id": "techinasia-23",
-      "sourceId": "techinasia",
-      "title": "PhonePe targets 2027 IPO at up to $15b valuation",
-      "url": "https://www.techinasia.com/news/phonepe-targets-2027-ipo-15b-valuation",
-      "excerpt": "PhonePe paused its listing plans in March amid market volatility linked to tensions in the Middle East.",
-      "publishedAt": "Thu, 26 Nov 2026 00:37:49 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-24",
-      "sourceId": "techinasia",
-      "title": "Prosus, Vertex lead $10m round in Indian fintech firm Vegapay",
-      "url": "https://www.techinasia.com/news/prosus-vertex-lead-10m-indian-fintech-firm-vegapay",
-      "excerpt": "Vegapay’s platform supports Credit Line on UPI, which lets banks link pre-sanctioned credit lines to UPI payments.",
-      "publishedAt": "Thu, 26 Nov 2026 00:30:25 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-25",
-      "sourceId": "techinasia",
-      "title": "Will Asia lose prediction markets too?",
-      "url": "https://www.techinasia.com/will-asia-lose-prediction-markets-too",
-      "excerpt": "Asia’s banned prediction markets may go offshore like crypto did. Plus: fintech overtakes AI in SEA funding, and Jensen Huang's Nvidia mea culpa.",
-      "publishedAt": "Thu, 26 Nov 2026 00:30:19 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-26",
-      "sourceId": "techinasia",
-      "title": "Indian AI startup Devnagri launches speech tool",
-      "url": "https://www.techinasia.com/news/indian-ai-startup-devnagri-launches-speech-tool",
-      "excerpt": "The automatic speech recognition tool for Indian languages targets contact centers and AI voice agents.",
-      "publishedAt": "Thu, 26 Nov 2026 00:09:42 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-27",
-      "sourceId": "techinasia",
-      "title": "Telekom Malaysia posts 3.3% revenue growth, lower profit",
-      "url": "https://www.techinasia.com/news/telekom-malaysia-posts-33-revenue-growth-profit",
-      "excerpt": "TM said the comparison was also affected by a prior-year one-off investment gain and lower tax charges.",
-      "publishedAt": "Wed, 25 Nov 2026 09:30:05 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-28",
-      "sourceId": "techinasia",
-      "title": "Indonesia&#8217;s state fund Danantara posts $11.1b net profit",
-      "url": "https://www.techinasia.com/news/indonesias-state-fund-danantara-posts-111b-net-profit",
-      "excerpt": "Danantara reported operating revenue of 2,385.2 trillion rupiah (US$131 billion) for the nine-month period.",
-      "publishedAt": "Wed, 25 Nov 2026 08:17:57 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "techinasia-29",
-      "sourceId": "techinasia",
-      "title": "Hot or not: What SEA investors are betting on and what they&#8217;re ignoring",
-      "url": "https://www.techinasia.com/visual-story/funding-overview",
-      "excerpt": "VC funding can be a leading indicator of where in the tech industry we’re going to see more spending and jobs.",
-      "publishedAt": "Wed, 25 Nov 2026 07:00:00 +0000",
-      "matchedSlugs": []
-    },
-    {
-      "id": "yourstory-30",
-      "sourceId": "yourstory",
-      "title": "Priyank Kharge targets Mangaluru with Rs 6,000 Cr regional growth push",
-      "url": "https://yourstory.com/2026/11/priyank-kharge-targets-mangaluru-with-rs-6000-cr-regional-growth-push",
-      "excerpt": "Karnataka IT and BT Minister Priyank Kharge is urging investment in Mangaluru, with Dakshina Kannada contributing 5.3% of the state’s GDP. The Beyond Bengaluru strategy aims to unlock the region’s business and talent potential.",
-      "publishedAt": "Wed, 25 Nov 2026 12:54:24 GMT",
-      "matchedSlugs": []
-    },
-    {
       "id": "yourstory-31",
       "sourceId": "yourstory",
-      "title": "Nexent Capital launches $1B fund focused on AI & data centres investments",
-      "url": "https://yourstory.com/2026/11/nexent-capital-launches-1-billion-fund-focused-on-ai-data-centres-investments",
-      "excerpt": "The fund will deploy the capital in various modes such as private equity, credit and public equity.",
-      "publishedAt": "Wed, 25 Nov 2026 12:45:53 GMT",
+      "title": "Agnikul’s rocket ambitions gather pace, but commercial revenue yet to take off",
+      "url": "https://yourstory.com/2026/11/agnikuls-rocket-ambitions-gather-pace-but-commercial-revenue-is-yet-to-take-off",
+      "excerpt": "The spacetech company is investing heavily in its launch ambitions and attracting fresh funding, but, with no operating revenue yet, commercialisation remains its biggest test.",
+      "publishedAt": "Thu, 26 Nov 2026 12:30:21 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-32",
       "sourceId": "yourstory",
-      "title": "PhonePe resumes IPO process; targets listing in Feb-March at $12-15B valuation",
-      "url": "https://yourstory.com/2026/11/phonepe-resumes-ipo-process-targets-listing-in-feb-march-12-15b-valuation",
-      "excerpt": "PhonePe had earlier deferred its public listing plans amid geopolitical uncertainties, weak macroeconomic conditions and heightened volatility in equity markets.",
-      "publishedAt": "Wed, 25 Nov 2026 13:12:35 GMT",
+      "title": "Vegapay raises $10M in Series A round co-led by Vertex Ventures, Prosus",
+      "url": "https://yourstory.com/2026/11/vegapay-raises-10m-in-series-a-round-co-led-by-vertex-ventures-prosus",
+      "excerpt": "Vegapay raises $10 million in a Series A round co-led by Vertex Ventures and Prosus to expand its Credit Line on UPI offerings, launch secured credit products and strengthen its banking technology platform.",
+      "publishedAt": "Thu, 26 Nov 2026 12:17:45 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-33",
       "sourceId": "yourstory",
-      "title": "VU Venture Partners launches India VC accelerator, investment platform",
-      "url": "https://yourstory.com/2026/11/vu-venture-partners-launches-india-vc-accelerator-investment-platform",
-      "excerpt": "VU Venture Partners is bringing its venture-capital accelerator and startup investment platform to India, targeting early-stage companies while training prospective investors through Venture University.",
-      "publishedAt": "Wed, 25 Nov 2026 10:55:54 GMT",
+      "title": "Startup news and updates: daily roundup (November 26, 2026)",
+      "url": "https://yourstory.com/2026/11/startup-news-and-updates-daily-roundup-november-26-2026",
+      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here's the roundup for Thursday, November 26, 2026.",
+      "publishedAt": "Thu, 26 Nov 2026 12:44:38 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-34",
       "sourceId": "yourstory",
-      "title": "Startup news and updates: Daily roundup (November 25, 2026)",
-      "url": "https://yourstory.com/2026/11/startup-news-and-updates-daily-roundup-november-25-2026",
-      "excerpt": "YourStory presents the daily news roundup from the Indian startup ecosystem and beyond. Here’s the roundup for Wednesday, November 25, 2026.",
-      "publishedAt": "Wed, 25 Nov 2026 09:47:47 GMT",
+      "title": "XEBO.ai bags $10.5M funding from Emirates Growth Fund",
+      "url": "https://yourstory.com/2026/11/xeboai-bags-10-million-funding-from-emirates-growth-fund",
+      "excerpt": "The capital injection will primarily enhance XEBO voice-of-customer portfolio, expanding capability into call analytics and digital experience monitoring. A key portion of the funding will advance agentic AI.",
+      "publishedAt": "Thu, 26 Nov 2026 05:15:00 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-35",
       "sourceId": "yourstory",
-      "title": "Piramal Alternatives invests Rs 225 Cr in Ardee Engineering",
-      "url": "https://yourstory.com/2026/11/piramal-alternatives-invests-rs-225-cr-in-ardee-engineering",
-      "excerpt": "The investment will help Ardee expand manufacturing capacity and pursue larger industrial projects, including opportunities in data centres.",
-      "publishedAt": "Wed, 25 Nov 2026 07:12:29 GMT",
+      "title": "Green Aero raises $14M as India pushes for indigenous jet propulsion",
+      "url": "https://yourstory.com/2026/11/green-aero-raises-usd-14m-as-india-pushes-for-indigenous-jet-propulsion",
+      "excerpt": "Over the next 12 to 18 months, Green Aero plans to expand engine-testing facilities, hire engineers, and advance the flight qualification of transonic and supersonic drones.",
+      "publishedAt": "Thu, 26 Nov 2026 05:45:38 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-36",
       "sourceId": "yourstory",
-      "title": "Rodic Consultants proposes Rs 200 Cr fund for AI in infrastructure",
-      "url": "https://yourstory.com/2026/11/rodic-consultants-proposes-rs-200-cr-fund-ai-infrastructure",
-      "excerpt": "The engineering consultancy will commit Rs 100 crore and expects to raise the rest from co-investors. Selected startups could test their products on live infrastructure projects.",
-      "publishedAt": "Wed, 25 Nov 2026 09:33:28 GMT",
+      "title": "GIVA raises Rs 90 Cr from alternative credit platform BlackSoil",
+      "url": "https://yourstory.com/2026/11/giva-raises-rs-90-crore-from-alternative-credit-platform-blacksoil",
+      "excerpt": "GIVA said it will use the capital to fund store expansion and working capital requirements as it strengthens its omnichannel presence across India.",
+      "publishedAt": "Thu, 26 Nov 2026 07:00:10 GMT",
       "matchedSlugs": []
     },
     {
       "id": "yourstory-37",
       "sourceId": "yourstory",
-      "title": "Karnataka names 47 startup winners under ELEVATE 2026",
-      "url": "https://yourstory.com/2026/11/karnataka-names-47-startup-winners-under-elevate-2026",
-      "excerpt": "The list includes Agribotic Systems, Arthaveda, Arys Garage, Aviominds Global, Carnad Engineering, Ganesis Semiconductors, Gridflow Technologies, Insulin Yogi, Jatayu Saga, Pravaaha Biotech, Prakashikam Space, VIVIDSILICON, Wayve Electric, XALES AI, and others.",
-      "publishedAt": "Wed, 25 Nov 2026 14:26:26 GMT",
+      "title": "Finnable raises Rs 405 Cr in Series C to expand multi-product lending",
+      "url": "https://yourstory.com/2026/11/finnable-raises-rs-405-crore-in-series-c-to-expand-multi-product-lending",
+      "excerpt": "The Bengaluru-based lender has crossed Rs 4,600 crore in assets under management and says it made Rs 51 crore in profit after tax in the first half of FY27.",
+      "publishedAt": "Thu, 26 Nov 2026 06:27:57 GMT",
       "matchedSlugs": []
     },
     {
-      "id": "inc42-38",
-      "sourceId": "inc42",
-      "title": "Green Aero Raises $14 Mn To Build Jet Engines, Combat Drones",
-      "url": "https://inc42.com/buzz/green-aero-raises-14-mn-to-build-jet-engines-combat-drones/",
-      "excerpt": "Deeptech startup Green Aero has raised $14 Mn (₹129.2 Cr) in a Series A funding round led by Crane Ventures,&#8230;",
-      "publishedAt": "Thu, 26 Nov 2026 03:55:05 +0000",
+      "id": "yourstory-38",
+      "sourceId": "yourstory",
+      "title": "Capri Global raises $30M in bonds from BlueOrchard Microfinance",
+      "url": "https://yourstory.com/2026/11/capri-global-raises-30-million-in-bonds-from-blueorchard-microfinance",
+      "excerpt": "The fundraise will support Capri Global's MSME lending business and expand access to credit for businesses across India.",
+      "publishedAt": "Thu, 26 Nov 2026 11:43:48 GMT",
       "matchedSlugs": []
     },
     {
       "id": "inc42-39",
       "sourceId": "inc42",
-      "title": "Flipkart CEO Ousted, PhonePe Revives IPO &#038; More",
-      "url": "https://inc42.com/buzz/flipkart-ceo-ousted-phonepe-revives-ipo-more/",
-      "excerpt": "Leadership Crisis At Flipkart Kalyan Krishnamurthy’s decade-long stint as Flipkart group CEO has ended abruptly. Parent Walmart has asked him&#8230;",
-      "publishedAt": "Thu, 26 Nov 2026 02:30:25 +0000",
+      "title": "GEF Capital Partners Announces First Close Of India Climate Fund IV At $615 Mn",
+      "url": "https://inc42.com/buzz/gef-capital-partners-announces-first-close-of-india-climate-fund-iv-at-615-mn/",
+      "excerpt": "Climate focused PE firm GEF Capital Partners announced the first close of its fourth India-focused climate fund at $615 Mn,&#8230;",
+      "publishedAt": "Thu, 26 Nov 2026 16:47:45 +0000",
       "matchedSlugs": []
     }
   ]
