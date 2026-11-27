@@ -164,7 +164,7 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 
 ## Oscillation alert (vol / leverage / news)
 
-- **Cron:** every **15 min** (`*/15 * * * *`) → `/api/lark/oscillation-alert`
+- **Cron:** every **10 min** (`*/10 * * * *`) → `/api/lark/oscillation-alert` (+ cron-tick ping keep-alive)
 - **Triggers:** Binance XAUUSDT (OKX backup) short-horizon amplitude ≫ dynamic mean, **or** |funding| ≫ historical mean (leverage crowding proxy), **or** breaking news keywords
 - **Delivery:** Feishu **group** + **Haixiang DM** (chat_id, open_id fallback); short 简体 card + sources + 连锁强平风险提示
 - **Demo:** **2026-11-25 10:00** Asia/Shanghai once (`LARK_OSC_DEMO_DAY` / `LARK_OSC_DEMO_START`); catch-up until 18:00 CST if the :00 cron is skipped

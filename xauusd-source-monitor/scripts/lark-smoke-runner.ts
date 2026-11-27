@@ -2828,13 +2828,28 @@ async function main() {
     new URL('../api/lark/oscillation-alert.ts', import.meta.url),
     'utf8',
   )
+  const oscLibSrc = await (await import('node:fs/promises')).readFile(
+    new URL('../api/lark/_lib/oscillationAlert.ts', import.meta.url),
+    'utf8',
+  )
   record(
     'cron.oscillation_heartbeats_no_trigger',
     oscHandlerSrc.includes("reason: 'no_trigger'") &&
       oscHandlerSrc.includes("touchCronHeartbeat('/api/lark/oscillation-alert'") &&
-      oscHandlerSrc.includes('if (!dry)') &&
-      oscHandlerSrc.indexOf('if (!dry)') < oscHandlerSrc.indexOf("reason: 'no_trigger'"),
-    'oscillation records beat on invoke and no_trigger skip',
+      oscHandlerSrc.includes("reason: 'ping'") &&
+      oscHandlerSrc.includes("reason: 'deduped'") &&
+      oscHandlerSrc.includes('async function beat') &&
+      cronTickSrc.includes('OSC_CHILD_TIMEOUT_MS') &&
+      cronTickSrc.includes('ping: true'),
+    'oscillation beats on ping/no_trigger/dedupe; tick has ping fallback',
+  )
+  record(
+    'cron.oscillation_eval_budget',
+    oscLibSrc.includes('OSC_EVAL_BUDGET_MS = 12_000') &&
+      oscLibSrc.includes('FETCH_TIMEOUT_MS = 4_000') &&
+      oscLibSrc.includes('emptySnap') &&
+      oscLibSrc.includes('Promise.race'),
+    'osc evaluate hard-capped so cron-tick cannot starve the heartbeat',
   )
   record(
     'cron.health_stale_catchup',
@@ -3365,8 +3380,8 @@ async function main() {
     (c.path || '').includes('oscillation-alert'),
   )
   record(
-    'cron.oscillation_every_15m',
-    oscCron?.schedule === '*/15 * * * *',
+    'cron.oscillation_every_10m',
+    oscCron?.schedule === '*/10 * * * *',
     JSON.stringify(oscCron || {}),
   )
   const {

@@ -148,7 +148,7 @@ const COMMAND_WEEKLY =
   /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
 
 /**
- * Oscillation / leverage / breaking-news alert status (cron every 15m).
+ * Oscillation / leverage / breaking-news alert status (cron every 10m).
  * Must beat INVESTIGATE_RE which also matches「预警」.
  */
 const COMMAND_OSCILLATION =
@@ -711,7 +711,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
       '2. **Token 用量** `token-usage-report` — 每天东八区 **18:00**（UTC 10:00）→ Yan DM',
       '3. **Cron 健康** `cron-health` — 每 **30** 分钟推给你；漏推会红牌 @你',
       '4. **告警提醒 DEMO** `alert-nudge` — 活动日每分钟（知道了可停）',
-      '5. **震荡预警** `oscillation-alert` — 每 **15** 分钟（含今日 DEMO 槽）',
+      '5. **震荡预警** `oscillation-alert` — 每 **10** 分钟（含今日 DEMO 槽）',
       '6. **周报 DEMO** `weekly-demo` — 每 **15** 分钟看一次，今日 **16:00** 槽推一次',
       '7. **正式周报** `weekly-report` — 每周五东八区 **16:00**（UTC 08:00）',
       '8. **cron-tick 兜底** — 每 **5** 分钟在公网别名上扇出上述推送（幂等）',
@@ -744,7 +744,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
     '2. **Token usage** — 18:00 Asia/Shanghai daily → Yan DM',
     '3. **Cron health** — every 30 minutes to you; raises @you on missed pushes',
     '4. **Alert nudge DEMO** — every minute on campaign day (stop with 知道了)',
-    '5. **Oscillation alert** — every 15 minutes',
+    '5. **Oscillation alert** — every 10 minutes',
     '6. **Weekly DEMO** — polled every 15 min; fires in today’s 16:00 slot',
     '7. **Weekly report** — Fridays 16:00 Asia/Shanghai',
     '8. **cron-tick catch-up** — every 5 minutes fans out the jobs above on the public alias (idempotent)',

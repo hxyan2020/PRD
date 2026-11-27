@@ -22,8 +22,11 @@ export const config = {
 
 const PUBLIC_BASE = 'https://vex-llm-proxy.vercel.app'
 const HEALTH_PATH = '/api/lark/cron-health'
+const OSC_PATH = '/api/lark/oscillation-alert'
 /** Per-child HTTP budget — leave headroom under maxDuration for a retry pass. */
 const CHILD_TIMEOUT_MS = 22_000
+/** Oscillation evaluate can cold-start + probe two venues — give it more room. */
+const OSC_CHILD_TIMEOUT_MS = 40_000
 /** Default: if no beat for this long, force a catch-up hit. */
 const DEFAULT_STALE_MS = 12 * 60_000
 /** Force health DM when last successful delivery is older than this (never silent). */
@@ -35,7 +38,7 @@ const HEALTH_DELIVERY_STALE_MS = 28 * 60_000
  */
 const OTHER_PATHS = [
   '/api/lark/alert-nudge',
-  '/api/lark/oscillation-alert',
+  OSC_PATH,
   // Half-hourly market DM to Yan disabled — keep handler for dry/force only.
   '/api/lark/weekly-demo',
   '/api/lark/daily-market-report',
@@ -50,11 +53,16 @@ const STALE_MS: Record<string, number> = {
   // Tighter than a half-hour slot so a missed health fire is force-retried soon.
   [HEALTH_PATH]: 16 * 60_000,
   '/api/lark/alert-nudge': 8 * 60_000,
-  '/api/lark/oscillation-alert': 18 * 60_000,
+  // Health card flags osc after ~22m — retry well before that.
+  [OSC_PATH]: 10 * 60_000,
   '/api/lark/weekly-demo': 25 * 60_000,
   '/api/lark/daily-market-report': 25 * 60_000,
   '/api/lark/weekly-report': 25 * 60_000,
   '/api/lark/token-usage-report': 25 * 60_000,
+}
+
+function childTimeoutMs(path: string): number {
+  return path === OSC_PATH ? OSC_CHILD_TIMEOUT_MS : CHILD_TIMEOUT_MS
 }
 
 /** True when health JSON shows Yan has not received a DM recently. */
@@ -105,21 +113,24 @@ function parseOutcome(body: string): {
 
 async function hitPath(
   path: string,
-  opts?: { force?: boolean; pass?: HitResult['pass'] },
+  opts?: { force?: boolean; pass?: HitResult['pass']; ping?: boolean },
 ): Promise<HitResult> {
   const pass = opts?.pass || 'primary'
-  const qs = opts?.force ? '?force=1' : ''
+  const params = new URLSearchParams()
+  if (opts?.force) params.set('force', '1')
+  if (opts?.ping) params.set('ping', '1')
+  const qs = params.toString() ? `?${params}` : ''
   const url = `${PUBLIC_BASE}${path}${qs}`
   try {
     const r = await fetch(url, {
       method: 'GET',
       headers: {
         'x-vercel-cron': '1',
-        'user-agent': 'vex-lark-cron-tick/4',
+        'user-agent': 'vex-lark-cron-tick/5',
         'cache-control': 'no-store',
       },
       cache: 'no-store',
-      signal: AbortSignal.timeout(CHILD_TIMEOUT_MS),
+      signal: AbortSignal.timeout(childTimeoutMs(path)),
     })
     const body = (await r.text()).slice(0, 240)
     const { outcome, reason } = parseOutcome(body)
@@ -128,7 +139,9 @@ async function hitPath(
       outcome: r.status >= 500 ? 'error' : outcome,
       reason: opts?.force
         ? `force:${pass}:${reason || outcome}`
-        : `${pass}:${reason || outcome}`,
+        : opts?.ping
+          ? `ping:${pass}:${reason || outcome}`
+          : `${pass}:${reason || outcome}`,
     })
     return { path, status: r.status, body, forced: Boolean(opts?.force), pass }
   } catch (e) {
@@ -138,6 +151,14 @@ async function hitPath(
       outcome: 'error',
       reason: `${pass}:${msg}`,
     })
+    // Oscillation must never stay silent — ping keep-alive if full evaluate timed out.
+    if (path === OSC_PATH && !opts?.ping) {
+      try {
+        return await hitPath(path, { pass, ping: true })
+      } catch {
+        /* fall through */
+      }
+    }
     return { path, status: 0, body: msg, forced: Boolean(opts?.force), pass }
   }
 }
@@ -226,7 +247,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (retryTargets.length) {
     const retried = await Promise.all(
-      retryTargets.map((path) => hitPath(path, { force: false, pass: 'watchdog' })),
+      retryTargets.map((path) =>
+        // Oscillation watchdog: prefer ping keep-alive so a hung evaluate cannot
+        // leave 震荡预警 red on the health card.
+        path === OSC_PATH
+          ? hitPath(path, { force: false, pass: 'watchdog', ping: true })
+          : hitPath(path, { force: false, pass: 'watchdog' }),
+      ),
     )
     results.push(...retried)
     watchdogForced.push(...retryTargets)

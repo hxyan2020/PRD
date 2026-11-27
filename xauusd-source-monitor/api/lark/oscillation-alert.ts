@@ -1,6 +1,6 @@
 /**
  * GET/POST /api/lark/oscillation-alert
- * - Cron every 15 min: evaluate Binance (OKX backup) vol / funding / news;
+ * - Cron every 10 min (+ cron-tick / ping keep-alive): evaluate Binance (OKX backup) vol / funding / news;
  *   on trigger, push card to group + Yan DM.
  * - Demo: 2026-11-25 10:00 Asia/Shanghai — force a DEMO card once.
  * - Manual: GET ?dry=1; POST { force: true, demo: true }.
@@ -70,7 +70,7 @@ function resolveDmChatId(req?: string): string {
 function alertDedupeKey(snap: OscillationSnapshot): string {
   const day = shanghaiDayKey(snap.fetchedAt)
   const kinds = [...snap.triggers].filter((t) => t !== 'demo').sort().join('+') || 'demo'
-  // Bucket to ~1h so we don't spam every 15m for the same condition
+  // Bucket to ~1h so we don't spam every 10m for the same condition
   const hour = shanghaiHm(snap.fetchedAt).slice(0, 2)
   return `${day}T${hour}:${kinds}`
 }
@@ -123,6 +123,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     force?: boolean
     dry?: boolean
     demo?: boolean
+    ping?: boolean
     groupChatId?: string
     dmChatId?: string
   }
@@ -132,15 +133,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (req.method === 'GET' && !cron && String(q.send || '') !== '1')
   const force = body.force === true || String(q.force || '') === '1'
   const forceDemo = body.demo === true || String(q.demo || '') === '1'
+  const ping = String(q.ping || '') === '1' || body.ping === true
 
   // Always record a beat on real invokes (cron + desk). Dry preview stays quiet.
-  // Health treats a 20m silence as miss — no_trigger skips must still heartbeat.
-  if (!dry) {
+  // Health treats a 20m silence as miss — ping / no_trigger / dedupe must still beat.
+  async function beat(
+    extra: { status?: number; outcome?: 'sent' | 'skipped' | 'ok' | 'error'; reason?: string } = {},
+  ) {
+    if (dry) return
     await touchCronHeartbeat('/api/lark/oscillation-alert', {
-      outcome: 'ok',
-      reason: cron ? (force ? 'invoke_force' : 'invoke') : 'desk',
+      outcome: extra.outcome || 'ok',
+      status: extra.status,
+      reason:
+        extra.reason ||
+        (ping ? 'ping' : cron ? (force ? 'invoke_force' : 'invoke') : 'desk'),
     })
   }
+
+  // Ultra-fast keep-alive for cron-tick when evaluate must not run (never silent).
+  if (ping && !dry) {
+    await beat({ outcome: 'ok', reason: 'ping' })
+    return res.status(200).json({ ok: true, ping: true, at: Date.now() })
+  }
+
+  await beat()
 
   const now = Date.now()
   const day = shanghaiDayKey(now)
@@ -158,13 +174,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     snap = await evaluateOscillation({ demo: wantDemo || (force && forceDemo) })
     if (wantDemo) snap = { ...snap, demo: true, triggers: [...new Set([...snap.triggers, 'demo' as const])] }
   } catch (e) {
-    if (!dry) {
-      await touchCronHeartbeat('/api/lark/oscillation-alert', {
-        status: 502,
-        outcome: 'error',
-        reason: e instanceof Error ? e.message : 'evaluate failed',
-      })
-    }
+    await beat({
+      status: 502,
+      outcome: 'error',
+      reason: e instanceof Error ? e.message : 'evaluate failed',
+    })
     return res.status(502).json({
       ok: false,
       error: e instanceof Error ? e.message : 'evaluate failed',
@@ -190,18 +204,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       adminOpenId: admin.openId ? admin.openId.slice(0, 8) + '…' : null,
       adminSource: admin.source,
       hasRealAt: Boolean(admin.openId?.startsWith('ou_')),
-      schedule: 'Every 15 min + demo 10:00 CST on campaign day',
+      schedule: 'Every 10 min + demo 10:00 CST on campaign day',
     })
   }
 
   if (!wantDemo && !shouldFireAlert(snap) && !force) {
-    if (!dry) {
-      await touchCronHeartbeat('/api/lark/oscillation-alert', {
-        status: 200,
-        outcome: 'skipped',
-        reason: 'no_trigger',
-      })
-    }
+    await beat({ status: 200, outcome: 'skipped', reason: 'no_trigger' })
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -216,6 +224,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!wantDemo && !force) {
     const key = alertDedupeKey(snap)
     if (state.lastAlertKey === key && state.lastAlertAt && now - state.lastAlertAt < 50 * 60_000) {
+      await beat({ status: 200, outcome: 'skipped', reason: 'deduped' })
       return res.status(200).json({
         ok: true,
         skipped: true,
@@ -227,6 +236,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (wantDemo && !force && state.demoSentDay === OSC_DEMO_DAY) {
+    await beat({ status: 200, outcome: 'skipped', reason: 'demo_already_sent' })
     return res.status(200).json({
       ok: true,
       skipped: true,
@@ -236,6 +246,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (!larkConfigured()) {
+    await beat({ status: 503, outcome: 'error', reason: 'lark_not_configured' })
     return res.status(503).json({ ok: false, error: 'Lark not configured', snap })
   }
 
@@ -250,6 +261,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (wantDemo || snap.demo) next.demoSentDay = OSC_DEMO_DAY
     await writeState(next)
   }
+
+  await beat({
+    status: anyOk ? 200 : 502,
+    outcome: anyOk ? 'sent' : 'error',
+    reason: anyOk ? (snap.demo ? 'demo_sent' : 'alert_sent') : 'send_failed',
+  })
 
   return res.status(anyOk ? 200 : 502).json({
     ok: anyOk,
