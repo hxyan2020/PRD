@@ -111,6 +111,7 @@ import {
   isCasualChat,
   isClearReviewConfirmCommand,
   isLarkWikiQuestion,
+  isGatherInstructionOnly,
   looksLikeCommandCancel,
   looksLikeCommandConfirm,
   looksLikeIncidentEvidence,
@@ -126,6 +127,8 @@ import {
   pendingCommandLabel,
   resolveTurnDisposition,
   sharedDocReadReply,
+  splitOwnTextAndRepliedAlert,
+  stripInvestigateCommandPrefix,
 } from './scope.js'
 import { looksLikeShareOrFileMeta } from './lang.js'
 import {
@@ -3371,15 +3374,21 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       session.checkedSteps = []
       session.mode = 'idle'
       await saveSessionDurable(inbound.chatId, inbound.openId, session)
-      const fact = workingText
-        .replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '')
-        .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
-        .trim()
+      const { own: draftOwn, repliedAlert: draftQuoted } =
+        splitOwnTextAndRepliedAlert(workingText)
+      const draftOwnClean = stripInvestigateCommandPrefix(draftOwn)
+      const draftFact =
+        draftQuoted.replace(/\[(forwarded_card|merge_forward)\]\s*/gi, '').trim() ||
+        (draftOwnClean &&
+        !isGatherInstructionOnly(draftOwnClean) &&
+        looksLikeIncidentEvidence(draftOwnClean)
+          ? draftOwnClean
+          : '')
       return replyAlertGather({
         msg: inbound,
         lang,
         session,
-        newFact: fact,
+        newFact: draftFact,
         freshCase: true,
       })
     }
@@ -3861,19 +3870,45 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
 
   if (intent === 'investigate' || intent === 'followup') {
     // Strip command prefix — bare "investigate"/"排查" with no details should not open a report card.
-    // Also drop the parse-time `[forwarded_card]` marker so report titles stay clean.
-    // `\b` does not work after CJK — mirror COMMAND_INVESTIGATE (CMD_END).
-    const explicitNewCase = /^(?:investigate\b|排查|开始排查|開始排查)(?:\s|$|[：:])/i.test(
-      workingText.trim(),
-    )
-    const fact = workingText
-      .replace(/^(investigate|排查|開始排查|开始排查)\s*/i, '')
-      .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
+    // Quote+command: keep the quoted alert as evidence; never stash the command as a 2nd alert.
+    const { own: ownRaw, repliedAlert } = splitOwnTextAndRepliedAlert(workingText)
+    const ownClean = stripInvestigateCommandPrefix(ownRaw)
+    const alertBody = repliedAlert
+      .replace(/\[(forwarded_card|merge_forward)\]\s*/gi, '')
       .trim()
+    const explicitNewCase = /^(?:investigate\b|排查|开始排查|開始排查)(?:\s|$|[：:])/i.test(
+      ownRaw.trim() || workingText.trim(),
+    )
+    // Prefer quoted parent alert; only use own text when it looks like real evidence.
+    const ownIsEvidence =
+      Boolean(ownClean) &&
+      !isGatherInstructionOnly(ownClean) &&
+      looksLikeIncidentEvidence(ownClean)
+    let fact = ''
+    if (alertBody) {
+      fact = alertBody
+      // Extra pasted alert in the reply body (rare) — append after quote.
+      if (ownIsEvidence && normalizeGatherFact(ownClean) !== normalizeGatherFact(alertBody)) {
+        fact = `${alertBody}\n\n${ownClean}`
+      }
+    } else if (ownIsEvidence) {
+      fact = ownClean
+    } else if (
+      ownClean &&
+      !isGatherInstructionOnly(ownClean) &&
+      (/\[(forwarded_card|merge_forward)\]/i.test(workingText) ||
+        looksLikeIncidentEvidence(workingText))
+    ) {
+      // Forwarded card / long paste without [replied_alert] marker
+      fact = stripInvestigateCommandPrefix(
+        workingText.replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, ''),
+      )
+      if (isGatherInstructionOnly(fact) || !fact) fact = ''
+    }
     // Text command while gathering → same as tapping 开始分析.
     if (
       session.mode === 'gather_alerts' &&
-      /^(开始分析|開始分析|start\s*analysis|start\s*investigat)/i.test(fact)
+      /^(开始分析|開始分析|start\s*analysis|start\s*investigat)/i.test(ownClean || ownRaw)
     ) {
       return runInvestigation({
         msg: inbound,
@@ -3881,6 +3916,22 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
         newFact: '',
         fromGather: true,
       })
+    }
+    // Soft command / ack on a quote while gathering — refresh card, do not append command.
+    if (
+      !fact &&
+      session.mode === 'gather_alerts' &&
+      session.facts.some((f) => !f.startsWith('[chat-history]')) &&
+      (isGatherInstructionOnly(ownClean || ownRaw) || !ownClean)
+    ) {
+      return {
+        card: alertGatherCard({
+          lang,
+          alerts: session.facts.filter((f) => !f.startsWith('[chat-history]')),
+          chatId: inbound.chatId,
+          chatType: inbound.chatType,
+        }),
+      }
     }
     // Explicit「排查 / investigate」while mid-case → close as 无风险, then gather
     // (ask「还有其他告警吗」). Do not resume at step 7/13 of the abandoned path.
@@ -3977,6 +4028,21 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
     }
     // Idle / gather: stash alert(s) and wait for 开始分析 — do not open the path yet.
     if (session.mode === 'idle' || session.mode === 'gather_alerts') {
+      // Quote+command often re-sends the same parent alert already gathered — refresh card.
+      const normFact = normalizeGatherFact(fact)
+      const alreadyGathered = session.facts.some(
+        (f) => !f.startsWith('[chat-history]') && normalizeGatherFact(f) === normFact,
+      )
+      if (alreadyGathered && session.mode === 'gather_alerts') {
+        return {
+          card: alertGatherCard({
+            lang,
+            alerts: session.facts.filter((f) => !f.startsWith('[chat-history]')),
+            chatId: inbound.chatId,
+            chatType: inbound.chatType,
+          }),
+        }
+      }
       // Idle with leftover open case (never archived) → close as 排查过 · 无风险.
       const freshCase =
         session.mode === 'idle' && Boolean(session.lastReportId)

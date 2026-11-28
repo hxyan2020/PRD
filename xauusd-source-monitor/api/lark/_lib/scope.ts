@@ -747,6 +747,75 @@ export function isDeskFaqQuestion(text: string): boolean {
 }
 
 /** True when free-text looks like alert/incident evidence (Skills dump OK). */
+/**
+ * Short investigate / “look at this alert” instruction — not alert evidence.
+ * Used so quote+command replies do not stash the command as a second alert.
+ */
+export function isGatherInstructionOnly(text: string): boolean {
+  const t = text.trim()
+  if (!t) return true
+  if (t.length > 80) return false
+  if (
+    /^(开始分析|開始分析|start\s*analysis|start\s*investigat)/i.test(t)
+  ) {
+    return true
+  }
+  // Bare / soft investigate asks
+  if (
+    /^(帮我|請|请|帮忙|麻煩|麻烦|麻煩幫|请帮|請幫)?\s*(排查|调查|調查|investigate|看看|看下|帮忙看|幫忙看|看一下|看一看)\s*(一下|下|下呗|一下吧|下吧|this|it|the\s*alert|告警|这个|這個|下这个|下這個)?\s*[!！.。~？?]*$/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  // Leftovers after stripping「排查」prefix: 「一下」「this」
+  if (/^(一下|下|下吧|一下吧|this|please|pls|it|the\s*alert)\s*[!！.。~]*$/i.test(t)) {
+    return true
+  }
+  // Soft ack while gathering
+  if (/^(ok|okay|k|好的?|嗯+|哦+|噢+|收到|谢谢|謝謝|了解|知道了|辛苦了|可以)\s*[!.。！~]*$/i.test(t)) {
+    return true
+  }
+  // “这个告警帮忙看下” style without metric payload
+  if (
+    t.length < 48 &&
+    /告警|报警|報警|alert|排查|investigate/i.test(t) &&
+    /帮|幫|看|查|investigate/i.test(t) &&
+    !/(截图|截圖|bps|强平|強平|指数源|指數源|\bmarks?\b|\bindex\b|偏差|剔除|无有效源|無有效源|P[0-3]\b|失败|失敗|异常|異常|\brca\b|severity|\d+\s*(bps|%))/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  return false
+}
+
+/** Split user own reply text from `[replied_alert]` body (quoted parent). */
+export function splitOwnTextAndRepliedAlert(text: string): {
+  own: string
+  repliedAlert: string
+} {
+  const raw = String(text || '')
+  const m = raw.match(/\[replied_alert\]\s*\n?([\s\S]*)/i)
+  if (!m) {
+    return { own: raw.trim(), repliedAlert: '' }
+  }
+  const own = raw.slice(0, m.index ?? 0).trim()
+  const repliedAlert = String(m[1] || '').trim()
+  return { own, repliedAlert }
+}
+
+/** Strip investigate command prefixes (incl.「排查一下」) for gather fact cleaning. */
+export function stripInvestigateCommandPrefix(text: string): string {
+  return text
+    .replace(
+      /^(investigate|排查|開始排查|开始排查)(\s*(一下|下|下吧|一下吧|this|please|pls))?\s*[：:，,]?\s*/i,
+      '',
+    )
+    .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
+    .trim()
+}
+
 export function looksLikeIncidentEvidence(text: string): boolean {
   const t = text.trim()
   if (!t) return false
@@ -758,16 +827,7 @@ export function looksLikeIncidentEvidence(text: string): boolean {
     return false
   }
   // Soft “帮我排查一下” without alert payload — command ask, not evidence
-  if (
-    t.length < 40 &&
-    /排查|调查|調查|investigate|告警|报警|報警|alert/i.test(t) &&
-    !/(截图|截圖|bps|强平|強平|指数源|指數源|\bmarks?\b|\bindex\b|偏差|剔除|无有效源|無有效源|P[0-3]\b|失败|失敗|异常|異常|\brca\b|severity)/i.test(
-      t,
-    ) &&
-    /^(帮我|請|请|帮忙|麻煩|麻烦|麻烦帮|請幫|请帮)?\s*(排查|调查|調查|investigate|看看告警|看下告警)\s*(一下|下|下呗|一下吧)?\s*[!！.。~]*$/i.test(
-      t,
-    )
-  ) {
+  if (isGatherInstructionOnly(t)) {
     return false
   }
   if (INCIDENT_EVIDENCE_RE.test(t)) return true

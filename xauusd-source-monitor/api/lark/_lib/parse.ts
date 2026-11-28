@@ -386,10 +386,6 @@ export async function enrichIncomingEvidence(msg: IncomingMessage): Promise<Inco
     msg.messageType === 'merge_forward' ||
     /^\[(forwarded_card|merge_forward)\]/i.test(msg.text || '')
   const replyTarget = (msg.parentId || msg.rootId || '').trim()
-  const thinText =
-    !(msg.text || '').trim() ||
-    /^\[(forwarded_card|merge_forward)\]\s*$/i.test((msg.text || '').trim()) ||
-    /Merged and Forwarded Message/i.test(msg.text || '')
 
   let enriched = (msg.text || '').trim()
 
@@ -416,8 +412,10 @@ export async function enrichIncomingEvidence(msg: IncomingMessage): Promise<Inco
     }
   }
 
-  // Reply-to-alert: pull parent/root card/text when the reply body is thin.
-  if (replyTarget && thinText) {
+  // Reply-to-alert: always pull parent/root card/text when the message is a reply.
+  // Previously only thin/empty bodies fetched the parent — so「排查一下」+ quote
+  // kept only the command and later gathered it as a fake second alert.
+  if (replyTarget) {
     try {
       const items = await fetchMessageItems(replyTarget, { userCardContent: true })
       const parts: string[] = []
@@ -429,9 +427,15 @@ export async function enrichIncomingEvidence(msg: IncomingMessage): Promise<Inco
       }
       if (parts.length) {
         const parentBlob = parts.join('\n\n')
-        enriched = enriched
-          ? `${enriched}\n\n[replied_alert]\n${parentBlob}`
-          : `[replied_alert]\n${parentBlob}`
+        const alreadyHas =
+          /\[replied_alert\]/i.test(enriched) &&
+          enriched.includes(parentBlob.slice(0, Math.min(40, parentBlob.length)))
+        if (!alreadyHas) {
+          // Keep the user's own reply text first; quoted alert is separate evidence.
+          enriched = enriched
+            ? `${enriched}\n\n[replied_alert]\n${parentBlob}`
+            : `[replied_alert]\n${parentBlob}`
+        }
       }
     } catch {
       /* ignore */
