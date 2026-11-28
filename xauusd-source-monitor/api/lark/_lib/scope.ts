@@ -714,7 +714,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
     return [
       '⏱️ 我这边现在挂了 **8** 个 Vercel Cron（都会打到本服务）：',
       '',
-      '1. **每日早报** `daily-market-report` — 每天东八区 **09:00**（UTC 01:00）',
+      '1. **每日早报** `daily-market-report` — 每天（含周末）东八区 **09:00**（UTC 01:00）',
       '2. **Token 用量** `token-usage-report` — 每天东八区 **18:00**（UTC 10:00）→ Yan DM',
       '3. **Cron 健康** `cron-health` — 每 **30** 分钟推给你；漏推会红牌 @你',
       '4. **告警提醒 DEMO** `alert-nudge` — 活动日每分钟（知道了可停）',
@@ -747,7 +747,7 @@ export function botRuntimeMetaReply(lang: Lang, question: string): string | null
   return [
     '⏱️ I’ve got **8** Vercel crons wired up:',
     '',
-    '1. **Daily morning market** — 09:00 Asia/Shanghai daily',
+    '1. **Daily morning market** — 09:00 Asia/Shanghai every day including weekends',
     '2. **Token usage** — 18:00 Asia/Shanghai daily → Yan DM',
     '3. **Cron health** — every 30 minutes to you; raises @you on missed pushes',
     '4. **Alert nudge DEMO** — every minute on campaign day (stop with 知道了)',

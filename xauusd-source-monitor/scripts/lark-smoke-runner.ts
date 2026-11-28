@@ -3265,14 +3265,41 @@ async function main() {
       !/半小时|半小時|每\s*30\s*分钟|half-?hourly|小时扫报|小時掃報/i.test(capsZhHalf),
     '',
   )
-  const dailyCron = (vercelCrons.crons || []).find((c) =>
+  const dailyCrons = (vercelCrons.crons || []).filter((c) =>
     (c.path || '').includes('daily-market-report'),
   )
+  const dailyCron = dailyCrons.find((c) => c.schedule === '0 1 * * *')
   record(
     'cron.daily_market_0900_cst',
     dailyCron?.schedule === '0 1 * * *',
     JSON.stringify(dailyCron || {}),
   )
+  record(
+    'cron.daily_market_includes_weekends',
+    dailyCrons.length >= 1 &&
+      dailyCrons.every((c) => /\* \* \*$/.test(String(c.schedule || ''))) &&
+      dailyCrons.some((c) => c.schedule === '0 1 * * *') &&
+      dailyCrons.some((c) => c.schedule === '5 1 * * *') &&
+      dailyCrons.some((c) => c.schedule === '15 1 * * *') &&
+      !/1-5|0-4|Mon-Fri|周末不|skipWeekend/i.test(dailySrc) &&
+      dailySrc.includes('No weekday gate') &&
+      cronHealthLibSrc.includes('含周末'),
+    JSON.stringify(dailyCrons.map((c) => c.schedule)),
+  )
+  {
+    const { isDailyMarketSlot } = await import('../api/lark/daily-market-report')
+    // 2026-11-28 Sat 09:00 CST = 01:00 UTC; 2026-11-29 Sun 09:05 CST = 01:05 UTC
+    const satOpen = Date.parse('2026-11-28T01:00:00Z')
+    const sunOpen = Date.parse('2026-11-29T01:05:00Z')
+    const satEarly = Date.parse('2026-11-28T00:59:00Z')
+    record(
+      'cron.daily_slot_open_on_sat_sun',
+      isDailyMarketSlot(satOpen) &&
+        isDailyMarketSlot(sunOpen) &&
+        !isDailyMarketSlot(satEarly),
+      `sat=${isDailyMarketSlot(satOpen)} sun=${isDailyMarketSlot(sunOpen)} early=${isDailyMarketSlot(satEarly)}`,
+    )
+  }
   record(
     'cron.daily_idempotent_without_force',
     /if\s*\(\s*!force\s*&&\s*sent\[dayKey\]\s*\)/.test(dailySrc) &&

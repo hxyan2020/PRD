@@ -24,6 +24,14 @@
       "schedule": "0 1 * * *"
     },
     {
+      "path": "/api/lark/daily-market-report",
+      "schedule": "5 1 * * *"
+    },
+    {
+      "path": "/api/lark/daily-market-report",
+      "schedule": "15 1 * * *"
+    },
+    {
       "path": "/api/lark/token-usage-report",
       "schedule": "0 10 * * *"
     },

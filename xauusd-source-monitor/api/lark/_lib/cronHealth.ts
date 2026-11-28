@@ -188,7 +188,7 @@ export async function buildCronHealthReport(args?: {
     jobs.push({
       id: 'daily-market-report',
       label: '每日早报',
-      schedule: `每天 ${DAILY_MARKET_START_HM} CST → 群`,
+      schedule: `每天（含周末） ${DAILY_MARKET_START_HM} CST → 群`,
       expected,
       ok,
       detail: sentAt
