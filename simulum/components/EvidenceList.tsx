@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { categoryName } from "@/lib/i18n/category-labels";
 import { useI18n } from "@/lib/i18n/context";
 import { presentEvidence } from "@/lib/i18n/present";
 import type { Evidence } from "@/lib/types";
@@ -55,9 +56,9 @@ export function EvidenceList({
               <Link
                 key={cat.id}
                 href={`/categories/${cat.slug}`}
-                className="touch-target inline-flex items-center font-mono text-[11px] uppercase tracking-wider text-signal underline-offset-4 hover:underline"
+                className="touch-target inline-flex items-center font-mono text-[11px] tracking-wider text-signal underline-offset-4 hover:underline"
               >
-                {cat.name}
+                {categoryName(cat.slug, locale, cat.name)}
               </Link>
             ))}
           </div>

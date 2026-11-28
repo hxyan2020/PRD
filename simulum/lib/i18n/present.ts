@@ -279,8 +279,20 @@ function wrongLanguageForUi(
   );
 }
 
+function stableTag(evidence: Evidence): string {
+  const raw = (evidence.id || evidence.slug || "claim").replace(/[^a-zA-Z0-9]/g, "");
+  return (raw.slice(0, 6) || "claim").toLowerCase();
+}
+
+/** Legacy synthesizer wrote "模拟主张 · eality" from slug tails — never show those. */
+function isTagStyleClaimLabel(text: string): boolean {
+  return /^(模拟主张|シミュレーション主張|시뮬레이션 주장|Simulation claim|Claim|ادعاء محاكاة|Утверждение|सिमुलेशन दावा|সিমুলেশন দাবি|ข้ออ้างจำลอง)\s*[·•\-–—]\s*[a-z0-9_-]{1,12}$/i.test(
+    text.trim(),
+  );
+}
+
 function fallbackClaimLabel(evidence: Evidence, locale: LocaleCode): string {
-  const tag = (evidence.slug || evidence.id || "claim").slice(-6);
+  const tag = stableTag(evidence);
   if (locale === "en") return `Simulation claim · ${tag}`;
   if (locale === "zh") return `模拟主张 · ${tag}`;
   if (locale === "ja") return `シミュレーション主張 · ${tag}`;
@@ -293,6 +305,94 @@ function fallbackClaimLabel(evidence: Evidence, locale: LocaleCode): string {
   return `Claim · ${tag}`;
 }
 
+/**
+ * Prefer a source title written in the UI locale (e.g. Chinese Wikipedia title
+ * when viewing in zh), so captions are not forced through English.
+ */
+function sameLocaleSourceTopic(evidence: Evidence, locale: LocaleCode): string {
+  for (const source of evidence.sources || []) {
+    if ((source.language || "").toLowerCase() !== locale) continue;
+    const title = cleanTitle(source.title || "").trim();
+    if (title && !scriptMismatch(title, locale) && !isTagStyleClaimLabel(title)) {
+      return cleanVisibleText(title, locale);
+    }
+  }
+  return "";
+}
+
+/**
+ * Turn generic English-facing packs ("Simulation-hypothesis claim via Wikipedia (X)")
+ * into a short phrase in the viewer's language.
+ */
+function localizeEnglishFacingCaption(caption: string, locale: LocaleCode): string {
+  const m = caption.match(/^Simulation-hypothesis claim via\s+(.+)\s*$/i);
+  if (!m) return "";
+  let publisher = (m[1] || "").trim();
+  let hint = "";
+  // Outermost trailing "(…)" — handles nested titles like "Theia (pianeta ipotetico)".
+  const paren = publisher.match(/^(.*?)\s*\((.+)\)\s*$/);
+  if (paren) {
+    publisher = paren[1].trim() || publisher;
+    hint = paren[2].trim();
+  }
+  const topic = hint || publisher;
+  const isWiki = /wikipedia/i.test(publisher);
+  if (locale === "zh") {
+    if (hint && isWiki) return `维基百科等来源中的模拟假说主张（${hint}）`;
+    if (isWiki) return "维基百科等来源中的模拟假说主张";
+    if (hint) return `${publisher}来源中的模拟假说主张（${hint}）`;
+    return `${publisher || "网络"}来源中的模拟假说主张`;
+  }
+  if (locale === "ja") {
+    return hint
+      ? `シミュレーション仮説に関する主張（${hint}）`
+      : `${publisher}におけるシミュレーション仮説の主張`;
+  }
+  if (locale === "ko") {
+    return hint
+      ? `시뮬레이션 가설 관련 주장（${hint}）`
+      : `${publisher}의 시뮬레이션 가설 주장`;
+  }
+  if (locale === "es") {
+    return `Afirmación sobre la hipótesis de simulación vía ${publisher}${hint ? ` (${hint})` : ""}`;
+  }
+  if (locale === "fr") {
+    return `Affirmation sur l'hypothèse de simulation via ${publisher}${hint ? ` (${hint})` : ""}`;
+  }
+  if (locale === "de") {
+    return `Simulationshypothese-Behauptung über ${publisher}${hint ? ` (${hint})` : ""}`;
+  }
+  if (locale === "ru") {
+    return `Утверждение о гипотезе симуляции (${topic})`;
+  }
+  if (locale === "it") {
+    return `Affermazione sull'ipotesi della simulazione via ${publisher}${hint ? ` (${hint})` : ""}`;
+  }
+  if (locale === "pt") {
+    return `Afirmação sobre a hipótese da simulação via ${publisher}${hint ? ` (${hint})` : ""}`;
+  }
+  if (locale === "ar") {
+    return `ادّعاء فرضية المحاكاة عبر ${publisher}${hint ? ` (${hint})` : ""}`;
+  }
+  return "";
+}
+
+function englishFallbackCaption(evidence: Evidence): string {
+  const topic = topicOf(evidence);
+  const enCaptionRaw = evidence.translations.en?.caption?.trim();
+  if (enCaptionRaw) {
+    const cleaned = cleanVisibleText(scrubBoilerplateCaption(enCaptionRaw, topic), "en");
+    // Reject EN packs that still embed source-script titles.
+    if (cleaned && !scriptMismatch(cleaned, "en") && !isTagStyleClaimLabel(cleaned)) {
+      return cleaned;
+    }
+  }
+  if (isMostlyLatin(topic) && !scriptMismatch(topic, "en")) {
+    return cleanVisibleText(stripLanguageLabel(topic), "en");
+  }
+  return "";
+}
+
 function captionTopicForLocale(evidence: Evidence, locale: LocaleCode): string {
   const topic = topicOf(evidence);
   const sourceLang = evidence.language || evidence.languages[0] || "und";
@@ -303,27 +403,43 @@ function captionTopicForLocale(evidence: Evidence, locale: LocaleCode): string {
       scrubBoilerplateCaption(localePackCaption, topic),
       locale,
     );
-    if (cleaned && !wrongLanguageForUi(cleaned, locale, sourceLang)) return cleaned;
+    // Accept locale pack when scripts match — but never legacy slug-tail labels.
+    if (
+      cleaned &&
+      !scriptMismatch(cleaned, locale) &&
+      !isTagStyleClaimLabel(cleaned)
+    ) {
+      return cleaned;
+    }
   }
 
-  const enCaptionRaw = evidence.translations.en?.caption?.trim();
-  const enCaption = enCaptionRaw
-    ? cleanVisibleText(scrubBoilerplateCaption(enCaptionRaw, topic), "en")
-    : "";
-
   // Same language as the source: native title is fine when scripts match.
-  if (locale === sourceLang && !scriptMismatch(topic, locale)) {
+  if (
+    locale === sourceLang &&
+    !scriptMismatch(topic, locale) &&
+    !isTagStyleClaimLabel(topic)
+  ) {
     return cleanVisibleText(topic, locale);
   }
 
-  // Cross-locale: never paste a wrong-language title into the UI language.
-  if (enCaption && !wrongLanguageForUi(enCaption, locale, sourceLang)) {
-    return enCaption;
+  // Prefer a source already written in the UI locale (e.g. zh.wikipedia title).
+  const localizedSource = sameLocaleSourceTopic(evidence, locale);
+  if (localizedSource) return localizedSource;
+
+  const enCaption = englishFallbackCaption(evidence);
+
+  // English UI: never keep foreign / wrong-script headlines.
+  if (locale === "en") {
+    if (enCaption && !wrongLanguageForUi(enCaption, "en", sourceLang)) return enCaption;
+    return fallbackClaimLabel(evidence, locale);
   }
 
-  // English UI must not fall back to a foreign Latin title.
-  if (locale === "en" && isMostlyLatin(topic) && sourceLang === "en") {
-    return cleanVisibleText(stripLanguageLabel(topic), locale);
+  // Localize generic English-facing Wikipedia packs into the UI language.
+  if (enCaption) {
+    const localizedFacing = localizeEnglishFacingCaption(enCaption, locale);
+    if (localizedFacing) return localizedFacing;
+    // Real English claim sentences stay as lingua franca (never slug fragments).
+    return enCaption;
   }
 
   return fallbackClaimLabel(evidence, locale);
@@ -332,6 +448,7 @@ function captionTopicForLocale(evidence: Evidence, locale: LocaleCode): string {
 /** Strip legacy boilerplate that made every catalogue row look the same. */
 export function scrubBoilerplateCaption(caption: string, topic: string): string {
   let text = caption.replace(/\s+/g, " ").trim();
+  if (isTagStyleClaimLabel(text)) return topic;
   text = text.replace(
     /^Documented (?:claim about simulated reality|simulated-reality claim)(?::|\s*\()\s*/i,
     "",
@@ -342,6 +459,7 @@ export function scrubBoilerplateCaption(caption: string, topic: string): string 
   text = text.replace(/^Affirmation documentée sur la réalité simulée[^:]*:\s*/i, "");
   text = stripLanguageLabel(text);
   text = text.trim().replace(/^:\s*/, "").replace(/\.$/, "");
+  if (isTagStyleClaimLabel(text)) return topic;
   return text || topic;
 }
 
@@ -395,8 +513,12 @@ function presentPack(
 
   const sourceLang = evidence.language || evidence.languages[0] || "und";
 
-  // Never keep a wrong-language headline in the selected UI language.
-  if (!caption || wrongLanguageForUi(caption, locale, sourceLang)) {
+  // Never keep a wrong-language or legacy slug-tail headline in the UI language.
+  if (
+    !caption ||
+    isTagStyleClaimLabel(caption) ||
+    wrongLanguageForUi(caption, locale, sourceLang)
+  ) {
     caption = topic;
   }
 
@@ -409,10 +531,13 @@ function presentPack(
   }
 
   const body = cleanBody(pack.body, locale);
-  // If stored "what" still mixes source language into another UI locale, resynthesize.
+  // If stored "what" still mixes source language, or echoes legacy slug-tail labels, resynthesize.
   if (
-    locale !== evidence.language &&
-    wrongLanguageForUi(body.what, locale, sourceLang)
+    (locale !== evidence.language &&
+      wrongLanguageForUi(body.what, locale, sourceLang)) ||
+    isTagStyleClaimLabel(body.what) ||
+    /模拟主张\s*[·•]/.test(body.what) ||
+    /シミュレーション主張\s*[·•]/.test(body.what)
   ) {
     const synth = synthesizePack(evidence, locale);
     return { caption: caption || synth.caption, body: synth.body };

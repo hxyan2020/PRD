@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CategoryHeading } from "@/components/CategoryHeading";
 import { EvidenceList } from "@/components/EvidenceList";
 import { getCategoryBySlug, listEvidence } from "@/lib/db";
 import { ensureSeeded } from "@/lib/scanner";
@@ -25,10 +26,7 @@ export default async function CategoryDetailPage({
       >
         ← Categories
       </Link>
-      <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-        {category.name}
-      </h1>
-      <p className="mt-3 max-w-2xl text-ink-soft">{category.description}</p>
+      <CategoryHeading category={category} />
       <p className="mt-2 font-mono text-xs uppercase tracking-wider text-mist">
         {category.evidenceCount ?? evidence.length} unique evidence
       </p>

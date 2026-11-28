@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { RatingsPanel } from "@/components/RatingsPanel";
+import { categoryName } from "@/lib/i18n/category-labels";
 import { useI18n } from "@/lib/i18n/context";
 import { presentEvidence } from "@/lib/i18n/present";
 import { similarityPercent } from "@/lib/related";
@@ -113,9 +114,9 @@ export function EvidenceDetail({
           <Link
             key={cat.id}
             href={`/categories/${cat.slug}`}
-            className="touch-target inline-flex items-center border border-line bg-panel/60 px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-ink transition hover:border-signal hover:text-signal"
+            className="touch-target inline-flex items-center border border-line bg-panel/60 px-3 py-2 font-mono text-[11px] tracking-wider text-ink transition hover:border-signal hover:text-signal"
           >
-            {cat.name}
+            {categoryName(cat.slug, locale, cat.name)}
           </Link>
         ))}
       </div>
