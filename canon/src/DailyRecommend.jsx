@@ -4,6 +4,7 @@ import CoverImage from "./CoverImage.jsx";
 import { useI18n } from "./I18n.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
+import TranslatedProse from "./TranslatedProse.jsx";
 import { dateTag } from "./i18n.js";
 import { displayGenre } from "./display-labels.js";
 import { loadListenPrefs } from "./listenPrefs.js";
@@ -151,7 +152,7 @@ export default function DailyRecommend({
               {yearLabel(track.year, t)} · {displayGenre(track.genre, locale)} · {playsLabel(track.streams, t)}
             </p>
             <p className="daily-reason">{reasonText(result, t)}</p>
-            {track.anecdote ? <p className="anecdote-text">{track.anecdote}</p> : null}
+            {track.anecdote ? <TranslatedProse className="anecdote-text" text={track.anecdote} /> : null}
             <p className="daily-stamp">
               {hasPrefs ? t("prefsNow", { prefs: activePrefs.join(" · ") }) : t("noPrefs")}
             </p>

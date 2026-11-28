@@ -119,6 +119,7 @@ import {
   pickTranslatedText,
   splitLyricLines,
   translateLyricLines,
+  translateProse,
 } from "../src/lyrics-translate.js";
 
 assert.equal(detectLyricsLanguage("I've been tryna call you on the phone and I have to tell you"), "en");
@@ -209,5 +210,34 @@ const failed = await translateLyricLines("I love you\nI miss you", "zh", {
 });
 assert.equal(failed.needed, true);
 assert.deepEqual(failed.translations, ["", ""]);
+
+const prose = await translateProse(
+  '"You Broke Me First" is a song by Canadian singer Tate McRae.',
+  "zh",
+  {
+    cache: new Map(),
+    fetchFn: async (url) => {
+      if (String(url).includes("translate.googleapis.com")) {
+        return {
+          ok: true,
+          json: async () => [[[
+            "《You Broke Me First》是加拿大歌手 Tate McRae 的一首歌。",
+            '"You Broke Me First" is a song by Canadian singer Tate McRae.',
+          ]]],
+        };
+      }
+      throw new Error(`unexpected ${url}`);
+    },
+  },
+);
+assert.equal(prose.needed, true);
+assert.match(prose.translated, /加拿大歌手/);
+
+const proseSame = await translateProse("Hello world", "en", {
+  cache: new Map(),
+  fetchFn: async () => { throw new Error("should not fetch"); },
+});
+assert.equal(proseSame.needed, false);
+assert.equal(proseSame.translated, "Hello world");
 
 console.log("lyrics tests ok");

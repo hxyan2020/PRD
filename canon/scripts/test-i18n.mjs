@@ -261,11 +261,15 @@ assert.match(
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
-  /selected\.extra\s*\?\s*selected\.extraSource === "itunes"/,
+  /selected\.extraSource === "itunes" \|\| selected\.extraSource === "name"/,
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
-  /: selected\.whyShortlisted/,
+  /TranslatedProse className="why" text=\{selected\.whyShortlisted\}/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /TranslatedProse className="anecdote-text" text=\{selected\.anecdote\}/,
 );
 assert.doesNotMatch(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),

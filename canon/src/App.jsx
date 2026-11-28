@@ -53,6 +53,7 @@ import { displayPersonName, splitCredits } from "./portraits.js";
 import { creditLabel, popularityLabel } from "./uiText.js";
 import BootScreen from "./BootScreen.jsx";
 import BrandMark from "./BrandMark.jsx";
+import TranslatedProse from "./TranslatedProse.jsx";
 
 function initialPersonalState() {
   const cleared = loadPersonalRecords();
@@ -569,7 +570,7 @@ export default function App() {
           {selected.anecdote ? (
             <section className="anecdote-block">
               <h3>{t("songAnecdote")}</h3>
-              <p className="anecdote-text">{selected.anecdote}</p>
+              <TranslatedProse className="anecdote-text" text={selected.anecdote} />
               <p className="anecdote-kicker">{t("anecdoteNote")}</p>
             </section>
           ) : null}
@@ -634,15 +635,17 @@ export default function App() {
             ) : null}
           </dl>
           <h3>{t("whyShortlisted")}</h3>
-          <p className="why">
-            {selected.extra
-              ? selected.extraSource === "itunes" || selected.extraSource === "name"
+          {selected.extra ? (
+            <p className="why">
+              {selected.extraSource === "itunes" || selected.extraSource === "name"
                 ? t("beyondWhyName")
                 : loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
                   ? t("beyondWhy")
-                  : t("beyondWhyPopular")
-              : selected.whyShortlisted}
-          </p>
+                  : t("beyondWhyPopular")}
+            </p>
+          ) : (
+            <TranslatedProse className="why" text={selected.whyShortlisted} />
+          )}
           {selected.wikipediaUrl ? (
           <p className="wiki">
             <a href={selected.wikipediaUrl} target="_blank" rel="noreferrer">

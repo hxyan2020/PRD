@@ -294,6 +294,55 @@ export async function translateLyricLines(text, locale, { fetchFn = fetch, cache
   return result;
 }
 
+function splitProseChunks(text, maxChars = TRANSLATE_MAX_CHARS) {
+  const source = String(text || "").trim();
+  if (!source) return [];
+  if (source.length <= maxChars) return [source];
+  const parts = source.split(/(?<=[.!?。！？])\s+/);
+  const chunks = [];
+  let current = "";
+  for (const part of parts) {
+    const next = current ? `${current} ${part}` : part;
+    if (next.length > maxChars && current) {
+      chunks.push(current);
+      current = part;
+    } else {
+      current = next;
+    }
+  }
+  if (current) chunks.push(current);
+  return chunks.length ? chunks : [source.slice(0, maxChars)];
+}
+
+/** Translate a short prose block (song anecdote, why-shortlisted, portrait note). */
+export async function translateProse(text, locale, { fetchFn = fetch, cache = translateCache } = {}) {
+  const original = String(text || "").trim();
+  const target = localeRoot(locale);
+  if (!original) return { needed: false, text: "", translated: "" };
+  const key = `prose|||${target}|||${original}`;
+  if (cache?.has?.(key)) return cache.get(key);
+  if (!lyricsNeedTranslation(original, locale)) {
+    const skip = { needed: false, text: original, translated: original };
+    cache?.set?.(key, skip);
+    return skip;
+  }
+
+  const pieces = [];
+  for (const chunk of splitProseChunks(original)) {
+    const translated = await translateBlob(chunk, locale, fetchFn);
+    pieces.push(translated || chunk);
+  }
+  const joined = pieces.join(" ").trim();
+  const usable = joined && !isUnusableTranslation(joined, original);
+  const result = {
+    needed: true,
+    text: original,
+    translated: usable ? joined : original,
+  };
+  if (usable) cache?.set?.(key, result);
+  return result;
+}
+
 export function clearTranslateCache(cache = translateCache) {
   cache?.clear?.();
 }

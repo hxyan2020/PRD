@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { enlargeImageUrl, uniqueImages } from "./portraits.js";
 import { hdCoverUrl } from "./cover.js";
 import { useI18n } from "./I18n.jsx";
+import TranslatedProse from "./TranslatedProse.jsx";
 
 export default function PortraitGallery({ name, portrait }) {
   const { t } = useI18n();
@@ -137,7 +138,7 @@ export default function PortraitGallery({ name, portrait }) {
   return (
     <section className="anecdote-block">
       <h3>{name}</h3>
-      {portrait.anecdote ? <p className="anecdote-text">{portrait.anecdote}</p> : null}
+      {portrait.anecdote ? <TranslatedProse className="anecdote-text" text={portrait.anecdote} /> : null}
       {images.length ? (
         <>
           <p className="anecdote-kicker">{t("portraitsOf", { name })}</p>
