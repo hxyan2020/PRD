@@ -1,5 +1,6 @@
 import {
   BINANCE_KLINE_URL,
+  BITGET_KLINE_URL,
   fetchMarketKline,
   generateHourlyScan,
   KLINE_INTERVALS,
@@ -33,12 +34,13 @@ export interface MarketSnapshot {
   hourly?: HourlyMarketReport
 }
 
-/** Human venue tag from kline sourceId (Binance primary, OKX backup). */
+/** Human venue tag from kline sourceId (Binance → OKX → Bitget). */
 function klineVenueLabel(kline: HourlyKlineSeries | null | undefined): string {
   if (kline?.sourceId?.startsWith('binance')) return 'Binance'
   if (kline?.sourceId?.startsWith('okx')) return 'OKX'
-  if (kline?.symbol === 'XAUUSDT') return 'Binance'
+  if (kline?.sourceId?.startsWith('bitget')) return 'Bitget'
   if (kline?.symbol?.includes('OKX') || kline?.symbol === 'XAU-USDT-SWAP') return 'OKX'
+  if (kline?.symbol === 'XAUUSDT') return 'Binance'
   return 'Binance'
 }
 
@@ -420,8 +422,8 @@ const DAILY_FIXED_LINKS: { id: string; label: string; url: string; domain: strin
   { id: 'okx-kline', label: 'OKX K线', url: OKX_KLINE_URL, domain: 'okx.com' },
   {
     id: 'bitget-futures',
-    label: 'Bitget',
-    url: 'https://www.bitget.com/futures/usdt/XAUUSDT',
+    label: 'Bitget K线',
+    url: BITGET_KLINE_URL,
     domain: 'bitget.com',
   },
   { id: 'kitco', label: 'Kitco', url: KITCO_GOLD_URL, domain: 'kitco.com' },
@@ -1027,7 +1029,7 @@ function pricesAndKlineBlock(
       lines.push('📊 **过去 24 小时行情报告 · V Exchange Risk**', '')
       lines.push(
         `⏱ **报告时间：** **${scanAt}**（东八区）`,
-        '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（Binance XAUUSDT，OKX 备用）+ 当日宏观／来源要点。',
+        '• 每日早上自动推送；数据覆盖近 **24 根 1H K 线**（Binance → OKX → Bitget）+ 当日宏观／来源要点。',
         '',
         '📈 **24h 价格区间**',
         stats
@@ -1045,7 +1047,7 @@ function pricesAndKlineBlock(
       lines.push('📊 **過去 24 小時行情報告 · V Exchange Risk**', '')
       lines.push(
         `⏱ **報告時間：** **${scanAt}**（東八區）`,
-        '• 每日早上自動推送；數據覆蓋近 **24 根 1H K 線**（Binance XAUUSDT，OKX 備用）+ 當日宏觀／來源要點。',
+        '• 每日早上自動推送；數據覆蓋近 **24 根 1H K 線**（Binance → OKX → Bitget）+ 當日宏觀／來源要點。',
         '',
         '📈 **24h 價格區間**',
         stats
@@ -1063,7 +1065,7 @@ function pricesAndKlineBlock(
       lines.push('📊 **Past-24h market report · V Exchange Risk**', '')
       lines.push(
         `⏱ **As of:** **${scanAt}** (UTC+8)`,
-        '• Daily morning push; ~**24** × 1H Binance XAUUSDT bars (OKX backup) + macro / source notes.',
+        '• Daily morning push; ~**24** × 1H bars (Binance → OKX → Bitget) + macro / source notes.',
         '',
         '📈 **24h range**',
         stats
@@ -1477,7 +1479,7 @@ export function klineCloseChartElement(
 
 /**
  * Rebuild a market card for a Feishu interval-button tap (15m / 1H / 4H / 1D).
- * Fetches Binance candles (OKX backup) for `bar` and keeps the rest of the live snapshot.
+ * Fetches candles Binance → OKX → Bitget for `bar` and keeps the rest of the live snapshot.
  */
 export async function rebuildMarketCardForInterval(opts: {
   bar: KlineIntervalBar
@@ -1499,6 +1501,8 @@ export async function rebuildMarketCardForInterval(opts: {
     null
   const lastClose = kline?.bars?.at(-1)?.c
   const venue = klineVenueLabel(kline)
+  const venueUrl =
+    venue === 'OKX' ? OKX_KLINE_URL : venue === 'Bitget' ? BITGET_KLINE_URL : BINANCE_KLINE_URL
   const snapSafe: MarketSnapshot =
     snap ||
     ({
@@ -1510,6 +1514,10 @@ export async function rebuildMarketCardForInterval(opts: {
         venue === 'OKX' && lastClose && Number.isFinite(lastClose)
           ? { last: lastClose }
           : undefined,
+      bitget:
+        venue === 'Bitget' && lastClose && Number.isFinite(lastClose)
+          ? { last: lastClose }
+          : undefined,
       notes: [
         lang === 'en'
           ? `${venue} K-line ${opts.bar}`
@@ -1518,7 +1526,7 @@ export async function rebuildMarketCardForInterval(opts: {
       sources: [
         {
           label: venue,
-          url: venue === 'Binance' ? BINANCE_KLINE_URL : OKX_KLINE_URL,
+          url: venueUrl,
         },
       ],
       fetchedAt: Date.now(),
@@ -1602,7 +1610,7 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
       `Sentiment ${hourly.sentiment.labelEn} (${hourly.sentiment.score >= 0 ? '+' : ''}${hourly.sentiment.score})`,
     )
   }
-  notes.push('Hourly desk scan — Binance primary, OKX backup — same engine as web Market.')
+  notes.push('Hourly desk scan — Binance → OKX → Bitget — same engine as web Market.')
 
   return {
     binance: binanceLast && Number.isFinite(binanceLast) ? { last: binanceLast } : undefined,
