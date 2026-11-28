@@ -5,7 +5,7 @@ import { PGlite } from "@electric-sql/pglite";
 import pg from "pg";
 import { CATEGORIES } from "@/lib/data/categories";
 import { filterHdRelevantImages } from "@/lib/images";
-import { rateEvidence } from "@/lib/ratings";
+import { rateEvidence, rateFromEvidence } from "@/lib/ratings";
 import type {
   CatalogueStats,
   Category,
@@ -186,30 +186,7 @@ async function hydrateEvidence(row: Record<string, unknown>): Promise<Evidence> 
   const images = filterHdRelevantImages(parseJson<EvidenceImage[]>(row.images, []), {
     topicHint: title,
   });
-  const storedRatings = parseJson<EvidenceRatings | Record<string, never>>(
-    row.ratings,
-    {},
-  );
-  const ratings =
-    storedRatings && "overall" in storedRatings
-      ? (storedRatings as EvidenceRatings)
-      : rateEvidence({
-          sourceCount: Number(row.source_count ?? sources.length ?? 1),
-          languages: parseJson(row.languages, ["en"]),
-          sources: sources.map((s) => ({
-            publisher: s.publisher,
-            url: s.url,
-            language: s.language,
-          })),
-          categorySlugs: categories.map((c) => c.slug),
-          lastSeenAt: toIso(row.last_seen_at),
-          firstSeenAt: toIso(row.first_seen_at),
-          hasArxiv: sources.some((s) => s.url.includes("arxiv.org")),
-          hasWikipedia: sources.some((s) => s.url.includes("wikipedia.org")),
-          imageCount: images.length,
-        });
-
-  return {
+  const draft: Evidence = {
     id,
     slug: String(row.slug),
     title,
@@ -218,8 +195,8 @@ async function hydrateEvidence(row: Record<string, unknown>): Promise<Evidence> 
     detail: String(row.detail ?? ""),
     body: body.what ? body : { ...emptyBody(), what: String(row.summary ?? "") },
     images,
-    ratings,
-    translations: parseJson<Record<string, EvidenceLocalePack>>(row.translations, {}),
+    ratings: emptyRatings(),
+    translations: parseJson(row.translations, {}),
     fingerprint: String(row.fingerprint),
     language: String(row.language ?? "en"),
     languages: parseJson(row.languages, ["en"]),
@@ -232,6 +209,9 @@ async function hydrateEvidence(row: Record<string, unknown>): Promise<Evidence> 
     createdAt: toIso(row.created_at),
     updatedAt: toIso(row.updated_at),
   };
+  // Always recompute from live sources/categories — never surface a made-up or stale score.
+  draft.ratings = rateFromEvidence(draft);
+  return draft;
 }
 
 export async function countUniqueEvidence(): Promise<number> {

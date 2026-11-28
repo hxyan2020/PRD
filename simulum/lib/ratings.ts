@@ -11,16 +11,29 @@ function dim(
   evidence: string[],
   max = 5,
 ): RatingDimension {
+  const uniqueEvidence = [...new Set(evidence.filter(Boolean))];
   return {
     score: Math.max(0, Math.min(max, Math.round(score * 10) / 10)),
     max,
     label,
     rationale,
-    evidence,
+    evidence: uniqueEvidence,
   };
 }
 
-/** Rate from observable catalogue facts only — never invent citations. */
+function host(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Rate from observable catalogue facts only — never invent citations.
+ * Every score is explained by `rationale` + concrete `evidence` strings
+ * (URLs, hosts, category slugs, timestamps) taken from the sourced record.
+ */
 export function rateEvidence(input: {
   sourceCount: number;
   languages: string[];
@@ -37,38 +50,70 @@ export function rateEvidence(input: {
       input.sources.map((s) => s.publisher || host(s.url)).filter(Boolean),
     ),
   ];
+  const hosts = [
+    ...new Set(input.sources.map((s) => host(s.url)).filter(Boolean)),
+  ];
   const langs = [...new Set(input.languages.filter(Boolean))];
+  const sourceUrls = input.sources.map((s) => s.url).filter(Boolean);
 
   const multiSources = dim(
     "Multiple sources",
-    Math.min(5, input.sourceCount),
-    `Catalogue currently links ${input.sourceCount} source URL(s).`,
-    input.sources.slice(0, 6).map((s) => s.url),
+    Math.min(5, Math.max(0, input.sourceCount)),
+    `Counted ${input.sourceCount} linked source URL(s) on this catalogue entry.`,
+    sourceUrls.slice(0, 8),
   );
 
   const crossReferenced = dim(
     "Cross-referenced",
-    Math.min(5, publishers.length + Math.max(0, langs.length - 1) * 0.5),
-    `Independent publishers/hosts: ${publishers.join(", ") || "none yet"}; languages: ${langs.join(", ") || "n/a"}.`,
-    publishers.map((p) => `publisher:${p}`),
+    Math.min(
+      5,
+      publishers.length + Math.max(0, hosts.length - 1) * 0.5 + Math.max(0, langs.length - 1) * 0.5,
+    ),
+    `Independent publishers: ${publishers.join(", ") || "none"}; hosts: ${hosts.join(", ") || "none"}; languages: ${langs.join(", ") || "n/a"}.`,
+    [
+      ...publishers.map((p) => `publisher:${p}`),
+      ...hosts.map((h) => `host:${h}`),
+      ...langs.map((l) => `language:${l}`),
+    ],
   );
 
   const multiWitness = dim(
     "Multiple witnesses / retellings",
-    Math.min(5, langs.length + Math.max(0, input.sourceCount - 1) * 0.4),
-    `Appears across ${langs.length} language(s) and ${input.sourceCount} linked report(s).`,
-    langs.map((l) => `language:${l}`),
+    Math.min(5, langs.length + Math.max(0, input.sourceCount - 1) * 0.5),
+    `Observed in ${langs.length} language(s) across ${input.sourceCount} linked report(s).`,
+    [
+      ...langs.map((l) => `language:${l}`),
+      ...sourceUrls.slice(0, 6),
+    ],
   );
 
-  const days =
-    (Date.now() - new Date(input.lastSeenAt).getTime()) / (1000 * 60 * 60 * 24);
-  const recencyScore =
-    days <= 7 ? 5 : days <= 30 ? 4 : days <= 180 ? 3 : days <= 365 ? 2 : 1;
+  const lastMs = new Date(input.lastSeenAt).getTime();
+  const firstMs = new Date(input.firstSeenAt).getTime();
+  const days = Number.isFinite(lastMs)
+    ? (Date.now() - lastMs) / (1000 * 60 * 60 * 24)
+    : 9999;
+  const recencyScore = !Number.isFinite(lastMs)
+    ? 0
+    : days <= 7
+      ? 5
+      : days <= 30
+        ? 4
+        : days <= 180
+          ? 3
+          : days <= 365
+            ? 2
+            : 1;
   const recency = dim(
     "Recency",
     recencyScore,
-    `Last indexed ${new Date(input.lastSeenAt).toISOString().slice(0, 10)} (first seen ${new Date(input.firstSeenAt).toISOString().slice(0, 10)}).`,
-    [`lastSeenAt:${input.lastSeenAt}`, `firstSeenAt:${input.firstSeenAt}`],
+    Number.isFinite(lastMs)
+      ? `Last indexed ${new Date(lastMs).toISOString().slice(0, 10)}; first seen ${Number.isFinite(firstMs) ? new Date(firstMs).toISOString().slice(0, 10) : "unknown"}.`
+      : "No valid last-seen timestamp on this entry — recency kept at 0.",
+    [
+      `lastSeenAt:${input.lastSeenAt}`,
+      `firstSeenAt:${input.firstSeenAt}`,
+      `daysSinceLastSeen:${Number.isFinite(days) ? Math.round(days) : "unknown"}`,
+    ],
   );
 
   const scienceCats = input.categorySlugs.filter((s) =>
@@ -79,63 +124,85 @@ export function rateEvidence(input: {
       "computation-information",
     ].includes(s),
   );
-  let scienceScore = 1;
   const scienceEvidence: string[] = [];
+  let scienceScore = 0;
   if (input.hasArxiv) {
-    scienceScore += 2;
-    scienceEvidence.push("source-host:arxiv.org");
+    scienceScore += 2.5;
+    scienceEvidence.push(
+      ...sourceUrls.filter((u) => u.includes("arxiv.org")).slice(0, 3),
+    );
+    scienceEvidence.push("host:arxiv.org");
   }
-  if (scienceCats.length) {
-    scienceScore += Math.min(2, scienceCats.length);
-    scienceEvidence.push(...scienceCats.map((c) => `category:${c}`));
+  if (scienceCats.includes("experimental-claims")) {
+    scienceScore += 1.5;
+    scienceEvidence.push("category:experimental-claims");
   }
-  if (input.hasWikipedia) scienceEvidence.push("source-host:wikipedia");
+  for (const cat of scienceCats.filter((c) => c !== "experimental-claims")) {
+    scienceScore += 0.5;
+    scienceEvidence.push(`category:${cat}`);
+  }
+  if (input.hasWikipedia && scienceScore === 0) {
+    // Encyclopedia discussion alone is not experimental proof — keep score low but cite it.
+    scienceEvidence.push("host:wikipedia.org (discussion only — not experimental proof)");
+  }
   const scientificallySupported = dim(
-    "Scientifically discussed / partially tested",
+    "Scientifically partially proved",
     Math.min(5, scienceScore),
-    scienceEvidence.length
-      ? "Score follows linked scholarly hosts and science-tagged categories only."
-      : "No arXiv/science-category anchors linked yet — kept low.",
+    scienceScore > 0
+      ? "Score uses only linked arXiv URLs and science-tagged categories already on this entry — not an independent lab verdict."
+      : "No arXiv link or science/experimental category on this entry — score stays at 0.",
     scienceEvidence,
   );
 
-  let cred = 1;
   const credEvidence: string[] = [];
+  let cred = 0;
+  if (input.hasArxiv) {
+    cred += 2;
+    credEvidence.push("host:arxiv.org");
+  }
   if (input.hasWikipedia) {
     cred += 1;
-    credEvidence.push("wikipedia-linked");
-  }
-  if (input.hasArxiv) {
-    cred += 1.5;
-    credEvidence.push("arxiv-linked");
+    credEvidence.push("host:wikipedia.org");
   }
   if (input.sourceCount >= 2) {
     cred += 1;
+    credEvidence.push(`sourceCount:${input.sourceCount}`);
+  }
+  if (input.sourceCount >= 4) {
+    cred += 0.5;
     credEvidence.push(`sourceCount:${input.sourceCount}`);
   }
   if (langs.length >= 2) {
     cred += 0.5;
     credEvidence.push(`languages:${langs.length}`);
   }
-  if (input.imageCount > 0) credEvidence.push(`hdImages:${input.imageCount}`);
+  if (hosts.length >= 2) {
+    cred += 0.5;
+    credEvidence.push(`hosts:${hosts.length}`);
+  }
+  if (input.imageCount > 0) {
+    credEvidence.push(`hdSourceImages:${input.imageCount}`);
+  }
+  credEvidence.push(...sourceUrls.slice(0, 4));
   const credibility = dim(
-    "Credibility anchors",
+    "Credibility",
     Math.min(5, cred),
-    "Derived from linked hosts, source count, and language spread — not an assertion of truth.",
+    cred > 0
+      ? "Built only from linked hosts, source count, and language/host diversity on this entry — not a claim that the hypothesis is true."
+      : "No credibility anchors linked yet.",
     credEvidence,
   );
 
+  const parts = [
+    credibility.score,
+    recency.score,
+    multiSources.score,
+    crossReferenced.score,
+    multiWitness.score,
+    scientificallySupported.score,
+  ];
   const overall =
-    Math.round(
-      ((credibility.score +
-        recency.score +
-        multiSources.score +
-        crossReferenced.score +
-        multiWitness.score +
-        scientificallySupported.score) /
-        6) *
-        10,
-    ) / 10;
+    Math.round((parts.reduce((a, b) => a + b, 0) / parts.length) * 10) / 10;
 
   return {
     overall,
@@ -148,6 +215,7 @@ export function rateEvidence(input: {
   };
 }
 
+/** Always derive ratings from the live evidence record — never trust a stale stored blob alone. */
 export function rateFromEvidence(evidence: Evidence): EvidenceRatings {
   return rateEvidence({
     sourceCount: evidence.sourceCount,
@@ -164,12 +232,4 @@ export function rateFromEvidence(evidence: Evidence): EvidenceRatings {
     hasWikipedia: evidence.sources.some((s) => s.url.includes("wikipedia.org")),
     imageCount: evidence.images.length,
   });
-}
-
-function host(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return "";
-  }
 }
