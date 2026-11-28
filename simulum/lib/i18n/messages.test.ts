@@ -13,4 +13,14 @@ describe("i18n messages", () => {
     expect(t("fr", "hero.jump").length).toBeGreaterThan(3);
     expect(LOCALES.length).toBeGreaterThanOrEqual(12);
   });
+
+  it("localizes scan log title across all locales", () => {
+    const en = t("en", "scanLog.title");
+    for (const loc of LOCALES) {
+      const value = t(loc.code, "scanLog.title");
+      expect(value.length).toBeGreaterThan(2);
+      if (loc.code !== "en") expect(value).not.toBe(en);
+    }
+  });
 });
+
