@@ -66,9 +66,15 @@ export function Hero({
       <div className="animate-rise relative mt-10 [animation-delay:280ms]">
         <Link
           href="/evidence"
-          className="touch-target inline-flex items-center bg-ink px-6 py-3.5 text-sm font-medium tracking-wide text-paper transition hover:bg-ink-soft"
+          className="group touch-target inline-flex items-center gap-3 border border-signal/50 bg-ink px-7 py-4 text-sm font-medium tracking-[0.08em] text-paper shadow-[0_0_24px_rgba(13,148,136,0.25)] transition hover:border-signal hover:bg-ink-soft hover:shadow-[0_0_36px_rgba(13,148,136,0.4)]"
         >
-          {t("hero.jump")}
+          <span>{t("hero.jump")}</span>
+          <span
+            aria-hidden
+            className="font-mono text-signal transition group-hover:translate-x-1"
+          >
+            →
+          </span>
         </Link>
       </div>
     </section>
