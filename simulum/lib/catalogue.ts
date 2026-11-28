@@ -15,7 +15,7 @@ import {
 } from "@/lib/db";
 import { filterHdRelevantImages } from "@/lib/images";
 import { rateEvidence } from "@/lib/ratings";
-import { buildBody, buildCaption } from "@/lib/summarize";
+import { buildBody, buildCaption, englishFacingPack } from "@/lib/summarize";
 import type {
   EvidenceCandidate,
   EvidenceLocalePack,
@@ -61,26 +61,6 @@ function findBestMatch(
   return best;
 }
 
-function englishFallbackPack(
-  candidate: EvidenceCandidate,
-  language: string,
-): EvidenceLocalePack {
-  const title = candidate.title.replace(/\s+[—–|-]\s+Wiki\S*$/i, "").trim();
-  const caption = `Documented claim about simulated reality: ${title} (originally discussed in ${language}).`;
-  return {
-    caption,
-    body: {
-      what: `A publicly discussed claim connected to the simulation hypothesis, originally written in ${language}: ${title}.`,
-      where: `Sourced from ${candidate.source.publisher || "the open web"} (${language}).`,
-      when: "Indexed from the source publication and later public discussion tracked by SIMULUM timestamps.",
-      how:
-        candidate.summary.slice(0, 280) ||
-        "The source argues or retells the claim through theory, analogy, or cultural narrative.",
-      why: "People posted or catalogued it as evidence that reality could be simulated.",
-    },
-  };
-}
-
 function localePack(
   candidate: EvidenceCandidate,
   caption: string,
@@ -93,8 +73,7 @@ function localePack(
     [language]: candidate.translations?.[language] ?? pack,
   };
   if (!translations.en) {
-    translations.en =
-      language === "en" ? pack : englishFallbackPack(candidate, language);
+    translations.en = language === "en" ? pack : englishFacingPack(candidate);
   }
   return translations;
 }

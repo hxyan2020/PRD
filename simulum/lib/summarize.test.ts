@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildBody, buildCaption } from "@/lib/summarize";
+import { buildBody, buildCaption, englishFacingPack } from "@/lib/summarize";
 import type { EvidenceCandidate } from "@/lib/types";
 
 const candidate: EvidenceCandidate = {
@@ -20,6 +20,7 @@ describe("summarize", () => {
     expect(caption.toLowerCase()).not.toBe("simulation hypothesis — wikipedia");
     expect(caption.length).toBeGreaterThan(40);
     expect(caption.toLowerCase()).toContain("simulation");
+    expect(caption).not.toMatch(/Documented claim/i);
   });
 
   it("fills what/where/when/how/why", () => {
@@ -29,5 +30,27 @@ describe("summarize", () => {
     expect(body.when.length).toBeGreaterThan(10);
     expect(body.how.length).toBeGreaterThan(10);
     expect(body.why.toLowerCase()).toContain("simulation");
+  });
+
+  it("builds unique English-facing packs without shared boilerplate", () => {
+    const es: EvidenceCandidate = {
+      title: "Simulación: el universo como programa",
+      summary:
+        "En español, la hipótesis de simulación sostiene que la realidad observable podría ser un programa computacional.",
+      language: "es",
+      categorySlugs: ["philosophy-metaphysics"],
+      source: {
+        url: "https://es.wikipedia.org/wiki/Hip%C3%B3tesis_de_simulaci%C3%B3n",
+        publisher: "Wikipedia",
+        language: "es",
+      },
+    };
+    const pack = englishFacingPack(es);
+    expect(pack.caption).toBe("Simulación: el universo como programa");
+    expect(pack.caption).not.toMatch(/Documented claim/i);
+    expect(pack.caption).not.toMatch(/originally discussed/i);
+    expect(pack.body.what).not.toMatch(/^A publicly discussed claim connected/i);
+    expect(pack.body.what.length).toBeGreaterThan(20);
+    expect(pack.body.what).not.toEqual(pack.caption);
   });
 });

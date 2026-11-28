@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { presentEvidence } from "@/lib/i18n/present";
+import {
+  isBoilerplateWhat,
+  presentEvidence,
+  scrubBoilerplateCaption,
+} from "@/lib/i18n/present";
 import type { Evidence } from "@/lib/types";
 
 function sample(overrides: Partial<Evidence> = {}): Evidence {
@@ -46,9 +50,10 @@ function sample(overrides: Partial<Evidence> = {}): Evidence {
         },
       },
       en: {
-        caption: "Documented claim about simulated reality (originally discussed in ja).",
+        caption:
+          "Documented claim about simulated reality: シミュレーション仮説 (originally discussed in ja).",
         body: {
-          what: "A publicly discussed claim connected to the simulation hypothesis.",
+          what: "A publicly discussed claim connected to the simulation hypothesis, originally written in ja: シミュレーション仮説.",
           where: "Sourced from Wikipedia (ja).",
           when: "Indexed from the source publication.",
           how: "The source argues through theory or narrative.",
@@ -91,11 +96,13 @@ describe("presentEvidence", () => {
     expect(ja.presentation).toBe("stored");
   });
 
-  it("shows English pack — not Japanese — for English viewers", () => {
+  it("scrubs English boilerplate and does not leak Japanese into English UI body", () => {
     const en = presentEvidence(sample(), "en");
     expect(en.available).toBe(true);
-    expect(en.caption).not.toMatch(/シミュレーション|日本語/);
-    expect(en.body.what).not.toMatch(/シミュレーション|日本語の本文/);
+    expect(en.caption).not.toMatch(/Documented claim about simulated reality/i);
+    expect(en.caption).not.toMatch(/originally discussed in/i);
+    expect(en.body.what).not.toMatch(/^A publicly discussed claim connected/i);
+    expect(en.body.what).not.toMatch(/日本語の本文/);
     expect(en.presentation).toBe("stored");
   });
 
@@ -104,9 +111,9 @@ describe("presentEvidence", () => {
     expect(fr.available).toBe(true);
     expect(fr.presentation).toBe("synthesized");
     expect(fr.caption).not.toMatch(/シミュレーション/);
+    expect(fr.caption).not.toMatch(/Documented claim/i);
     expect(fr.body.what).toMatch(/langue sélectionnée/i);
     expect(fr.body.what).not.toMatch(/シミュレーション|日本語の本文/);
-    expect(fr.caption.toLowerCase()).toMatch(/japonais/);
   });
 
   it("never leaves a locale without presentable text", () => {
@@ -114,8 +121,28 @@ describe("presentEvidence", () => {
     for (const locale of ["zh", "ar", "hi", "uk"] as const) {
       const view = presentEvidence(bare, locale);
       expect(view.available).toBe(true);
-      expect(view.caption.length).toBeGreaterThan(8);
+      expect(view.caption.length).toBeGreaterThan(4);
       expect(view.caption).not.toMatch(/シミュレーション仮説/);
+      expect(view.caption).not.toMatch(/Documented claim/i);
     }
+  });
+});
+
+describe("boilerplate scrubbers", () => {
+  it("removes legacy caption prefixes", () => {
+    expect(
+      scrubBoilerplateCaption(
+        "Documented claim about simulated reality: Hypothèse de la simulation (originally discussed in fr).",
+        "Hypothèse de la simulation",
+      ),
+    ).toBe("Hypothèse de la simulation");
+  });
+
+  it("detects legacy what blurbs", () => {
+    expect(
+      isBoilerplateWhat(
+        "A publicly discussed claim connected to the simulation hypothesis, originally written in es: Simulación.",
+      ),
+    ).toBe(true);
   });
 });
