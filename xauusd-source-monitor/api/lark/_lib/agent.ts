@@ -153,6 +153,44 @@ function titleFromFacts(facts: string[], lang: Lang): string {
   return 'Untitled incident'
 }
 
+/** User-pasted / OCR / forwarded alert bodies — exclude chat-history noise. */
+function evidenceFacts(facts: string[]): string[] {
+  return facts
+    .map((f) => f.trim())
+    .filter((f) => f && !f.startsWith('[chat-history]'))
+}
+
+/** Always show skill as `L1-xx · name` (never ids-only). */
+function formatSkillHitLine(hits: { id: string; name: string }[], max = 3): string {
+  return hits
+    .slice(0, max)
+    .map((h) => `**${h.id} · ${h.name}**`)
+    .join('；')
+}
+
+/** Quote the operator's screenshot / message / forwarded alert on the overview. */
+function formatEvidenceBlock(lang: Lang, facts: string[]): string {
+  const items = evidenceFacts(facts).slice(0, 3)
+  if (!items.length) return ''
+  const hans = lang === 'zh-Hans'
+  const hant = lang === 'zh-Hant'
+  const head = hans
+    ? '📥 **用户告警／截图／转发**'
+    : hant
+      ? '📥 **使用者告警／截圖／轉發**'
+      : '📥 **User alert / screenshot / forward**'
+  const lines = items.map((raw, i) => {
+    const one = raw
+      .replace(/\[(forwarded_card|merge_forward|replied_alert)\]\s*/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 420)
+    const more = raw.replace(/\s+/g, ' ').trim().length > 420 ? '…' : ''
+    return `${i + 1}. ${one || (hans ? '（附件已摄入，正文较短）' : hant ? '（附件已攝入，正文較短）' : '(attachment ingested)')}${more}`
+  })
+  return [head, '', ...lines].join('\n')
+}
+
 function buildSummary(args: {
   lang: Lang
   severity: string
@@ -167,15 +205,7 @@ function buildSummary(args: {
   const hant = args.lang === 'zh-Hant'
   const byAlertName = args.hits.length > 0 && (args.hits[0]?.score ?? 0) >= 100
   const hitLine = args.hits.length
-    ? byAlertName
-      ? args.hits
-          .slice(0, 2)
-          .map((h) => `${h.id}「${h.name}」`)
-          .join(' · ')
-      : args.hits
-          .slice(0, 4)
-          .map((h) => h.id)
-          .join(', ')
+    ? formatSkillHitLine(args.hits, byAlertName ? 2 : 4)
     : hans
       ? '无自信匹配'
       : hant
@@ -183,11 +213,15 @@ function buildSummary(args: {
         : 'no confident match'
   const skillLabel = byAlertName
     ? hans
-      ? '告警名确定命中'
+      ? '命中 Skill'
       : hant
-        ? '告警名確定命中'
-        : 'alert-name match'
-    : 'Skills'
+        ? '命中 Skill'
+        : 'Matched Skill'
+    : hans
+      ? '候选 Skill'
+      : hant
+        ? '候選 Skill'
+        : 'Candidate Skills'
   const coveredBits = (args.newlyCovered || [])
     .slice(0, 3)
     .map((s) => s.replace(/^(\[[^\]]+\]|【[^】]+】)\s*/, '').slice(0, 36))
@@ -198,14 +232,17 @@ function buildSummary(args: {
         ? `• **本輪已覆蓋：** ${coveredBits.join('；')}`
         : `• **Covered this turn:** ${coveredBits.join('; ')}`
     : ''
-  // Keep summary lean: no 知识库 / 证据分级 / 指引 in the body (refs stay at card footer).
+  const evidence = formatEvidenceBlock(args.lang, args.facts)
+  const evidenceCount = evidenceFacts(args.facts).length
+  // Evidence body + skill name are required on 排查/investigate overview.
   if (hans) {
     return [
       '📋 **摘要**',
       '',
-      `• **已摄入事实／证据：** **${args.facts.length}**`,
-      `• **${skillLabel}：** **${hitLine}**`,
+      `• **已摄入事实／证据：** **${evidenceCount}**`,
+      `• **${skillLabel}：** ${hitLine}`,
       coveredLine,
+      evidence ? `\n${evidence}` : '',
     ]
       .filter(Boolean)
       .join('\n')
@@ -214,9 +251,10 @@ function buildSummary(args: {
     return [
       '📋 **摘要**',
       '',
-      `• **已攝入事實／證據：** **${args.facts.length}**`,
-      `• **${skillLabel}：** **${hitLine}**`,
+      `• **已攝入事實／證據：** **${evidenceCount}**`,
+      `• **${skillLabel}：** ${hitLine}`,
       coveredLine,
+      evidence ? `\n${evidence}` : '',
     ]
       .filter(Boolean)
       .join('\n')
@@ -224,9 +262,10 @@ function buildSummary(args: {
   return [
     '📋 **Summary**',
     '',
-    `• **Facts ingested:** **${args.facts.length}**`,
-    `• **${skillLabel}:** **${hitLine}**`,
+    `• **Facts ingested:** **${evidenceCount}**`,
+    `• **${skillLabel}:** ${hitLine}`,
     coveredLine,
+    evidence ? `\n${evidence}` : '',
   ]
     .filter(Boolean)
     .join('\n')
@@ -1079,7 +1118,7 @@ async function persistOpenIncident(args: {
     title: titleFromFacts(args.facts, args.lang),
     facts: args.facts,
     severity: args.severity,
-    skills: args.hits.map((h) => h.id),
+    skills: args.hits.map((h) => `${h.id} · ${h.name}`),
     knowledge: args.kb.map((k) => k.title),
     summary: args.summary,
     recommendations: args.recommendations,
@@ -1998,7 +2037,7 @@ async function runInvestigation(args: {
     openId: args.msg.openId,
     messageId: args.msg.messageId,
     textPreview: args.newFact.slice(0, 80),
-    result: `incident:${rec.id};sev:${severity};skills:${hits.map((h) => h.id).join(',')}`,
+    result: `incident:${rec.id};sev:${severity};skills:${hits.map((h) => `${h.id} · ${h.name}`).join(',')}`,
   })
 
   const invTitle =
@@ -2008,6 +2047,7 @@ async function runInvestigation(args: {
   // Traditional title variant
   const invTitleFinal =
     args.lang === 'zh-Hant' ? `排查進行中 · ${rec.title}` : invTitle
+  const skillLabels = hits.map((h) => `${h.id} · ${h.name}`)
 
   // Mid-case questions must surface the answer — overview is often skipped after the first path push.
   if (questionMode) {
@@ -2026,7 +2066,7 @@ async function runInvestigation(args: {
       severity,
       summary: summary + bodyExtra,
       actions,
-      skills: hits.map((h) => h.id),
+      skills: skillLabels,
       knowledge: kb.map((k) => k.title),
       riskVerdict: rec.riskVerdict,
     })
@@ -2048,7 +2088,7 @@ async function runInvestigation(args: {
     severity,
     summary: summary + bodyExtra,
     actions,
-    skills: hits.map((h) => h.id),
+    skills: skillLabels,
     knowledge: kb.map((k) => k.title),
     riskVerdict: rec.riskVerdict,
     showAddAlertHint,

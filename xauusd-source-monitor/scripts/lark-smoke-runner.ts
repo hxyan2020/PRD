@@ -2260,6 +2260,20 @@ async function main() {
         inv.blob.includes('可能原因')),
     'overview / analysis section headers',
   )
+  record(
+    'turn.investigate_shows_evidence_and_skill_name',
+    (inv.blob.includes('用户告警／截图／转发') ||
+      inv.blob.includes('使用者告警／截圖／轉發') ||
+      inv.blob.includes('User alert / screenshot / forward')) &&
+      /L1-\d{2}\s*·/.test(inv.blob) &&
+      (inv.blob.includes('命中 Skill') ||
+        inv.blob.includes('候选 Skill') ||
+        inv.blob.includes('候選 Skill') ||
+        inv.blob.includes('Matched Skill') ||
+        inv.blob.includes('Candidate Skills')) &&
+      inv.blob.includes('IDX-01'),
+    'overview must quote pasted alert + Skill id · name',
+  )
   const follow = await turn(
     'followup-evidence',
     'I checked remaining sources: Kraken still quoting, Binance stale 12s. Timestamp 09:41 SGT.',

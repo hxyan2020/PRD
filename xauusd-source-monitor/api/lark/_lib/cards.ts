@@ -378,7 +378,14 @@ export function investigationPathOverviewCard(args: {
   // Preferred Action / 文末参考 removed — decisions live under 排查路径与决策.
   void args.knowledge
   void args.actions
-  void args.skills
+  const skillLine = (args.skills || []).filter(Boolean).slice(0, 4).join('；')
+  const skillBlock = skillLine
+    ? hans
+      ? `🧩 **命中 Skill：** ${skillLine}`
+      : zh
+        ? `🧩 **命中 Skill：** ${skillLine}`
+        : `🧩 **Matched Skill:** ${skillLine}`
+    : ''
   const sevLabel = hans
     ? `${emoji} **建议严重度：** **${args.severity}**（需当班确认）`
     : zh
@@ -389,6 +396,7 @@ export function investigationPathOverviewCard(args: {
     steps: args.steps,
     decisionBranches: args.decisionBranches,
   })
+  const headBody = [sevLabel, skillBlock, args.summary].filter(Boolean).join('\n\n')
 
   return {
     config: { wide_screen_mode: true },
@@ -401,7 +409,7 @@ export function investigationPathOverviewCard(args: {
         tag: 'div',
         text: {
           tag: 'lark_md',
-          content: `${sevLabel}\n\n${args.summary}`,
+          content: headBody,
         },
       },
       { tag: 'hr' },
