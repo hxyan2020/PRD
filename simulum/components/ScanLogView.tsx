@@ -61,24 +61,24 @@ export function ScanLogView({
                   {run.scheduleLabel || run.source}
                 </p>
               </div>
-              <dl className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div>
-                  <dt className="font-mono text-[10px] uppercase tracking-wider text-mist">
+              <dl className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div className="border border-signal/40 bg-signal-soft/15 p-3">
+                  <dt className="font-mono text-[10px] uppercase tracking-wider text-signal">
                     {t("scanLog.sourcesScanned")}
                   </dt>
-                  <dd className="mt-1 font-mono text-lg tabular-nums text-ink">
+                  <dd className="mt-1 font-mono text-3xl tabular-nums text-ink">
                     {run.sourcesScanned}
                   </dd>
                 </div>
-                <div>
-                  <dt className="font-mono text-[10px] uppercase tracking-wider text-mist">
+                <div className="border border-signal/40 bg-signal-soft/15 p-3">
+                  <dt className="font-mono text-[10px] uppercase tracking-wider text-signal">
                     {t("scanLog.relevant")}
                   </dt>
-                  <dd className="mt-1 font-mono text-lg tabular-nums text-ink">
+                  <dd className="mt-1 font-mono text-3xl tabular-nums text-ink">
                     {run.relevantSourced}
                   </dd>
                 </div>
-                <div>
+                <div className="p-3">
                   <dt className="font-mono text-[10px] uppercase tracking-wider text-mist">
                     {t("scanLog.inserted")}
                   </dt>
@@ -86,7 +86,7 @@ export function ScanLogView({
                     {run.inserted}
                   </dd>
                 </div>
-                <div>
+                <div className="p-3">
                   <dt className="font-mono text-[10px] uppercase tracking-wider text-mist">
                     {t("scanLog.merged")}
                   </dt>

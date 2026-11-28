@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { readdir, readFile } from "node:fs/promises";
+import { mkdir, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import pg from "pg";
@@ -20,7 +20,10 @@ import type {
 
 const databaseUrl = process.env.DATABASE_URL?.trim() ?? "";
 let pool: pg.Pool | undefined;
-let local: Promise<PGlite> | undefined;
+
+type GlobalDb = typeof globalThis & {
+  __simulumPglite?: Promise<PGlite>;
+};
 
 export async function sql<T = Record<string, unknown>>(
   text: string,
@@ -30,15 +33,19 @@ export async function sql<T = Record<string, unknown>>(
     pool ??= new pg.Pool({ connectionString: databaseUrl, max: 5 });
     return (await pool.query(text, params)).rows as T[];
   }
-  local ??= startLocal().catch((error: unknown) => {
-    local = undefined;
+  const g = globalThis as GlobalDb;
+  g.__simulumPglite ??= startLocal().catch((error: unknown) => {
+    g.__simulumPglite = undefined;
     throw error;
   });
-  return (await (await local).query<T>(text, params)).rows;
+  return (await (await g.__simulumPglite).query<T>(text, params)).rows;
 }
 
 async function startLocal(): Promise<PGlite> {
-  const db = new PGlite();
+  // Persist on disk so cron writes and page reads share one catalogue in local/dev.
+  const dataDir = path.join(process.cwd(), ".data", "pglite");
+  await mkdir(dataDir, { recursive: true });
+  const db = new PGlite(dataDir);
   const dir = path.join(process.cwd(), "migrations");
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".sql")).sort();
   for (const file of files) {
