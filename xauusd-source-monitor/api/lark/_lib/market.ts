@@ -785,7 +785,12 @@ function sourcesById(sources: ReportSource[] | undefined): Map<string, ReportSou
   return map
 }
 
-/** Unique sources for a ranked point (domain-deduped, max 4). Never cite proven 404 pages. */
+/**
+ * Unique sources for a ranked point (max 5).
+ * News / social / announcements dedupe by URL so multiple articles on the same
+ * host (e.g. several Kitco takes of one event) can all appear as sources.
+ * Venue / price / API rows still dedupe by domain to avoid ticker+candle doubles.
+ */
 export function pointSources(
   p: RankedPoint,
   byId: Map<string, ReportSource>,
@@ -795,11 +800,14 @@ export function pointSources(
   for (const id of p.sourceIds || []) {
     const s = byId.get(id)
     if (!s || !isCiteableSource(s)) continue
-    const key = (s.domain || s.id).toLowerCase()
+    const newsLike = s.kind === 'news' || s.kind === 'social' || s.kind === 'announcement'
+    const key = newsLike
+      ? (s.url || s.id).toLowerCase()
+      : (s.domain || s.id).toLowerCase()
     if (seen.has(key)) continue
     seen.add(key)
     out.push(s)
-    if (out.length >= 4) break
+    if (out.length >= 5) break
   }
   return out
 }
@@ -814,7 +822,15 @@ function sourceChipLabel(s: ReportSource): string {
   if (/binance\.com/i.test(host)) return 'Binance K线'
   if (/okx\.com/i.test(host)) return 'OKX K线'
   if (/bitget\.com/i.test(host)) return 'Bitget K线'
-  if (/kitco\.com/i.test(host)) return 'Kitco'
+  if (/kitco\.com/i.test(host)) {
+    const cap = `${s.captionEn || ''} ${s.captionZh || ''}`
+    if (/survey|調查|调查/i.test(cap)) return 'Kitco Survey'
+    if (/paradox|悖論|悖论/i.test(cap)) return 'Kitco Paradox'
+    if (/TDS|Melek|hawkish|鷹派|鹰派/i.test(cap)) return 'Kitco TDS'
+    if (/Catalyst|Miller|holding|利率/i.test(cap)) return 'Kitco Rates'
+    if (/news|新聞|新闻/i.test(cap)) return 'Kitco News'
+    return 'Kitco'
+  }
   if (/yahoo\.com/i.test(host)) return 'Yahoo行情'
   if (/federalreserve\.gov/i.test(host)) return '美联储'
   if (/x\.com|twitter\.com/i.test(host)) return 'X'

@@ -2192,6 +2192,8 @@ async function main() {
   const {
     buildOneLineTldr,
     clampSummary,
+    groupMarketEventPoints,
+    sameMarketEvent,
     BINANCE_KLINE_URL: binanceKlineUrl,
     OKX_KLINE_URL: okxKlineUrl,
     KITCO_GOLD_URL: kitcoGoldUrl,
@@ -2199,6 +2201,40 @@ async function main() {
     probeCiteHttpStatus,
     isMissingHttpStatus,
   } = await import('../src/engine/hourlyScan')
+  {
+    const kitcoSurvey = {
+      en: 'Kitco News Weekly Gold Survey: after spot gold broke below $3,900 amid a hawkish Fed hold, Wall Street flipped sharply bearish.',
+      zh: 'Kitco 調查：金價跌破 3,900，聯準會鷹派按兵不動。',
+      sourceIds: ['kitco-survey'],
+    }
+    const kitcoParadox = {
+      en: 'Kitco: even after a Fed hold, prices still fell about 3% on the week below $3,900 as traders price higher-for-longer policy.',
+      zh: 'Kitco：聯準會按兵不動後金價仍跌破 3,900。',
+      sourceIds: ['kitco-paradox'],
+    }
+    const kitcoHawkish = {
+      en: 'Kitco / TD Securities: the Fed left rates unchanged but kept a hawkish focus; gold near a $3,900–$4,250 range.',
+      zh: 'Kitco／TDS：聯準會鷹派暫停，金價約在 3,900–4,250。',
+      sourceIds: ['kitco-hawkish-pause'],
+    }
+    const basisTape = {
+      en: 'Binance XAUUSDT last 3900.00 vs Kitco spot 3890.00 leaves a +25.7 bps futures–spot basis.',
+      zh: '期现基差 +25.7 bps',
+      sourceIds: ['binance-ticker'],
+    }
+    const grouped = groupMarketEventPoints([kitcoParadox], [kitcoSurvey, kitcoHawkish])
+    const all = [...grouped.opportunity, ...grouped.risk]
+    const cluster = all.find((p) => p.sourceIds.includes('kitco-survey'))
+    record(
+      'market.event_group_same_story_one_bullet',
+      all.length === 1 &&
+        Boolean(cluster) &&
+        (cluster?.sourceIds.length || 0) >= 3 &&
+        sameMarketEvent(kitcoSurvey, kitcoParadox) &&
+        !sameMarketEvent(basisTape, kitcoSurvey),
+      `clusters=${all.length} sources=${cluster?.sourceIds.join(',') || ''}`,
+    )
+  }
   const kitcoDead = await resolveCiteUrlOrNull('https://www.kitco.com/gold-price', 'gold-api')
   record(
     'market.kitco_gold_price_404_rewritten',

@@ -1328,6 +1328,307 @@ export function clampSummary(
   return finish(out)
 }
 
+/** Stopwords for event-similarity tokens (EN + common ZH particles). */
+const EVENT_STOP = new Set([
+  'the',
+  'a',
+  'an',
+  'and',
+  'or',
+  'as',
+  'of',
+  'to',
+  'for',
+  'on',
+  'in',
+  'at',
+  'by',
+  'with',
+  'from',
+  'that',
+  'this',
+  'these',
+  'those',
+  'their',
+  'its',
+  'is',
+  'are',
+  'was',
+  'were',
+  'be',
+  'been',
+  'being',
+  'while',
+  'until',
+  'into',
+  'over',
+  'after',
+  'before',
+  'about',
+  'than',
+  'then',
+  'also',
+  'still',
+  'even',
+  'only',
+  'not',
+  'no',
+  'vs',
+  'per',
+  '的',
+  '了',
+  '與',
+  '与',
+  '在',
+  '是',
+  '為',
+  '为',
+  '及',
+  '和',
+  '對',
+  '对',
+  '將',
+  '将',
+  '而',
+  '並',
+  '并',
+])
+
+function significantEventTokens(text: string): Set<string> {
+  const out = new Set<string>()
+  for (const raw of text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s$%]/gu, ' ')
+    .split(/\s+/)) {
+    const t = raw.trim()
+    if (t.length < 3 || EVENT_STOP.has(t)) continue
+    out.add(t)
+  }
+  return out
+}
+
+function tokenJaccard(a: Set<string>, b: Set<string>): number {
+  if (!a.size || !b.size) return 0
+  let inter = 0
+  for (const t of a) if (b.has(t)) inter++
+  const union = a.size + b.size - inter
+  return union > 0 ? inter / union : 0
+}
+
+/**
+ * Stable topic keys for the same underlying market event (Fed hawkish pause,
+ * gold below $3,900, basis dislocation, etc.). Shared keys drive grouping so
+ * Kitco/Reuters/Bloomberg takes on one story become one bullet + many sources.
+ */
+export function eventTopicKeys(text: string): Set<string> {
+  const t = text.toLowerCase()
+  const keys = new Set<string>()
+  if (/\$?\s*3[,.]?9\d{2}|3,?900/.test(t)) keys.add('xau_3900')
+  if (/\$?\s*3[,.]?[75]\d{2}|3,?750|3,?850/.test(t)) keys.add('xau_3750_band')
+  if (
+    /(hawkish|鷹派|鹰派)/.test(t) &&
+    /(fed|fomc|聯準會|美联储|pause|hold|按兵|暫停|暂停)/.test(t)
+  ) {
+    keys.add('fed_hawkish')
+  }
+  if (
+    /(fed|fomc|聯準會|美联储).{0,48}(hold|pause|unchanged|按兵|暫停|暂停)/.test(t) ||
+    /(hold|pause|unchanged|按兵).{0,48}(fed|fomc|聯準會|美联储)/.test(t)
+  ) {
+    keys.add('fed_hold')
+  }
+  if (/(higher[- ]for[- ]longer|更高更久)/.test(t)) keys.add('h4l_rates')
+  if (
+    /(wall street|華爾街|华尔街).{0,48}(bear|空|abandon)/.test(t) ||
+    /kitco (news )?weekly gold survey|每週黃金調查|每周黄金调查/.test(t)
+  ) {
+    keys.add('kitco_ws_survey')
+  }
+  if (
+    /paradox/.test(t) ||
+    /(falling yields|weaker dollar|收益率下行|美元走弱).{0,80}(selloff|拋售|抛售)/.test(t)
+  ) {
+    keys.add('gold_paradox_selloff')
+  }
+  if (/(catalyst funds|david miller)/.test(t)) keys.add('catalyst_miller')
+  if (/(td securities|bart melek|\btds\b)/.test(t)) keys.add('tds_melek')
+  if (
+    /(basis|基差).{0,24}(bps|perp|spot|期现|期現|futures)/.test(t) ||
+    /futures\s*[–-]\s*spot|期现基差|期現基差/.test(t)
+  ) {
+    keys.add('basis_tape')
+  }
+  if (/\bdxy\b|dx-y\.nyb|美元指数|美元指數/.test(t)) keys.add('dxy_print')
+  if (/\b10y\b|\^tnx|美债 10|美債 10|美债10|美債10/.test(t)) keys.add('tnx_print')
+  if (/funding|资金费率|資金費率/.test(t)) keys.add('funding')
+  if (/bitget/.test(t) && /bps/.test(t)) keys.add('bitget_cross')
+  if (/federal reserve press|聯準會新聞|美联储新闻|fed press/.test(t)) keys.add('fed_press')
+  if (/desk:.*watch\/alert|工作台：.*關注|工作台：.*关注/.test(t)) keys.add('desk_alerts')
+  return keys
+}
+
+const PRINT_EVENT_KEYS = new Set([
+  'dxy_print',
+  'tnx_print',
+  'basis_tape',
+  'funding',
+  'bitget_cross',
+  'desk_alerts',
+  'fed_press',
+])
+
+/** Prefer the richer desk summary when merging duplicate event takes. */
+export function pickBetterEventSummary(a: string, b: string): string {
+  const ca = (a || '').trim()
+  const cb = (b || '').trim()
+  if (!ca) return cb
+  if (!cb) return ca
+  const score = (s: string) =>
+    s.length + (s.match(/[.。!！]/g) || []).length * 40 + (s.match(/\d/g) || []).length * 2
+  return score(cb) > score(ca) ? cb : ca
+}
+
+/** True when two ranked bullets describe the same underlying market event. */
+export function sameMarketEvent(
+  a: { en: string; zh?: string },
+  b: { en: string; zh?: string },
+): boolean {
+  const textA = `${a.en || ''} ${a.zh || ''}`
+  const textB = `${b.en || ''} ${b.zh || ''}`
+  const ka = eventTopicKeys(textA)
+  const kb = eventTopicKeys(textB)
+  const sharedStrong = [...ka].filter((k) => kb.has(k))
+  const sharedPrint = sharedStrong.filter((k) => PRINT_EVENT_KEYS.has(k))
+  const sharedStory = sharedStrong.filter((k) => !PRINT_EVENT_KEYS.has(k))
+  const j = tokenJaccard(significantEventTokens(a.en || ''), significantEventTokens(b.en || ''))
+
+  // Basis / cross-venue tape (bps / 基差) — not news that merely says "spot gold".
+  const basisTape = (t: string) =>
+    /\b(bps|basis|dislocation|基差|溢价|溢價)\b/i.test(t) ||
+    /(futures\s*[–-]\s*spot|perp and spot|期现|期現)/i.test(t)
+  const tapeA = basisTape(a.en || '') || basisTape(a.zh || '')
+  const tapeB = basisTape(b.en || '') || basisTape(b.zh || '')
+  // Basis tape never merges with a news/opinion take (even if both mention $3,900).
+  if (tapeA !== tapeB) return false
+
+  // Tape / print bullets only merge with the same print key — never with news takes.
+  if (sharedPrint.length && !sharedStory.length) {
+    const printA = [...ka].filter((k) => PRINT_EVENT_KEYS.has(k)).sort().join('|')
+    const printB = [...kb].filter((k) => PRINT_EVENT_KEYS.has(k)).sort().join('|')
+    return Boolean(printA) && printA === printB
+  }
+  if (sharedPrint.length && sharedStory.length) {
+    // Mixed print+story on one side vs pure story on the other → not the same bullet family
+    const onlyPrintA = [...ka].every((k) => PRINT_EVENT_KEYS.has(k))
+    const onlyPrintB = [...kb].every((k) => PRINT_EVENT_KEYS.has(k))
+    if (onlyPrintA || onlyPrintB) return false
+  }
+
+  // Narrative takes on the same gold/Fed catalyst — one shared story key is enough
+  // (Kitco survey / paradox / TDS / Catalyst all cover gold <$3,900 + hawkish hold).
+  const GOLD_STORY = new Set([
+    'xau_3900',
+    'xau_3750_band',
+    'fed_hawkish',
+    'fed_hold',
+    'h4l_rates',
+    'kitco_ws_survey',
+    'gold_paradox_selloff',
+  ])
+  if (sharedStory.some((k) => GOLD_STORY.has(k))) return true
+  if (sharedStory.length >= 2) return true
+  // Near-duplicate wording from two desks on one catalyst
+  return j >= 0.55
+}
+
+/**
+ * Collapse duplicate event takes into one bullet and union their sourceIds
+ * so the report shows one point with multiple sources — never the same event twice.
+ */
+export function mergeSimilarEventPoints(
+  rows: Omit<RankedPoint, 'rank'>[],
+): Omit<RankedPoint, 'rank'>[] {
+  const out: Omit<RankedPoint, 'rank'>[] = []
+  for (const row of rows) {
+    const idx = out.findIndex((c) => sameMarketEvent(c, row))
+    if (idx < 0) {
+      out.push({
+        en: row.en,
+        zh: row.zh,
+        sourceIds: [...new Set(row.sourceIds || [])],
+      })
+      continue
+    }
+    const base = out[idx]!
+    out[idx] = {
+      en: pickBetterEventSummary(base.en, row.en),
+      zh: pickBetterEventSummary(base.zh, row.zh),
+      sourceIds: [...new Set([...(base.sourceIds || []), ...(row.sourceIds || [])])],
+    }
+  }
+  return out
+}
+
+/**
+ * Group the same event across Opportunity and Risk into a single section bullet
+ * (tone = majority vote; ties prefer Risk so hawkish / selloff framing wins).
+ */
+export function groupMarketEventPoints(
+  opportunityRaw: Omit<RankedPoint, 'rank'>[],
+  riskRaw: Omit<RankedPoint, 'rank'>[],
+): { opportunity: Omit<RankedPoint, 'rank'>[]; risk: Omit<RankedPoint, 'rank'>[] } {
+  type Tagged = Omit<RankedPoint, 'rank'> & { tone: 'opportunity' | 'risk' }
+  const all: Tagged[] = [
+    ...opportunityRaw.map((p) => ({
+      en: p.en,
+      zh: p.zh,
+      sourceIds: [...(p.sourceIds || [])],
+      tone: 'opportunity' as const,
+    })),
+    ...riskRaw.map((p) => ({
+      en: p.en,
+      zh: p.zh,
+      sourceIds: [...(p.sourceIds || [])],
+      tone: 'risk' as const,
+    })),
+  ]
+
+  const clusters: Omit<RankedPoint, 'rank'>[] = []
+  const votes: Array<'opportunity' | 'risk'>[] = []
+
+  for (const row of all) {
+    const idx = clusters.findIndex((c) => sameMarketEvent(c, row))
+    if (idx < 0) {
+      clusters.push({
+        en: row.en,
+        zh: row.zh,
+        sourceIds: [...new Set(row.sourceIds || [])],
+      })
+      votes.push([row.tone])
+      continue
+    }
+    const base = clusters[idx]!
+    clusters[idx] = {
+      en: pickBetterEventSummary(base.en, row.en),
+      zh: pickBetterEventSummary(base.zh, row.zh),
+      sourceIds: [...new Set([...(base.sourceIds || []), ...(row.sourceIds || [])])],
+    }
+    votes[idx]!.push(row.tone)
+  }
+
+  const opportunity: Omit<RankedPoint, 'rank'>[] = []
+  const risk: Omit<RankedPoint, 'rank'>[] = []
+  clusters.forEach((c, i) => {
+    const v = votes[i] || []
+    const riskN = v.filter((t) => t === 'risk').length
+    const tone: 'opportunity' | 'risk' =
+      riskN >= Math.ceil(v.length / 2) ? 'risk' : 'opportunity'
+    if (tone === 'risk') risk.push(c)
+    else opportunity.push(c)
+  })
+  return { opportunity, risk }
+}
+
 function rankPoints(
   rows: Omit<RankedPoint, 'rank'>[],
 ): RankedPoint[] {
@@ -1472,14 +1773,15 @@ export function buildOneLineTldr(args: {
     if (gZh) linesZh.push(`事件：${gZh}。`)
   }
 
-  // 4) Optional watch — top risk only if it adds something new (still within 4 lines)
-  const watch = args.risk[0]
-  if (
-    watch &&
-    watch !== trendSrc &&
-    watch !== eventPreferred &&
-    linesEn.length < 4
-  ) {
+  // 4) Optional watch — top risk only if it adds a *different* event (still within 4 lines)
+  const watch = args.risk.find(
+    (p) =>
+      p !== trendSrc &&
+      p !== eventPreferred &&
+      !(trendSrc && sameMarketEvent(p, trendSrc)) &&
+      !(eventPreferred && sameMarketEvent(p, eventPreferred)),
+  )
+  if (watch && linesEn.length < 4) {
     const gEn = gistClause(watch.en)
     const gZh = gistClause(watch.zh || watch.en)
     if (gEn) linesEn.push(`Watch: ${gEn}.`)
@@ -2181,8 +2483,10 @@ export async function generateHourlyScan(args: {
     return a.id.localeCompare(b.id)
   })
 
-  const opportunity = rankPoints(opportunityRaw)
-  const risk = rankPoints(riskRaw)
+  // Same underlying event (e.g. several Kitco Fed/gold takes) → one bullet, many sources
+  const grouped = groupMarketEventPoints(opportunityRaw, riskRaw)
+  const opportunity = rankPoints(grouped.opportunity)
+  const risk = rankPoints(grouped.risk)
   // TL;DR: live prints + compressed Opportunity / Risk gists (balanced both sides)
   const tldr = buildOneLineTldr({
     dxy,
