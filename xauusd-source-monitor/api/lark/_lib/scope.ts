@@ -201,6 +201,10 @@ const COMMAND_KNOWLEDGE = new RegExp(
 const COMMAND_WEEKLY =
   /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|周報|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
 
+/** View accepted weekly optimisation ticks (durable log). */
+const COMMAND_WEEKLY_OPT_LOG =
+  /^(?:accepted\s*opts?(?:\s*log)?|weekly\s*opt(?:s)?(?:\s*log|\s*accept(?:ed)?)?|采纳日志|採納日誌|已采纳|已採納|采纳优化|採納優化|周报采纳|週報採納)\s*$/i
+
 /**
  * Oscillation / leverage / breaking-news alert status (cron every 10m).
  * Must beat INVESTIGATE_RE which also matches「预警」.
@@ -463,6 +467,7 @@ export function classifyIntent(
   }
   if (COMMAND_SKILLS.test(t)) return 'skills'
   if (COMMAND_KNOWLEDGE.test(t)) return 'knowledge'
+  if (COMMAND_WEEKLY_OPT_LOG.test(t)) return 'weekly_opt_log'
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
   if (COMMAND_OSCILLATION.test(t)) return 'oscillation'
   if (COMMAND_DAILY_MARKET.test(t)) return 'daily_market'
@@ -531,6 +536,7 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   if (intent === 'skills') return COMMAND_SKILLS.test(t)
   if (intent === 'knowledge') return COMMAND_KNOWLEDGE.test(t)
   if (intent === 'weekly') return COMMAND_WEEKLY.test(t)
+  if (intent === 'weekly_opt_log') return COMMAND_WEEKLY_OPT_LOG.test(t)
   if (intent === 'oscillation') return COMMAND_OSCILLATION.test(t)
   if (intent === 'daily_market') return COMMAND_DAILY_MARKET.test(t)
   if (intent === 'alert_optimize') return COMMAND_ALERT_OPTIMIZE.test(t)
@@ -549,6 +555,7 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
     COMMAND_SKILLS.test(t) ||
     COMMAND_KNOWLEDGE.test(t) ||
     COMMAND_WEEKLY.test(t) ||
+    COMMAND_WEEKLY_OPT_LOG.test(t) ||
     COMMAND_OSCILLATION.test(t) ||
     COMMAND_DAILY_MARKET.test(t) ||
     COMMAND_ALERT_OPTIMIZE.test(t) ||
@@ -1380,7 +1387,9 @@ export function greetingReply(lang: Lang, adminOpenId?: string | null): string {
     '',
     '• 📖 **wiki** — read-only Lark Wiki / Docs',
     '',
-    '• 📊 **weekly** — weekly digest; auto-pushed to the **group** Fridays **16:00 Asia/Shanghai**',
+    '• 📊 **weekly** — weekly digest; auto-pushed to the **group** Fridays **16:00 Asia/Shanghai** (tick opts → log)',
+    '',
+    '• 📒 **accepted opts** — log of ticked weekly optimisations',
     '',
     '• ⚠️ **oscillation alert** — Binance (OKX backup) vol / funding / news → **group only**',
     '',
@@ -1405,7 +1414,8 @@ export function helpReply(lang: Lang): string {
       '• 🧩 **技能** — 34 个排查场景（不是监控指标清单）',
       '• 📚 **知识库** — 知识库（含「可能出现的风险」）',
       '• 📖 **文档** — 飞书 Wiki／文档只读',
-      '• 📊 **周报** — 本周汇总（周五 16:00 东八区推送 @Yan Haixiang）',
+      '• 📊 **周报** — 本周汇总（周五 16:00 东八区推送；建议可勾选采纳并记入日志）',
+      '• 📒 **采纳日志** — 查看已勾选的周报优化项',
       '• ⚠️ **震荡行情预警** — 振幅／资金费率偏离或突发新闻 → **仅推送群**（不私聊 Yan）',
       '• 🌅 **每日 24h 早报** — 东八区每天 09:00 推群',
       '• ✅ **完成** — 归档本次排查',
@@ -1428,7 +1438,8 @@ export function helpReply(lang: Lang): string {
       '• 🧩 **技能** — 34 個排查場景（不是監控指標清單）',
       '• 📚 **知識庫** — 知識庫（含「可能出現的風險」）',
       '• 📖 **文檔** — 飛書 Wiki／文檔唯讀',
-      '• 📊 **週報** — 本週匯總（週五 16:00 東八區推送 @Yan Haixiang）',
+      '• 📊 **週報** — 本週匯總（週五 16:00 東八區推送；建議可勾選採納並記入日誌）',
+      '• 📒 **採納日誌** — 查看已勾選的週報優化項',
       '• ⚠️ **震盪行情預警** — 振幅／資金費率偏離或突發新聞 → **僅推送群**（不私聊 Yan）',
       '• 🌅 **每日 24h 早報** — 東八區每天 09:00 推群',
       '• ✅ **完成** — 歸檔本次排查',
@@ -1450,7 +1461,8 @@ export function helpReply(lang: Lang): string {
     '• 🧩 **skills** — 34 investigation scenarios (not the metric inventory)',
     '• 📚 **knowledge** / **kb** — knowledge base (incl. possible risks)',
     '• 📖 **wiki** — Lark Wiki / Docs read-only',
-    '• 📊 **weekly** — weekly digest (Fri 16:00 Asia/Shanghai → group + @Yan Haixiang)',
+    '• 📊 **weekly** — weekly digest (Fri 16:00 Asia/Shanghai; tick opts → log)',
+    '• 📒 **accepted opts** — log of ticked weekly optimisations',
     '• ⚠️ **oscillation alert** — vol / funding / news → **group only** (no Yan DM)',
     '• 🌅 **daily 24h** — group digest at 09:00 Asia/Shanghai',
     '• ✅ **done** — archive this investigation',

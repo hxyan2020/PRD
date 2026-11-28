@@ -126,6 +126,7 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 - **Content:** this week’s handled incidents + aggregated recommendations / Skills
 - **Delivery:** Feishu **group** (`LARK_WEEKLY_GROUP_CHAT_ID` → `LARK_DAILY_MARKET_CHAT_ID` → default risk group) **+** Yan DM (`LARK_ADMIN_OPEN_ID`)
 - **On-demand:** send `weekly` / `周报` in chat
+- **Accept optimisations:** tick **✓ 采纳** on the weekly card → durable log (`weekly-opt-accept-log.json`); send `采纳日志` / `accepted opts` to review
 - **Preview:** `curl -sS 'https://vex-llm-proxy.vercel.app/api/lark/weekly-report?dry=1' -H "X-Desk-Token: $DESK_GATEWAY_TOKEN"`
 - **Force send:** `POST /api/lark/weekly-report` with `{ "force": true }` + desk token / cron header
 

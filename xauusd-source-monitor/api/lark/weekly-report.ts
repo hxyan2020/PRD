@@ -136,7 +136,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const report = demo
     ? buildWeeklyDemoReport(now, 'zh-Hans', resolvedEarly.openId)
     : buildWeeklyReport(incidents, now, 'zh-Hans', resolvedEarly.openId)
-  const card = demo ? weeklyDemoCard(report) : weeklyReportCard(report.markdown, report.empty)
+  const { acceptedRecIdsForWeek } = await import('./_lib/weeklyOptAccept.js')
+  const acceptedIds = await acceptedRecIdsForWeek(report.window.weekKey)
+  const card = demo
+    ? weeklyDemoCard(report, { acceptedRecIds: acceptedIds, lang: 'zh-Hans' })
+    : weeklyReportCard(report, { acceptedRecIds: acceptedIds, lang: 'zh-Hans' })
 
   if (dry && !cron) {
     return res.status(200).json({
