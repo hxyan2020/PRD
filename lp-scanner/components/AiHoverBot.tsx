@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n/context";
 import type { ChatSection, ChatSource } from "@/lib/assistant";
+import { isZh } from "@/lib/i18n/locale";
 
 type Msg =
   | { role: "user"; text: string }
@@ -150,7 +151,7 @@ export function AiHoverBot() {
         ...m,
         {
           role: "assistant",
-          text: locale === "zh-CN" ? "请求失败，请稍后重试。" : "Request failed, try again.",
+          text: isZh(locale) ? "请求失败，请稍后重试。" : "Request failed, try again.",
         },
       ]);
     } finally {
@@ -163,7 +164,7 @@ export function AiHoverBot() {
       {fabPos && !open && selection && (
         <button
           type="button"
-          className="fixed z-50 animate-float rounded-full bg-teal px-3 py-2 text-xs font-semibold text-white shadow-panel"
+          className="fixed z-50 animate-float rounded-md bg-teal px-3 py-2 text-xs font-semibold text-white shadow-panel"
           style={{ left: fabPos.x, top: fabPos.y }}
           onClick={() => setOpen(true)}
         >
@@ -174,7 +175,7 @@ export function AiHoverBot() {
       <button
         type="button"
         aria-label={t("ai.open")}
-        className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-navy text-foam shadow-panel transition hover:bg-teal sm:bottom-5 sm:right-5"
+        className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-4 z-50 flex h-14 w-14 items-center justify-center rounded-md bg-navy text-foam shadow-panel transition hover:bg-teal sm:bottom-5 sm:right-5"
         onClick={() => setOpen((v) => !v)}
       >
         <span className="font-display text-xl">AI</span>
@@ -219,7 +220,7 @@ export function AiHoverBot() {
             )}
             {busy && (
               <p className="text-xs text-mist">
-                {locale === "zh-CN" ? "正在理解问题…" : "Understanding your question…"}
+                {isZh(locale) ? "正在理解问题…" : "Understanding your question…"}
               </p>
             )}
             <div ref={endRef} />

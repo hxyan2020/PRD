@@ -1,23 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Manrope, Source_Serif_4 } from "next/font/google";
+import { Fraunces, JetBrains_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import { AiHoverBot } from "@/components/AiHoverBot";
 import { Providers } from "@/components/Providers";
 import { SiteHeader } from "@/components/SiteHeader";
 
-const display = Source_Serif_4({
+const display = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
 });
 
-const sans = Manrope({
+const sans = Sora({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const mono = IBM_Plex_Mono({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
@@ -35,7 +35,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: "cover",
-  themeColor: "#0f766e",
+  themeColor: "#1d4ed8",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="mx-auto min-h-[70vh] max-w-6xl px-3 pb-28 pt-5 sm:px-6 sm:py-8">
             {children}
           </main>
-          <footer className="border-t border-line/70 px-3 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-xs text-mist sm:px-6">
+          <footer className="border-t border-line/70 px-3 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-[11px] uppercase tracking-[0.18em] text-mist sm:px-6">
             LP Scanner · Vantage CFD
           </footer>
           <AiHoverBot />

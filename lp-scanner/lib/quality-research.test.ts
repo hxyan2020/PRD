@@ -45,17 +45,47 @@ describe("product-relative quality scores", () => {
     expect(report.overallScore).toBeGreaterThan(50);
     expect(report.overallScore).toBeLessThanOrEqual(100);
     expect(report.overallBand).toBe(scoreBand(report.overallScore));
+    expect(report.subjects.length).toBeGreaterThan(5);
     expect(report.subjects.every((s) => s.score <= 100 && s.band)).toBe(true);
     expect(report.subjects[0].band).toBe("green");
+    expect(report.lpCards.length).toBe(report.subjects.length);
+    expect(report.lpCards[0].realData.some((d) => d.fromLp)).toBe(true);
+    expect(report.quotingStrategy).toBeTruthy();
+    expect(["aggregation", "fv"]).toContain(report.quotingStrategy!.mode);
+    expect(report.quotingStrategy!.legs.length).toBeGreaterThan(0);
+    expect(report.metricsScorecard.metrics).toHaveLength(8);
+    expect(report.metricsScorecard.dimensions.length).toBeGreaterThanOrEqual(6);
+    expect(report.metricsScorecard.unavailableCount).toBeGreaterThanOrEqual(3);
+    expect(report.metricsScorecard.measuredCount).toBeGreaterThanOrEqual(4);
+    expect(report.metricsScorecard.metrics.some((m) => m.name.match(/fill|成交/i))).toBe(true);
+    expect(report.metricsScorecard.metrics.some((m) => m.name.match(/latency|延迟|延遲/i))).toBe(
+      true,
+    );
     expect(report.liveFindings.length).toBeGreaterThan(0);
     expect(report.dataBottleneck.hit).toBe(true);
     expect(report.verdict).toMatch(/data availability is the bottleneck/i);
-    expect(report.verdict).toMatch(/green|yellow|red/i);
+    expect(report.verdict).toMatch(/green|yellow|red|aggregation|fail-over|FV/i);
+    expect(report.steps.every((s) => (s.analysis?.length ?? 0) > 0)).toBe(true);
+    expect(report.steps.every((s) => (s.dataSources?.length ?? 0) > 0)).toBe(true);
+    expect(report.steps.every((s) => (s.charts?.length ?? 0) > 0)).toBe(true);
+    const dataStep = report.steps.find((s) => s.id === "data")!;
+    expect(dataStep.dataSources!.some((d) => d.available)).toBe(true);
+    expect(dataStep.dataSources!.some((d) => !d.available && d.howToGet)).toBe(true);
     const html = buildPrintableHtml(report);
     expect(html).toContain("Liquidity Quality Research Report");
     expect(html).toContain(`score ${report.overallBand}`);
     expect(html).toContain("chip");
     expect(html).toContain("Data availability is the bottleneck");
+    expect(html).toContain("Data sources");
+    expect(html).toContain("How to get");
+    expect(html).toContain("bar-fill");
+    expect(html).toContain("Analysis");
+    expect(html).toContain("Quoting strategy");
+    expect(html).toContain("Per-LP quality reports");
+    expect(html).toContain("Quantitative metrics");
+    expect(html).toContain("Effective spread");
+    expect(html).toContain("Fill ratio");
+    expect(html).toContain("Needs live");
   });
 
   it("scores crypto LP green on BTC and weaker on XAU context", () => {

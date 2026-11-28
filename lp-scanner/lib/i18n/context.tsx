@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { detectBrowserLocale, parseStoredLocale } from "./locale";
 import { t as translate, type MessageKey } from "./messages";
 import type { Locale } from "@/lib/types";
 
@@ -26,9 +27,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "zh-CN" || stored === "en") setLocaleState(stored);
-      else if (navigator.language.toLowerCase().startsWith("zh")) setLocaleState("zh-CN");
+      const stored = parseStoredLocale(localStorage.getItem(STORAGE_KEY));
+      if (stored) setLocaleState(stored);
+      else setLocaleState(detectBrowserLocale(navigator.language));
     } catch {
       // ignore
     }

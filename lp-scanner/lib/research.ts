@@ -1,6 +1,7 @@
 import { SEED_LPS, slugifyName } from "@/lib/data/seed-lps";
 import { localizedLpLists } from "@/lib/i18n/lp-display";
 import type { Locale, LpRecord, LpResearchResult } from "@/lib/types";
+import { isZh } from "@/lib/i18n/locale";
 
 function normalize(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, "");
@@ -98,17 +99,17 @@ export async function researchLp(
     .map((lp) => ({
       name: lp.name,
       relation: lp.usedByVantage
-        ? locale === "zh-CN"
+        ? isZh(locale)
           ? "Vantage 在用"
           : "Used by Vantage"
-        : locale === "zh-CN"
+        : isZh(locale)
           ? "仓库候选"
           : "Repo candidate",
       edge: matched
-        ? locale === "zh-CN"
+        ? isZh(locale)
           ? `对比 ${matched.name}：定价 ${lp.pricingQuality}/5，成本 ${lp.costTier}，时段 ${lp.hours}`
           : `vs ${matched.name}: pricing ${lp.pricingQuality}/5, cost ${lp.costTier}, hours ${lp.hours}`
-        : locale === "zh-CN"
+        : isZh(locale)
           ? `已知画像：${lp.bestFor[0] || lp.category}`
           : `Known profile: ${lp.bestFor[0] || lp.category}`,
     }));
@@ -119,14 +120,14 @@ export async function researchLp(
       matched,
       isNew: false,
       summary:
-        locale === "zh-CN"
+        isZh(locale)
           ? `${matched.name}：${matched.kbBodyZh.slice(0, 280)}`
           : `${matched.name}: ${matched.kbBodyEn.slice(0, 280)}`,
       goodFor: localizedLpLists(matched, locale).bestFor,
       recommendedProducts: matched.products.slice(0, 8),
       competitorComparison: competitors,
       liveFindings: [
-        ...(locale === "zh-CN"
+        ...(isZh(locale)
           ? [
               `静态知识库已收录，Vantage 使用标记：${matched.usedByVantage ? "是" : "否"}`,
               `区域：${localizedLpLists(matched, locale).regions.join("、")}；监管：${matched.regulation.join("、")}`,
@@ -152,14 +153,14 @@ export async function researchLp(
     query,
     isNew: true,
     summary:
-      locale === "zh-CN"
+      isZh(locale)
         ? `${query} 尚未在仓库中。以下基于实时公开检索与启发式分类（${looksCrypto ? "偏加密" : "偏传统/未知"}）。请人工核验后决定是否入库。`
         : `${query} is not yet in the repository. Draft below combines live public research and heuristics (${looksCrypto ? "crypto-leaning" : "traditional/unknown"}). Verify before adding.`,
     goodFor: looksCrypto
-      ? locale === "zh-CN"
+      ? isZh(locale)
         ? ["加密对冲", "24/7 品种", "山寨币广度"]
         : ["crypto hedging", "24/7 products", "alt breadth"]
-      : locale === "zh-CN"
+      : isZh(locale)
         ? ["需核验的外汇/CFD 流动性", "可能的 PoP/技术中枢"]
         : ["FX/CFD liquidity pending verification", "possible PoP or tech hub"],
     recommendedProducts: looksCrypto
@@ -170,7 +171,7 @@ export async function researchLp(
       live.length > 0
         ? live.map((f) => f.blurb)
         : [
-            locale === "zh-CN"
+            isZh(locale)
               ? "实时检索未返回摘要；建议核验官网、牌照与 FIX/API 文档后再入库。"
               : "Live lookup returned no abstract; verify website, licences and FIX/API docs before adding.",
           ],

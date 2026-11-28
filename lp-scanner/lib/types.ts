@@ -1,4 +1,4 @@
-export type Locale = "en" | "zh-CN";
+export type Locale = "en" | "zh-CN" | "zh-TW";
 
 export type LpCategory = "traditional" | "crypto" | "hybrid" | "technology";
 

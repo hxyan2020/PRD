@@ -3,11 +3,12 @@ import {
   GUIDE_SOURCES,
   TEST_MODES,
 } from "@/lib/data/lp-quality-testing";
+import { localizedLpLists, labelVantageBadge } from "@/lib/i18n/lp-display";
+import { isZh } from "@/lib/i18n/locale";
 import { resolveProduct } from "@/lib/products";
 import { REGION_META, regionLabel, resolveOptimalRegions } from "@/lib/regions";
 import { findLp } from "@/lib/research";
 import { rankLpsForProduct } from "@/lib/rank";
-import { localizedLpLists, labelVantageBadge } from "@/lib/i18n/lp-display";
 import type { Locale, LpRecord } from "@/lib/types";
 
 export type ChatSource = { title: string; url: string };
@@ -66,11 +67,15 @@ function guideSources(...titles: string[]): ChatSource[] {
 function internalSources(locale: Locale): ChatSource[] {
   return [
     {
-      title: locale === "zh-CN" ? "LP 测试 · 最终方法论" : "LP Testing · Final methodology",
+      title: isZh(locale) ? "LP 测试 · 最终方法论" : "LP Testing · Final methodology",
       url: "/testing#methodology",
     },
     {
-      title: locale === "zh-CN" ? "知识库" : "Knowledge Base",
+      title: locale === "zh-TW" ? "LP倉庫" : isZh(locale) ? "LP仓库" : "LP Repository",
+      url: "/repository",
+    },
+    {
+      title: isZh(locale) ? (locale === "zh-TW" ? "知識庫" : "知识库") : "Knowledge Base",
       url: "/knowledge",
     },
   ];
@@ -158,7 +163,7 @@ export function classifyIntent(
 }
 
 function answerMethodology(locale: Locale, question: string, selection: string): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const focusShadow = /shadow|影子|production md|生产行情/i.test(question + selection);
   const focusUat = /uat|demo|接口/i.test(question + selection);
   const focusNewProduct = /new product|新商品|新品种|already.?connect|已接入/i.test(
@@ -225,7 +230,7 @@ function answerProduct(
   product: string,
   question: string,
 ): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const ranked = rankLpsForProduct(lps, product, locale);
   const top = ranked.rankings.slice(0, 5);
   const bullets = top.map((r) => {
@@ -283,7 +288,7 @@ function answerProduct(
 }
 
 function answerLp(locale: Locale, lp: LpRecord, selection: string): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const lists = localizedLpLists(lp, locale);
   const optimal = resolveOptimalRegions(lp.slug, lp.optimalRegions);
   const regions = optimal.map((c) => `${REGION_META[c].flag} ${regionLabel(c, locale)}`);
@@ -345,7 +350,7 @@ function answerLp(locale: Locale, lp: LpRecord, selection: string): ChatAnswer {
 }
 
 function answerCompare(locale: Locale, lps: LpRecord[], mentioned: LpRecord[]): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const pair =
     mentioned.length >= 2
       ? mentioned.slice(0, 2)
@@ -425,7 +430,7 @@ function answerCompare(locale: Locale, lps: LpRecord[], mentioned: LpRecord[]): 
 }
 
 function answerRegion(locale: Locale, lps: LpRecord[], question: string): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const codeMatch = question.match(/\b(UK|EU|US|SG|AU|AE|JP|HK|CY|ZA|DK|GI|CA|ASIA|GLOBAL)\b/i);
   const code = codeMatch?.[1]?.toUpperCase();
 
@@ -469,7 +474,7 @@ function answerRegion(locale: Locale, lps: LpRecord[], question: string): ChatAn
 }
 
 function answerVantage(locale: Locale, lps: LpRecord[]): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const used = lps.filter((lp) => lp.usedByVantage);
   const trad = used.filter((lp) => lp.category !== "crypto");
   const crypto = used.filter((lp) => lp.category === "crypto");
@@ -497,7 +502,7 @@ function answerVantage(locale: Locale, lps: LpRecord[]): ChatAnswer {
 }
 
 function answerClarify(locale: Locale, question: string): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   return {
     intent: "clarify",
     understoodAs: zh
@@ -535,7 +540,7 @@ function answerGeneral(
   question: string,
   selection: string,
 ): ChatAnswer {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const vantage = lps.filter((lp) => lp.usedByVantage).length;
 
   // If selection looks substantive, summarise how to use it
@@ -633,7 +638,7 @@ export function buildChatAnswer(
 
 /** Flatten structured answer to plain text (API/log fallback). */
 export function formatChatAnswerText(answer: ChatAnswer, locale: Locale): string {
-  const zh = locale === "zh-CN";
+  const zh = isZh(locale);
   const lines: string[] = [];
   lines.push(zh ? `理解：${answer.understoodAs}` : `Understood: ${answer.understoodAs}`);
   lines.push("");

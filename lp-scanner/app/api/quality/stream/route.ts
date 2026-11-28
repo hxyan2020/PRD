@@ -3,6 +3,7 @@ import { buildQualityReport, stepDelayMs } from "@/lib/quality-research";
 import { rankLpsForProduct } from "@/lib/rank";
 import { findLp, researchLp } from "@/lib/research";
 import type { Locale, LpRecord } from "@/lib/types";
+import { isZh } from "@/lib/i18n/locale";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
         send("status", {
           phase: "init",
           message:
-            locale === "zh-CN" ? "正在加载仓库与知识库…" : "Loading repository & knowledge base…",
+            isZh(locale) ? "正在加载仓库与知识库…" : "Loading repository & knowledge base…",
         });
 
         const all = await listLps();
@@ -39,34 +40,44 @@ export async function GET(request: Request) {
           send("status", {
             phase: "rank",
             message:
-              locale === "zh-CN"
+              isZh(locale)
                 ? `正在对品种 ${query} 排序候选 LP…`
                 : `Ranking candidate LPs for ${query}…`,
           });
           const ranked = rankLpsForProduct(all, query, locale);
+          const related = ranked.rankings.filter((r) => r.offersProduct);
+          const pool = related.length ? related : ranked.rankings;
           send("status", {
             phase: "live",
-            message:
-              locale === "zh-CN"
-                ? "正在拉取公开资料与仓库实据…"
-                : "Pulling public sources + repository evidence…",
+            message: isZh(locale)
+              ? `正在拉取 ${pool.length} 家相关 LP 的仓库实档与公开资料…`
+              : `Pulling repository profiles + public sources for ${pool.length} related LPs…`,
           });
-          const live = ranked.rankings[0]
-            ? await researchLp(all, ranked.rankings[0].lp.name, locale).catch(() => null)
-            : null;
+          const liveBySlug: Record<string, string[]> = {};
+          const liveFindings: string[] = [];
+          // Live-research top names (cap to keep stream responsive); all LPs still use repo fields.
+          for (const row of pool.slice(0, 5)) {
+            const live = await researchLp(all, row.lp.name, locale).catch(() => null);
+            if (!live) continue;
+            liveBySlug[row.lp.slug] = live.liveFindings.slice(0, 4);
+            for (const f of live.liveFindings.slice(0, 2)) {
+              liveFindings.push(`${row.lp.name}: ${f}`);
+            }
+          }
           report = buildQualityReport({
             mode: "product",
             locale,
             product: ranked.product,
-            lps: ranked.rankings.map((r) => r.lp),
-            rankings: ranked.rankings,
-            liveFindings: live?.liveFindings?.slice(0, 4) ?? [],
+            lps: pool.map((r) => r.lp),
+            rankings: pool,
+            liveFindings: liveFindings.slice(0, 10),
+            liveBySlug,
           });
         } else {
           send("status", {
             phase: "resolve",
             message:
-              locale === "zh-CN" ? `正在解析 LP ${query || lpId}…` : `Resolving LP ${query || lpId}…`,
+              isZh(locale) ? `正在解析 LP ${query || lpId}…` : `Resolving LP ${query || lpId}…`,
           });
           const matched = lpId
             ? all.find((l) => l.id === lpId || l.slug === lpId)
@@ -115,7 +126,7 @@ export async function GET(request: Request) {
           send("status", {
             phase: "live",
             message:
-              locale === "zh-CN"
+              isZh(locale)
                 ? "正在拉取公开资料与品种适配分…"
                 : "Pulling public sources + product-fit scores…",
           });
@@ -152,10 +163,27 @@ export async function GET(request: Request) {
           send("step_done", step);
         }
 
+        if (report.mode === "product" && report.lpCards?.length) {
+          send("status", {
+            phase: "lp_cards",
+            message: isZh(locale)
+              ? `正在汇总 ${report.lpCards.length} 份单 LP 质量卡（默认折叠）…`
+              : `Summarising ${report.lpCards.length} per-LP quality cards (collapsed by default)…`,
+          });
+          for (const card of report.lpCards) {
+            send("lp_card", card);
+            await new Promise((r) => setTimeout(r, 80));
+          }
+        }
+
+        if (report.quotingStrategy) {
+          send("strategy", report.quotingStrategy);
+        }
+
         send("complete", {
           report: {
             ...report,
-            // steps already streamed; include full for download
+            // steps / cards already streamed; include full for download
           },
         });
       } catch (err) {

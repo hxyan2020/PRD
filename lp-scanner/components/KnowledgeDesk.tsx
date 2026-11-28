@@ -12,6 +12,7 @@ import {
   localizeProducts,
   localizedLpLists,
 } from "@/lib/i18n/lp-display";
+import { isZh } from "@/lib/i18n/locale";
 import type { LpRecord } from "@/lib/types";
 
 function splitCsv(value: string): string[] {
@@ -136,7 +137,7 @@ export function KnowledgeDesk() {
               {!isEdit ? (
                 <>
                   <p className="mt-4 text-sm leading-relaxed text-navy-2">
-                    {locale === "zh-CN" ? lp.kbBodyZh : lp.kbBodyEn}
+                    {isZh(locale) ? lp.kbBodyZh : lp.kbBodyEn}
                   </p>
                   <div className="mt-4 grid gap-3 md:grid-cols-3">
                     <Mini title={t("detail.bestFor")} items={lists.bestFor} />

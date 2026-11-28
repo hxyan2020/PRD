@@ -1,5 +1,6 @@
 import { resolveProduct } from "@/lib/products";
 import type { Locale, LpRecord, RankedLp } from "@/lib/types";
+import { isZh } from "@/lib/i18n/locale";
 
 function offersProduct(lp: LpRecord, symbol: string, assetClass: string): boolean {
   const s = symbol.toUpperCase();
@@ -39,7 +40,7 @@ export function rankLpsForProduct(
       const hint = lp.scoreHints[scoreKey] ?? 50;
       score += hint * 0.7;
       reasons.push(
-        locale === "zh-CN"
+        isZh(locale)
           ? `知识库对该品种相关能力评分 ${hint}/100`
           : `KB capability score for this product family: ${hint}/100`,
       );
@@ -47,14 +48,14 @@ export function rankLpsForProduct(
       if (offers) {
         score += 18;
         reasons.push(
-          locale === "zh-CN"
+          isZh(locale)
             ? `仓库明确覆盖 ${symbol} 或同类资产（${assetClass}）`
             : `Repository coverage includes ${symbol} or asset class ${assetClass}`,
         );
       } else {
         score -= 40;
         reasons.push(
-          locale === "zh-CN"
+          isZh(locale)
             ? `仓库未显示可靠的 ${symbol} 报价覆盖`
             : `No reliable ${symbol} coverage flagged in repository`,
         );
@@ -62,7 +63,7 @@ export function rankLpsForProduct(
 
       score += lp.pricingQuality * 4;
       reasons.push(
-        locale === "zh-CN"
+        isZh(locale)
           ? `定价质量评级 ${lp.pricingQuality}/5`
           : `Pricing quality rated ${lp.pricingQuality}/5`,
       );
@@ -70,12 +71,12 @@ export function rankLpsForProduct(
       const costBoost = { low: 8, medium: 4, high: 0, negotiated: 5 }[lp.costTier];
       score += costBoost;
       reasons.push(
-        locale === "zh-CN" ? `成本档位：${lp.costTier}` : `Cost tier: ${lp.costTier}`,
+        isZh(locale) ? `成本档位：${lp.costTier}` : `Cost tier: ${lp.costTier}`,
       );
 
       score += hoursFit(lp, session);
       reasons.push(
-        locale === "zh-CN"
+        isZh(locale)
           ? `交易时段 ${lp.hours}（品种需求 ${session}）`
           : `Hours ${lp.hours} vs product session ${session}`,
       );
@@ -83,13 +84,13 @@ export function rankLpsForProduct(
       if (lp.usedByVantage) {
         score += 10;
         reasons.push(
-          locale === "zh-CN"
+          isZh(locale)
             ? "已标记为 Vantage 在用 LP，集成与信用风险已知"
             : "Marked as currently used by Vantage — known integration/credit path",
         );
       } else {
         liveNotes.push(
-          locale === "zh-CN"
+          isZh(locale)
             ? "尚未被 Vantage 标记使用 — 可作为扩展候选"
             : "Not yet marked as used by Vantage — expansion candidate",
         );
@@ -100,28 +101,28 @@ export function rankLpsForProduct(
 
       if (assetClass === "crypto" && lp.category === "crypto") {
         liveNotes.push(
-          locale === "zh-CN"
+          isZh(locale)
             ? "实时研究：加密对冲应优先交易所原生深度，而非传统 CFD 簿记"
             : "Live research note: prefer exchange-native depth for crypto hedges over traditional CFD books",
         );
       }
       if (symbol === "XAUUSD" && (lp.slug === "isprime" || lp.slug === "finalto")) {
         liveNotes.push(
-          locale === "zh-CN"
+          isZh(locale)
             ? "实时研究：机构披露中 Finalto/iSPrime 常居贵金属/外汇执行前列"
             : "Live research note: Finalto/iSPrime frequently top metals/FX venue shares in institutional disclosures",
         );
       }
       if (lp.slug === "cfh" && symbol) {
         liveNotes.push(
-          locale === "zh-CN"
+          isZh(locale)
             ? "注意：CFH 与 Finalto 品牌演进重叠，避免重复计算容量"
             : "Note: CFH overlaps Finalto brand evolution — avoid double-counting capacity",
         );
       }
 
       liveNotes.push(
-        locale === "zh-CN"
+        isZh(locale)
           ? `最佳场景：${lp.bestFor.slice(0, 3).join("、")}`
           : `Best-fit use cases: ${lp.bestFor.slice(0, 3).join(", ")}`,
       );

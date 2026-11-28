@@ -11,6 +11,7 @@ import {
   labelLatency,
   localizedLpLists,
 } from "@/lib/i18n/lp-display";
+import { dateLocale, isZh } from "@/lib/i18n/locale";
 import type { RankedLp } from "@/lib/types";
 
 type Col =
@@ -85,7 +86,7 @@ export function SortableResults({
           <h2 className="font-display text-xl text-navy sm:text-2xl">{t("home.results")}</h2>
           <p className="text-xs text-mist">
             {t("home.liveAt")}{" "}
-            {new Date(researchedAt).toLocaleString(locale === "zh-CN" ? "zh-CN" : "en-SG", {
+            {new Date(researchedAt).toLocaleString(dateLocale(locale), {
               timeZone: "Asia/Singapore",
             })}{" "}
             (SGT)
@@ -165,7 +166,7 @@ export function SortableResults({
               {open && (
                 <div className="mt-3 border-t border-line/70 pt-3">
                   <p className="text-sm text-mist">
-                    {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 180) : r.lp.kbBodyEn.slice(0, 180)}…
+                    {isZh(locale) ? r.lp.kbBodyZh.slice(0, 180) : r.lp.kbBodyEn.slice(0, 180)}…
                   </p>
                   <div className="mt-3 grid gap-3">
                     <Block title={t("detail.reasons")} items={r.reasons} />
@@ -265,7 +266,7 @@ export function SortableResults({
                     size="sm"
                   />
                   <p className="mt-1 text-sm text-mist">
-                    {locale === "zh-CN" ? r.lp.kbBodyZh.slice(0, 220) : r.lp.kbBodyEn.slice(0, 220)}…
+                    {isZh(locale) ? r.lp.kbBodyZh.slice(0, 220) : r.lp.kbBodyEn.slice(0, 220)}…
                   </p>
                 </div>
                 {onRunLpQuality && (
