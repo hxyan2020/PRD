@@ -386,10 +386,20 @@ export async function buildCronHealthReport(args?: {
       '',
     )
   }
+  // Failures already listed under「未按计划」— do not repeat them in 明细.
+  const missIds = new Set(misses.map((m) => m.id))
   lines.push('**明细：**')
+  let detailCount = 0
   for (const j of jobs) {
+    if (missIds.has(j.id)) continue
     const mark = j.ok ? '✅' : j.expected ? '❌' : '➖'
     lines.push(`• ${mark} **${j.label}**（${j.schedule}）— ${j.detail}`)
+    detailCount += 1
+  }
+  if (missIds.size > 0 && detailCount === 0) {
+    lines.push('_（失败项见上方「未按计划」，此处无其它任务明细）_')
+  } else if (missIds.size > 0) {
+    lines.push('_失败项见上方「未按计划」，此处不再重复。_')
   }
   lines.push('', '• 来源：`cron-tick` 心跳 + 各任务 sent-state（幂等记账）')
 

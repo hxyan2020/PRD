@@ -3334,6 +3334,26 @@ async function main() {
       healthRep.markdown.includes('Cron 健康'),
     `allOk=${healthRep.allOk} jobs=${healthRep.jobs.length} misses=${healthRep.misses.map((m) => m.id).join(',')}`,
   )
+  {
+    const md = healthRep.markdown
+    const detailIdx = md.indexOf('**明细：**')
+    const above = detailIdx >= 0 ? md.slice(0, detailIdx) : md
+    const below = detailIdx >= 0 ? md.slice(detailIdx) : ''
+    const misses = healthRep.misses
+    const noRepeatInDetail =
+      misses.length === 0
+        ? !/失败项见上方/.test(below)
+        : misses.every(
+            (m) =>
+              above.includes(`**${m.label}**`) &&
+              !below.includes(`**${m.label}**`),
+          ) && /失败项见上方/.test(below)
+    record(
+      'cron.health_misses_not_repeated_in_明细',
+      detailIdx >= 0 && noRepeatInDetail,
+      `misses=${misses.map((m) => m.id).join(',') || 'none'} detailIdx=${detailIdx}`,
+    )
+  }
   record(
     'cron.daily_has_morning_slot_gate',
     /isDailyMarketSlot|before_daily_slot|DAILY_MARKET_START_HM/.test(
