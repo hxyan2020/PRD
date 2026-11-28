@@ -2203,18 +2203,18 @@ async function main() {
   } = await import('../src/engine/hourlyScan')
   {
     const kitcoSurvey = {
-      en: 'Kitco News Weekly Gold Survey: after spot gold broke below $3,900 amid a hawkish Fed hold, Wall Street flipped sharply bearish.',
-      zh: 'Kitco 調查：金價跌破 3,900，聯準會鷹派按兵不動。',
+      en: 'Kitco News Weekly Gold Survey: after spot gold broke below $3,900 amid a hawkish Fed hold, Wall Street flipped sharply bearish with further losses expected.',
+      zh: 'Kitco 調查：金價跌破 3,900，聯準會鷹派按兵不動，華爾街轉空。',
       sourceIds: ['kitco-survey'],
     }
     const kitcoParadox = {
-      en: 'Kitco: even after a Fed hold, prices still fell about 3% on the week below $3,900 as traders price higher-for-longer policy.',
-      zh: 'Kitco：聯準會按兵不動後金價仍跌破 3,900。',
+      en: 'Kitco constructive take: softer dollar and lower yields remain a classic support mix; fundamentals are intact and lower prices are long-term buying opportunities.',
+      zh: 'Kitco 建設性觀點：美元走軟與債息下行仍是利好組合，基本面未破，更低價位為長期買入機會。',
       sourceIds: ['kitco-paradox'],
     }
     const kitcoHawkish = {
-      en: 'Kitco / TD Securities: the Fed left rates unchanged but kept a hawkish focus; gold near a $3,900–$4,250 range.',
-      zh: 'Kitco／TDS：聯準會鷹派暫停，金價約在 3,900–4,250。',
+      en: 'Kitco / TD Securities: the Fed left rates unchanged but kept a hawkish focus; gold rebound looks unlikely near $3,900–$4,250.',
+      zh: 'Kitco／TDS：聯準會鷹派暫停，金價短期難有實質反彈。',
       sourceIds: ['kitco-hawkish-pause'],
     }
     const basisTape = {
@@ -2223,16 +2223,21 @@ async function main() {
       sourceIds: ['binance-ticker'],
     }
     const grouped = groupMarketEventPoints([kitcoParadox], [kitcoSurvey, kitcoHawkish])
-    const all = [...grouped.opportunity, ...grouped.risk]
-    const cluster = all.find((p) => p.sourceIds.includes('kitco-survey'))
+    const riskCluster = grouped.risk.find((p) => p.sourceIds.includes('kitco-survey'))
     record(
       'market.event_group_same_story_one_bullet',
-      all.length === 1 &&
-        Boolean(cluster) &&
-        (cluster?.sourceIds.length || 0) >= 3 &&
-        sameMarketEvent(kitcoSurvey, kitcoParadox) &&
+      grouped.opportunity.some((p) => p.sourceIds.includes('kitco-paradox')) &&
+        Boolean(riskCluster) &&
+        (riskCluster?.sourceIds.length || 0) >= 2 &&
+        !grouped.risk.some((p) => p.sourceIds.includes('kitco-paradox')) &&
         !sameMarketEvent(basisTape, kitcoSurvey),
-      `clusters=${all.length} sources=${cluster?.sourceIds.join(',') || ''}`,
+      `opp=${grouped.opportunity.map((p) => p.sourceIds.join('+')).join('|')} risk=${grouped.risk.map((p) => p.sourceIds.join('+')).join('|')}`,
+    )
+    record(
+      'market.opp_positive_risk_negative',
+      grouped.opportunity.every((p) => /buying|constructive|support mix|利好|買入/i.test(p.en + p.zh)) &&
+        grouped.risk.every((p) => /bearish|hawkish|unlikely|轉空|鷹派|难有|難有/i.test(p.en + p.zh)),
+      `opp=${grouped.opportunity.length} risk=${grouped.risk.length}`,
     )
   }
   const kitcoDead = await resolveCiteUrlOrNull('https://www.kitco.com/gold-price', 'gold-api')

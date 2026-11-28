@@ -720,9 +720,9 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     opinion: true,
     opinionTone: 'opportunity',
     summaryEn:
-      'Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy and Iran-linked oil inflation; Kitco argues the long-term fundamentals are intact and frames the selloff as frustrating short-term action that still leaves lower prices as long-term buying opportunities.',
+      'Kitco constructive take: sharply lower yields and a softer dollar remain the classic support mix for non-yielding gold, long-term fundamentals are intact, and the pullback below $3,900 still leaves lower prices as long-term buying opportunities even after a Fed hold and short-term liquidation.',
     summaryZh:
-      'Kitco：即便聯準會按兵不動、債息明顯下行、美元走軟——傳統上利好無孳息黃金——金價仍週跌約 3%、跌破 3,900，創逾一年低位，因市場定價「更高更久」利率與伊朗相關油價通脹；文中認為長期基本面未破，將此輪拋售視為短期挫折，並把更低價位視為長期買入機會。',
+      'Kitco 建設性觀點：債息明顯下行與美元走軟仍是無孳息黃金的經典利好組合，長期基本面未破；即便聯準會按兵不動且短線有所回吐，跌破 3,900 後的更低價位仍可視為長期買入機會。',
   },
   {
     id: 'kitco-hawkish-pause',
@@ -1570,63 +1570,90 @@ export function mergeSimilarEventPoints(
 }
 
 /**
- * Group the same event across Opportunity and Risk into a single section bullet
- * (tone = majority vote; ties prefer Risk so hawkish / selloff framing wins).
+ * Classify a bullet by content polarity.
+ * Opportunity = constructive / positive for XAUUSD; Risk = downsides / negative news.
+ * Declared section tone is only a tie-breaker when the text is ambiguous.
+ */
+export function inferMarketPointTone(
+  en: string,
+  zh = '',
+  declared?: 'opportunity' | 'risk',
+): 'opportunity' | 'risk' {
+  const t = `${en || ''} ${zh || ''}`.toLowerCase()
+  let score = 0
+
+  // Downsides / negative news
+  if (
+    /(bearish|selloff|拋售|抛售|轉空|转空|further losses|續跌|续跌|weakest|最弱|slid below|跌破|abandon|holding.{0,24}back|壓制|压制|threat|威脅|威胁)/.test(
+      t,
+    )
+  ) {
+    score -= 2
+  }
+  if (
+    /(hawkish|鷹派|鹰派|higher[- ]for[- ]longer|更高更久|pressures?|weighing|headwind|逆風|逆风|crowded|squeeze|distort|wide enough|elevated carry|real-rate pressure|firm dollar|raises the (fx )?opportunity cost)/.test(
+      t,
+    )
+  ) {
+    score -= 2
+  }
+  if (/(rebound looks unlikely|難有實質反彈|难有实质反弹|watch\/alert|關注／警報|关注／警报)/.test(t)) {
+    score -= 2
+  }
+
+  // Positive / constructive for gold
+  if (
+    /(buying opportunit|買入機會|买入机会|long-term buying|fundamentals are intact|基本面未破|classic support mix|利好|constructive|偏建设|偏建設|softens? real-rate|soft dollar|lowers fx|no extreme dislocation|无极端错位|無極端錯位|aligned with no extreme)/.test(
+      t,
+    )
+  ) {
+    score += 2
+  }
+  if (
+    /(softer dollar|lower yields|falling yields|債息.*下行|债息.*下行|美元走軟|美元走软)/.test(t) &&
+    /(support|利好|buying|机会|機會|intact|constructive|underpin|支撐|支撑)/.test(t)
+  ) {
+    score += 2
+  }
+  if (/(bullish|偏多|underpin|支撐|支撑|bull thesis)/.test(t)) score += 1
+  if (/(risk|压力|壓力|loss|跌|bear)/.test(t)) score -= 1
+
+  if (score > 0) return 'opportunity'
+  if (score < 0) return 'risk'
+  return declared || 'risk'
+}
+
+/**
+ * Place bullets by polarity, then dedupe only within each section.
+ * Opportunity keeps positive / constructive takes; Risk keeps downsides / negative news.
+ * Same catalyst may appear once in each section when desks disagree on tone —
+ * never merge a bullish take into Risk (or vice versa).
  */
 export function groupMarketEventPoints(
   opportunityRaw: Omit<RankedPoint, 'rank'>[],
   riskRaw: Omit<RankedPoint, 'rank'>[],
 ): { opportunity: Omit<RankedPoint, 'rank'>[]; risk: Omit<RankedPoint, 'rank'>[] } {
-  type Tagged = Omit<RankedPoint, 'rank'> & { tone: 'opportunity' | 'risk' }
-  const all: Tagged[] = [
-    ...opportunityRaw.map((p) => ({
+  const opportunityBucket: Omit<RankedPoint, 'rank'>[] = []
+  const riskBucket: Omit<RankedPoint, 'rank'>[] = []
+
+  const place = (p: Omit<RankedPoint, 'rank'>, declared: 'opportunity' | 'risk') => {
+    const tone = inferMarketPointTone(p.en, p.zh, declared)
+    const row = {
       en: p.en,
       zh: p.zh,
-      sourceIds: [...(p.sourceIds || [])],
-      tone: 'opportunity' as const,
-    })),
-    ...riskRaw.map((p) => ({
-      en: p.en,
-      zh: p.zh,
-      sourceIds: [...(p.sourceIds || [])],
-      tone: 'risk' as const,
-    })),
-  ]
-
-  const clusters: Omit<RankedPoint, 'rank'>[] = []
-  const votes: Array<'opportunity' | 'risk'>[] = []
-
-  for (const row of all) {
-    const idx = clusters.findIndex((c) => sameMarketEvent(c, row))
-    if (idx < 0) {
-      clusters.push({
-        en: row.en,
-        zh: row.zh,
-        sourceIds: [...new Set(row.sourceIds || [])],
-      })
-      votes.push([row.tone])
-      continue
+      sourceIds: [...new Set(p.sourceIds || [])],
     }
-    const base = clusters[idx]!
-    clusters[idx] = {
-      en: pickBetterEventSummary(base.en, row.en),
-      zh: pickBetterEventSummary(base.zh, row.zh),
-      sourceIds: [...new Set([...(base.sourceIds || []), ...(row.sourceIds || [])])],
-    }
-    votes[idx]!.push(row.tone)
+    if (tone === 'opportunity') opportunityBucket.push(row)
+    else riskBucket.push(row)
   }
 
-  const opportunity: Omit<RankedPoint, 'rank'>[] = []
-  const risk: Omit<RankedPoint, 'rank'>[] = []
-  clusters.forEach((c, i) => {
-    const v = votes[i] || []
-    const riskN = v.filter((t) => t === 'risk').length
-    const tone: 'opportunity' | 'risk' =
-      riskN >= Math.ceil(v.length / 2) ? 'risk' : 'opportunity'
-    if (tone === 'risk') risk.push(c)
-    else opportunity.push(c)
-  })
-  return { opportunity, risk }
+  for (const p of opportunityRaw) place(p, 'opportunity')
+  for (const p of riskRaw) place(p, 'risk')
+
+  return {
+    opportunity: mergeSimilarEventPoints(opportunityBucket),
+    risk: mergeSimilarEventPoints(riskBucket),
+  }
 }
 
 function rankPoints(

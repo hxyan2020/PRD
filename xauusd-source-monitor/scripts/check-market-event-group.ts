@@ -3,6 +3,7 @@ import {
   mergeSimilarEventPoints,
   sameMarketEvent,
   eventTopicKeys,
+  inferMarketPointTone,
 } from '../src/engine/hourlyScan.ts'
 
 const kitcoSurvey = {
@@ -11,8 +12,8 @@ const kitcoSurvey = {
   sourceIds: ['kitco-survey'],
 }
 const kitcoParadox = {
-  en: "Kitco: even after a Fed hold, sharply lower yields and a softer dollar — the classic support mix for non-yielding gold — prices still fell about 3% on the week below $3,900, their weakest level in over a year, as traders price higher-for-longer policy and Iran-linked oil inflation; Kitco argues the long-term fundamentals are intact and frames the selloff as frustrating short-term action that still leaves lower prices as long-term buying opportunities.",
-  zh: 'Kitco：即便聯準會按兵不動、債息明顯下行、美元走軟——金價仍週跌約 3%、跌破 3,900。',
+  en: 'Kitco constructive take: sharply lower yields and a softer dollar remain the classic support mix for non-yielding gold, long-term fundamentals are intact, and the pullback below $3,900 still leaves lower prices as long-term buying opportunities even after a Fed hold and short-term liquidation.',
+  zh: 'Kitco 建設性觀點：債息明顯下行與美元走軟仍是無孳息黃金的經典利好組合，長期基本面未破；即便聯準會按兵不動且短線有所回吐，跌破 3,900 後的更低價位仍可視為長期買入機會。',
   sourceIds: ['kitco-paradox'],
 }
 const kitcoHawkish = {
@@ -26,64 +27,72 @@ const kitcoRates = {
   sourceIds: ['kitco-rates-holdback'],
 }
 
-const opportunityRaw = [kitcoParadox]
-const riskRaw = [kitcoSurvey, kitcoHawkish, kitcoRates]
+console.log('tone_survey', inferMarketPointTone(kitcoSurvey.en, kitcoSurvey.zh, 'risk'))
+console.log('tone_paradox', inferMarketPointTone(kitcoParadox.en, kitcoParadox.zh, 'opportunity'))
+console.log('tone_hawkish', inferMarketPointTone(kitcoHawkish.en, kitcoHawkish.zh, 'risk'))
+console.log('tone_rates', inferMarketPointTone(kitcoRates.en, kitcoRates.zh, 'risk'))
 
-console.log('keys_survey', [...eventTopicKeys(kitcoSurvey.en)].join(','))
-console.log('keys_hawkish', [...eventTopicKeys(kitcoHawkish.en)].join(','))
-console.log('keys_paradox', [...eventTopicKeys(kitcoParadox.en)].join(','))
-console.log('keys_rates', [...eventTopicKeys(kitcoRates.en)].join(','))
-console.log('same survey↔hawkish', sameMarketEvent(kitcoSurvey, kitcoHawkish))
-console.log('same survey↔paradox', sameMarketEvent(kitcoSurvey, kitcoParadox))
-console.log('same hawkish↔rates', sameMarketEvent(kitcoHawkish, kitcoRates))
+const softDxy = {
+  en: 'Yahoo DX-Y.NYB prints 99.500, a soft dollar backdrop that lowers FX headwinds for gold and is constructive for XAUUSD perps while the index stays subdued.',
+  zh: '美元偏弱减轻黄金的汇率逆风，对 XAUUSD 永续偏建设性。',
+  sourceIds: ['yahoo-dxy'],
+}
+const firmDxy = {
+  en: 'Yahoo DX-Y.NYB prints 104.500, a firm dollar backdrop that raises the FX opportunity cost of holding gold and typically pressures XAUUSD perps until the index cools.',
+  zh: '美元偏强推高持有黄金的汇率机会成本，通常会压抑 XAUUSD。',
+  sourceIds: ['yahoo-dxy-firm'],
+}
+console.log('tone_soft_dxy', inferMarketPointTone(softDxy.en, softDxy.zh, 'opportunity'))
+console.log('tone_firm_dxy', inferMarketPointTone(firmDxy.en, firmDxy.zh, 'risk'))
 
-const grouped = groupMarketEventPoints(opportunityRaw, riskRaw)
-const all = [...grouped.opportunity, ...grouped.risk]
-console.log('grouped_opp', grouped.opportunity.length, 'grouped_risk', grouped.risk.length)
-console.log(
-  'clusters',
-  all.map((p) => `${p.sourceIds.length}:${p.sourceIds.join('+')}`).join(' | '),
+const grouped = groupMarketEventPoints(
+  [kitcoParadox, softDxy],
+  [kitcoSurvey, kitcoHawkish, kitcoRates, firmDxy],
 )
+console.log('grouped_opp', grouped.opportunity.length, grouped.opportunity.map((p) => p.sourceIds.join('+')).join(' | '))
+console.log('grouped_risk', grouped.risk.length, grouped.risk.map((p) => p.sourceIds.join('+')).join(' | '))
 
-const goldCluster = all.find((p) => p.sourceIds.includes('kitco-survey'))
-console.log('gold_cluster_sources', goldCluster?.sourceIds.join(','))
-console.log('gold_cluster_tone_section', grouped.risk.some((p) => p.sourceIds.includes('kitco-survey')) ? 'risk' : 'opportunity')
+const oppHasParadox = grouped.opportunity.some((p) => p.sourceIds.includes('kitco-paradox'))
+const oppHasSoft = grouped.opportunity.some((p) => p.sourceIds.includes('yahoo-dxy'))
+const riskHasSurvey = grouped.risk.some((p) => p.sourceIds.includes('kitco-survey'))
+const riskHasParadox = grouped.risk.some((p) => p.sourceIds.includes('kitco-paradox'))
+const riskCluster = grouped.risk.find((p) => p.sourceIds.includes('kitco-survey'))
+const oppHasNegative =
+  grouped.opportunity.some((p) => /bearish|hawkish|further losses|pressures XAUUSD/i.test(p.en))
+const riskHasPositiveOnlyBuy =
+  grouped.risk.some((p) => /buying opportunities|constructive take|偏建设性/i.test(p.en))
 
 const tape = {
   en: 'Binance XAUUSDT last 3900.00 vs Kitco spot 3890.00 leaves a +25.7 bps futures–spot basis — wide enough to distort mid marks.',
   zh: '基差 +25.7 bps',
   sourceIds: ['binance-ticker'],
 }
-console.log('tape_vs_news_same', sameMarketEvent(tape, kitcoSurvey))
-
-const dxyA = {
-  en: 'Yahoo DX-Y.NYB prints 104.500, a firm dollar backdrop that raises the FX opportunity cost of holding gold.',
-  zh: '美元指数偏强',
-  sourceIds: ['yahoo-dxy'],
-}
-const dxyB = {
-  en: 'Yahoo DX-Y.NYB prints 104.800, a firm dollar backdrop that raises the FX opportunity cost of holding gold and typically pressures XAUUSD perps until the index cools.',
-  zh: '美元指数偏强压制金价',
-  sourceIds: ['yahoo-dxy-dup'],
-}
-console.log('same dxy↔dxy', sameMarketEvent(dxyA, dxyB))
-console.log('dxy_vs_kitco', sameMarketEvent(dxyA, kitcoSurvey))
-
-const mergedRisk = mergeSimilarEventPoints(riskRaw)
-console.log('merged_risk_only', mergedRisk.length, mergedRisk.map((p) => p.sourceIds.join('+')).join(' | '))
 
 const ok =
-  Boolean(goldCluster) &&
-  (goldCluster?.sourceIds.length || 0) >= 3 &&
-  all.length === 1 &&
-  sameMarketEvent(kitcoSurvey, kitcoParadox) === true &&
+  inferMarketPointTone(kitcoParadox.en, kitcoParadox.zh, 'opportunity') === 'opportunity' &&
+  inferMarketPointTone(kitcoSurvey.en, kitcoSurvey.zh, 'risk') === 'risk' &&
+  inferMarketPointTone(softDxy.en, softDxy.zh, 'opportunity') === 'opportunity' &&
+  inferMarketPointTone(firmDxy.en, firmDxy.zh, 'risk') === 'risk' &&
+  oppHasParadox &&
+  oppHasSoft &&
+  riskHasSurvey &&
+  !riskHasParadox &&
+  (riskCluster?.sourceIds.length || 0) >= 2 &&
+  !oppHasNegative &&
+  !riskHasPositiveOnlyBuy &&
   sameMarketEvent(tape, kitcoSurvey) === false &&
-  sameMarketEvent(dxyA, dxyB) === true &&
-  sameMarketEvent(dxyA, kitcoSurvey) === false &&
-  mergedRisk.length === 1
+  mergeSimilarEventPoints([kitcoSurvey, kitcoHawkish, kitcoRates]).length === 1
 
 if (!ok) {
-  console.error('FAIL', { allLen: all.length, sources: goldCluster?.sourceIds })
+  console.error('FAIL', {
+    oppHasParadox,
+    oppHasSoft,
+    riskHasSurvey,
+    riskHasParadox,
+    riskSources: riskCluster?.sourceIds,
+    oppHasNegative,
+    riskHasPositiveOnlyBuy,
+  })
   process.exit(1)
 }
 console.log('PASS')
