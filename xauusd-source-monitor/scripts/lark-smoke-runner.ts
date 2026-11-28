@@ -3155,6 +3155,22 @@ async function main() {
     'osc evaluate hard-capped so cron-tick cannot starve the heartbeat',
   )
   record(
+    'cron.oscillation_news_shock_daily_sources',
+    oscLibSrc.includes('OSC_NEWS_FEEDS') &&
+      oscLibSrc.includes('looksMajorNewsShock') &&
+      oscLibSrc.includes('cnbc.com/id/20910258') &&
+      oscLibSrc.includes('feeds.marketwatch.com') &&
+      oscLibSrc.includes('investing.com/rss') &&
+      oscLibSrc.includes('ft.com/commodities?format=rss') &&
+      oscLibSrc.includes('coindesk.com/arc/outboundfeeds/rss') &&
+      oscLibSrc.includes('kitco.com/news/category/metals') &&
+      oscLibSrc.includes('federalreserve.gov/json/ne-press.json') &&
+      oscLibSrc.includes('早报同源') &&
+      oscHandlerSrc.includes('snap.newsHeadline') &&
+      oscHandlerSrc.includes("breaking_news"),
+    'osc breaking_news scans same desks as 早报 (Fed/CNBC/MW/Investing/FT/CoinDesk/Kitco)',
+  )
+  record(
     'cron.health_stale_catchup',
     cronHealthSrc.includes('STALE_CATCHUP_MS = 28 * 60_000') &&
       cronHealthSrc.includes('staleCatchup') &&
@@ -3271,30 +3287,20 @@ async function main() {
       dailySrc.includes('releasePushClaim'),
     'cross-instance claim blocks concurrent daily pushes',
   )
-  {
-    const weeklySrc = await readFile(
-      new URL('../api/lark/weekly-report.ts', import.meta.url),
-      'utf8',
-    )
-    record(
-      'cron.weekly_idempotent_without_force',
-      /if\s*\(\s*!force\s*&&\s*!demo\s*&&\s*sent\[report\.window\.weekKey\]\s*\)/.test(weeklySrc) &&
-        !/sent\[report\.window\.weekKey\]\s*&&\s*cron/.test(weeklySrc) &&
-        weeklySrc.includes('claimPushOnce'),
-      'weekly skip for cron AND manual + claim',
-    )
-    const oscSrc = await readFile(
-      new URL('../api/lark/oscillation-alert.ts', import.meta.url),
-      'utf8',
-    )
-    record(
-      'cron.osc_claim_before_send',
-      oscSrc.includes('claimPushOnce') &&
-        oscSrc.includes('push:osc:') &&
-        oscSrc.includes('claim_held'),
-      'oscillation alert claim before group push',
-    )
-  }
+  record(
+    'cron.weekly_idempotent_without_force',
+    /if\s*\(\s*!force\s*&&\s*!demo\s*&&\s*sent\[report\.window\.weekKey\]\s*\)/.test(weeklySrc) &&
+      !/sent\[report\.window\.weekKey\]\s*&&\s*cron/.test(weeklySrc) &&
+      weeklySrc.includes('claimPushOnce'),
+    'weekly skip for cron AND manual + claim',
+  )
+  record(
+    'cron.osc_claim_before_send',
+    oscHandlerSrc.includes('claimPushOnce') &&
+      oscHandlerSrc.includes('push:osc:') &&
+      oscHandlerSrc.includes('claim_held'),
+    'oscillation alert claim before group push',
+  )
   const {
     formatDaily24hMarketAnswer: fmtDaily,
     formatDaily24hMarketAnswerAsync: fmtDailyAsync,
@@ -3743,9 +3749,11 @@ async function main() {
   )
   const {
     OSC_DEMO_DAY,
+    OSC_NEWS_FEEDS,
     buildOscillationAlertCard,
     evaluateOscillation,
     isOscDemoSlot,
+    looksMajorNewsShock,
     shouldFireAlert,
   } = await import('../api/lark/_lib/oscillationAlert')
   // 2026-11-25 02:00 UTC = 10:00 CST; catch-up through 17:59 CST (09:59 UTC)
@@ -3759,6 +3767,20 @@ async function main() {
       !isOscDemoSlot(Date.parse('2026-11-26T02:00:00Z')) &&
       OSC_DEMO_DAY === '2026-11-25',
     '',
+  )
+  record(
+    'osc.news_shock_classifier',
+    looksMajorNewsShock('Fed unexpectedly hikes rates amid inflation surge') &&
+      looksMajorNewsShock('Iran war escalates as oil prices spike') &&
+      looksMajorNewsShock('Gold plunges after emergency Fed meeting') &&
+      !looksMajorNewsShock('Fast cars, big money: sportswear races into Formula 1') &&
+      !looksMajorNewsShock('Kalshi turns to small businesses') &&
+      Array.isArray(OSC_NEWS_FEEDS) &&
+      OSC_NEWS_FEEDS.length >= 6 &&
+      OSC_NEWS_FEEDS.some((f) => f.id === 'fed-press') &&
+      OSC_NEWS_FEEDS.some((f) => f.id === 'cnbc-gold') &&
+      OSC_NEWS_FEEDS.some((f) => f.id === 'kitco-news'),
+    `feeds=${OSC_NEWS_FEEDS.map((f) => f.id).join(',')}`,
   )
   const oscSnap = await evaluateOscillation({ demo: true })
   const oscCard = buildOscillationAlertCard(oscSnap, 'ou_smoke_admin')
