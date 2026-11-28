@@ -42,10 +42,16 @@ export async function sql<T = Record<string, unknown>>(
 }
 
 async function startLocal(): Promise<PGlite> {
-  // Persist on disk so cron writes and page reads share one catalogue in local/dev.
-  const dataDir = path.join(process.cwd(), ".data", "pglite");
-  await mkdir(dataDir, { recursive: true });
-  const db = new PGlite(dataDir);
+  // Vitest needs an isolated in-memory DB; local/dev persists so cron + pages share state.
+  const useMemory =
+    process.env.VITEST === "true" || process.env.SIMULUM_PGLITE_MEMORY === "1";
+  const db = useMemory
+    ? new PGlite()
+    : await (async () => {
+        const dataDir = path.join(process.cwd(), ".data", "pglite");
+        await mkdir(dataDir, { recursive: true });
+        return new PGlite(dataDir);
+      })();
   const dir = path.join(process.cwd(), "migrations");
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".sql")).sort();
   for (const file of files) {

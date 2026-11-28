@@ -57,9 +57,9 @@ export function LanguageMenu() {
           </span>
           <span className="text-mist">▾</span>
         </summary>
-        <div className="absolute end-0 z-40 mt-1 max-h-72 w-52 overflow-auto border border-line bg-paper py-1 shadow-lg">
+        <div className="absolute end-0 z-40 mt-1 max-h-[min(24rem,70vh)] w-56 overflow-auto border border-line bg-paper py-1 shadow-lg">
           <p className="px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-mist">
-            {t("lang.label")}
+            {t("lang.label")} · {locales.length}
           </p>
           {locales.map((l) => (
             <button
@@ -82,7 +82,10 @@ export function LanguageMenu() {
                 className="h-4 w-[22px] shrink-0 object-cover"
                 unoptimized
               />
-              <span>{l.nativeName}</span>
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate">{l.nativeName}</span>
+                <span className="truncate font-mono text-[10px] text-mist">{l.name}</span>
+              </span>
             </button>
           ))}
         </div>

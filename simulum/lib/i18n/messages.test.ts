@@ -11,7 +11,7 @@ describe("i18n messages", () => {
     expect(t("en", "hero.jump")).toContain("catalogue");
     expect(t("zh", "hero.jump")).toContain("目录");
     expect(t("fr", "hero.jump").length).toBeGreaterThan(3);
-    expect(LOCALES.length).toBeGreaterThanOrEqual(12);
+    expect(LOCALES.length).toBeGreaterThanOrEqual(20);
   });
 
   it("localizes scan log title across all locales", () => {
