@@ -1,0 +1,1464 @@
+{
+  "domains": {
+    "A": [
+      "行情、Index、Mark、Funding风险",
+      "Market data, Index, Mark, Funding",
+      14,
+      "part1"
+    ],
+    "B": [
+      "订单簿、撮合和交易执行风险",
+      "Order book, matching & execution",
+      14,
+      "part1"
+    ],
+    "C": [
+      "仓位、保证金、强平与ADL风险",
+      "Position, margin, liquidation & ADL",
+      14,
+      "part1"
+    ],
+    "D": [
+      "DB做市、接仓与外部对冲风险",
+      "DB MM, takeover & external hedge",
+      12,
+      "part1"
+    ],
+    "E": [
+      "资金、清结算和财务风险",
+      "Funds, settlement & finance",
+      12,
+      "part1"
+    ],
+    "F": [
+      "用户账户、权限与交易滥用风险",
+      "Accounts, permissions & abuse",
+      10,
+      "part1"
+    ],
+    "G": [
+      "系统可靠性、数据一致性与灾备风险",
+      "Reliability, consistency & DR",
+      12,
+      "part1"
+    ],
+    "H": [
+      "运营、治理与系统性风险",
+      "Ops, governance & systemic",
+      10,
+      "part1"
+    ],
+    "I": [
+      "流动性风险 Liquidity Risk",
+      "Liquidity risk",
+      10,
+      "part2"
+    ],
+    "J": [
+      "做市商治理 Market Maker Governance",
+      "Market maker governance",
+      12,
+      "part2"
+    ],
+    "K": [
+      "交易执行质量 Execution Risk",
+      "Execution quality",
+      8,
+      "part2"
+    ],
+    "L": [
+      "市场操纵与不公平交易",
+      "Manipulation & unfair trading",
+      6,
+      "part2"
+    ],
+    "M": [
+      "平台敞口与Trading Risk Management",
+      "Platform exposure & TRM",
+      4,
+      "part2"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "A01",
+      "domain": "A",
+      "titleZh": "Index价格明显偏离真实市场",
+      "coverage": "🟢 L1-07/08",
+      "severity": "P1–P0",
+      "frequency": "中 / 1s",
+      "monitorZh": "多源Index、友商价差",
+      "remediateZh": "异常源隔离、Fallback、修复计算"
+    },
+    {
+      "id": "A02",
+      "domain": "A",
+      "titleZh": "指数源超时、停止更新",
+      "coverage": "🟢 L1-12",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "Source TTL、更新时间",
+      "remediateZh": "自动剔除、重连、恢复验证"
+    },
+    {
+      "id": "A03",
+      "domain": "A",
+      "titleZh": "仅剩单一有效指数源",
+      "coverage": "🟢 L1-15",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "有效源数量",
+      "remediateZh": "恢复多源、启用已批准保护"
+    },
+    {
+      "id": "A04",
+      "domain": "A",
+      "titleZh": "指数源频繁切换、抖动",
+      "coverage": "🟢 L1-13",
+      "severity": "P2–P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "剔除/恢复次数、切换频率",
+      "remediateZh": "恢复滞后机制、最短稳定窗口"
+    },
+    {
+      "id": "A05",
+      "domain": "A",
+      "titleZh": "指数平滑过渡失败、跳价",
+      "coverage": "🟢 L1-11",
+      "severity": "P1",
+      "frequency": "低 / 事件型",
+      "monitorZh": "过渡状态、Index跳幅",
+      "remediateZh": "修复过渡算法、状态机"
+    },
+    {
+      "id": "A06",
+      "domain": "A",
+      "titleZh": "Mark与Index异常偏离",
+      "coverage": "🟢 L1-07/09/10",
+      "severity": "P1–P0",
+      "frequency": "中 / 1s",
+      "monitorZh": "Mark/Index、候选价有效性",
+      "remediateZh": "降级算法、修复候选价"
+    },
+    {
+      "id": "A07",
+      "domain": "A",
+      "titleZh": "Mark算法错误，导致错误强平",
+      "coverage": "🟡 L2-D",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Mark计算重放、强平触发价",
+      "remediateZh": "修复算法、核查错误强平和赔付"
+    },
+    {
+      "id": "A08",
+      "domain": "A",
+      "titleZh": "USDT/USD换算价格错误或失效",
+      "coverage": "🟢 L1-14",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "汇率TTL、主备源差异",
+      "remediateZh": "备用源、冻结无效汇率输入"
+    },
+    {
+      "id": "A09",
+      "domain": "A",
+      "titleZh": "Funding费率计算错误",
+      "coverage": "🟢 L1-16/17",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "Premium、Funding、上下限",
+      "remediateZh": "修复公式、重算受影响周期"
+    },
+    {
+      "id": "A10",
+      "domain": "A",
+      "titleZh": "Funding错误结算或重复扣款",
+      "coverage": "🟡 L1-17/25",
+      "severity": "P0–P1",
+      "frequency": "低 / 每次结算",
+      "monitorZh": "应收应付与实际流水逐笔勾稽",
+      "remediateZh": "幂等结算、授权补账"
+    },
+    {
+      "id": "A11",
+      "domain": "A",
+      "titleZh": "周末黄金市场休市，价格源失真",
+      "coverage": "🟡 L1-08/12/15",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "交易日历、源活跃度、周末基准价",
+      "remediateZh": "周末定价策略、交易保护"
+    },
+    {
+      "id": "A12",
+      "domain": "A",
+      "titleZh": "多价格源同时异常或受到操纵",
+      "coverage": "🟡 L1-07/08",
+      "severity": "P0",
+      "frequency": "低 / 1s",
+      "monitorZh": "源间共识、相关性、离群比例",
+      "remediateZh": "独立源、异常保护、RC升级"
+    },
+    {
+      "id": "A13",
+      "domain": "A",
+      "titleZh": "价格时间戳错乱、旧价被当成新价",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "Event time、ingest time、序列号",
+      "remediateZh": "丢弃过期Tick、重放校验"
+    },
+    {
+      "id": "A14",
+      "domain": "A",
+      "titleZh": "价格源与Mark/Funding依赖链路延迟",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "Source→Index→Mark→Funding端到端延迟",
+      "remediateZh": "数据流水线修复、依赖健康检查"
+    },
+    {
+      "id": "B01",
+      "domain": "B",
+      "titleZh": "买卖盘深度不足",
+      "coverage": "🟢 L1-02",
+      "severity": "P2–P1",
+      "frequency": "高 / 1–5s",
+      "monitorZh": "双边累计深度",
+      "remediateZh": "DB补充流动性、修复报价"
+    },
+    {
+      "id": "B02",
+      "domain": "B",
+      "titleZh": "盘口Spread异常扩大",
+      "coverage": "🟢 L1-03",
+      "severity": "P2–P1",
+      "frequency": "高 / 1–5s",
+      "monitorZh": "Bid1/Ask1",
+      "remediateZh": "DB报价调整"
+    },
+    {
+      "id": "B03",
+      "domain": "B",
+      "titleZh": "无成交、成交活动停止",
+      "coverage": "🟢 L1-01",
+      "severity": "P2–P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "最后成交时间",
+      "remediateZh": "区分需求不足与撮合故障"
+    },
+    {
+      "id": "B04",
+      "domain": "B",
+      "titleZh": "盘口插针、异常成交价",
+      "coverage": "🟢 L1-05",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "Last/Index、成交离群",
+      "remediateZh": "Price Band、异常成交调查"
+    },
+    {
+      "id": "B05",
+      "domain": "B",
+      "titleZh": "合法限价单被错误拒绝",
+      "coverage": "🟢 L1-06",
+      "severity": "P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "Reject code、订单价格",
+      "remediateZh": "修复校验和配置"
+    },
+    {
+      "id": "B06",
+      "domain": "B",
+      "titleZh": "撮合引擎停止或处理延迟",
+      "coverage": "🟡 L1-01/06",
+      "severity": "P0",
+      "frequency": "低 / 1s",
+      "monitorZh": "撮合延迟、队列积压、心跳",
+      "remediateZh": "故障转移、恢复撮合"
+    },
+    {
+      "id": "B07",
+      "domain": "B",
+      "titleZh": "订单重复执行",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Order ID、Trade ID唯一性",
+      "remediateZh": "幂等处理、账务修复"
+    },
+    {
+      "id": "B08",
+      "domain": "B",
+      "titleZh": "订单丢失、ACK后未进入撮合",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "低 / 实时",
+      "monitorZh": "ACK→Accepted→Match状态差异",
+      "remediateZh": "消息补偿、订单重放"
+    },
+    {
+      "id": "B09",
+      "domain": "B",
+      "titleZh": "撤单失败，造成意外成交",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "Cancel request→ACK延迟",
+      "remediateZh": "修复撤单链路、客户影响核查"
+    },
+    {
+      "id": "B10",
+      "domain": "B",
+      "titleZh": "Reduce-Only规则失效，反向开仓",
+      "coverage": "🟡 L1-06",
+      "severity": "P0–P1",
+      "frequency": "低 / 实时",
+      "monitorZh": "Reduce-Only订单与仓位前后变化",
+      "remediateZh": "强校验、修复异常仓位"
+    },
+    {
+      "id": "B11",
+      "domain": "B",
+      "titleZh": "市价单在薄盘口发生极端滑点",
+      "coverage": "🟡 L1-02/05",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "成交滑点、Impact price、深度",
+      "remediateZh": "滑点保护、订单规模限制"
+    },
+    {
+      "id": "B12",
+      "domain": "B",
+      "titleZh": "价格保护错误放行或过度拦截",
+      "coverage": "🟡 L1-06",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "Price Band拒单率、越界成交",
+      "remediateZh": "修复规则、审批调整阈值"
+    },
+    {
+      "id": "B13",
+      "domain": "B",
+      "titleZh": "条件单、止损止盈触发或执行失败",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "触发条件与实际订单事件对比",
+      "remediateZh": "修复Trigger Engine、补偿处理"
+    },
+    {
+      "id": "B14",
+      "domain": "B",
+      "titleZh": "行情、订单簿和撮合状态不同步",
+      "coverage": "🟡 L1-01/02",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "Book sequence gap、快照一致性",
+      "remediateZh": "重新同步订单簿、修复消息链路"
+    },
+    {
+      "id": "C01",
+      "domain": "C",
+      "titleZh": "大额仓位临近强平",
+      "coverage": "🟡 L1-23",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "MMR、距离强平价、仓位名义额",
+      "remediateZh": "提前预警、杠杆及仓位限制"
+    },
+    {
+      "id": "C02",
+      "domain": "C",
+      "titleZh": "强平触发条件计算错误",
+      "coverage": "🟡 L1-23",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Equity/MMR/Mark重算",
+      "remediateZh": "修复计算、核查错误强平"
+    },
+    {
+      "id": "C03",
+      "domain": "C",
+      "titleZh": "应强平仓位未及时强平",
+      "coverage": "🟡 L1-23",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "强平条件满足→触发延迟",
+      "remediateZh": "修复风控引擎、清理残余风险"
+    },
+    {
+      "id": "C04",
+      "domain": "C",
+      "titleZh": "强平订单失败、部分成交",
+      "coverage": "🟢 L1-23",
+      "severity": "P0–P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "强平状态、执行数量",
+      "remediateZh": "撮合修复、DB接仓"
+    },
+    {
+      "id": "C05",
+      "domain": "C",
+      "titleZh": "强平后产生穿仓负权益",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Bankruptcy loss、负权益总额",
+      "remediateZh": "保险基金、ADL、减险"
+    },
+    {
+      "id": "C06",
+      "domain": "C",
+      "titleZh": "保证金冻结/释放错误",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "Order margin、Position margin、Available balance",
+      "remediateZh": "保证金重算、幂等释放"
+    },
+    {
+      "id": "C07",
+      "domain": "C",
+      "titleZh": "IMR/MMR阶梯计算或配置错误",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "按仓位档位重算IMR/MMR",
+      "remediateZh": "配置校验、审批回滚"
+    },
+    {
+      "id": "C08",
+      "domain": "C",
+      "titleZh": "用户超过最大杠杆或仓位限制",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "Leverage、Position Limit",
+      "remediateZh": "订单前校验、Reduce-Only"
+    },
+    {
+      "id": "C09",
+      "domain": "C",
+      "titleZh": "Cross/Isolated保证金隔离失效",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "保证金模式与实际扣款账户",
+      "remediateZh": "隔离校验、修复资金分配"
+    },
+    {
+      "id": "C10",
+      "domain": "C",
+      "titleZh": "ADL触发或执行异常",
+      "coverage": "🟢 L1-24",
+      "severity": "P0",
+      "frequency": "低 / 事件型",
+      "monitorZh": "ADL状态、执行数量",
+      "remediateZh": "修复ADL状态机"
+    },
+    {
+      "id": "C11",
+      "domain": "C",
+      "titleZh": "ADL排序错误，错误减仓用户",
+      "coverage": "🟡 L1-24",
+      "severity": "P0",
+      "frequency": "低 / 事件型",
+      "monitorZh": "排序快照与执行账户对比",
+      "remediateZh": "修复排序、核查客户影响"
+    },
+    {
+      "id": "C12",
+      "domain": "C",
+      "titleZh": "保险基金余额不足",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 1min",
+      "monitorZh": "余额、损失消耗速度、压力损失",
+      "remediateZh": "资金缓冲、限仓、RC审批"
+    },
+    {
+      "id": "C13",
+      "domain": "C",
+      "titleZh": "大户集中持仓引发连锁强平",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 5–10s",
+      "monitorZh": "Top1/Top5集中度、OI、临平仓位",
+      "remediateZh": "集中度限制、压力测试"
+    },
+    {
+      "id": "C14",
+      "domain": "C",
+      "titleZh": "仓位数量、方向或PNL与成交不一致",
+      "coverage": "🟡 L1-25",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Trade→Position→Margin事件勾稽",
+      "remediateZh": "重建仓位、授权账务修复"
+    },
+    {
+      "id": "D01",
+      "domain": "D",
+      "titleZh": "DB报价账户可用余额不足",
+      "coverage": "🟡 L1-18",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "报价账户可用余额",
+      "remediateZh": "补资、调整挂单规模"
+    },
+    {
+      "id": "D02",
+      "domain": "D",
+      "titleZh": "DB报价账户保证金占用过高",
+      "coverage": "🟡 L1-18/19",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "已用保证金/总余额",
+      "remediateZh": "降低敞口、资金补充"
+    },
+    {
+      "id": "D03",
+      "domain": "D",
+      "titleZh": "DB报价账户权益快速下降",
+      "coverage": "🟡 L1-19",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "Equity及滚动回撤",
+      "remediateZh": "DB减险、核对对冲损益"
+    },
+    {
+      "id": "D04",
+      "domain": "D",
+      "titleZh": "DB净持仓超过风险限额",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 10s",
+      "monitorZh": "净多/净空名义额",
+      "remediateZh": "限仓、外部对冲"
+    },
+    {
+      "id": "D05",
+      "domain": "D",
+      "titleZh": "DB内部仓位与外部对冲不匹配",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 10s",
+      "monitorZh": "Internal + external net exposure",
+      "remediateZh": "对冲补单、异常订单调查"
+    },
+    {
+      "id": "D06",
+      "domain": "D",
+      "titleZh": "DB外部对冲失败或超时",
+      "coverage": "🟡 L1-20",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "Hedge order状态、剩余数量",
+      "remediateZh": "备用LP、分批对冲"
+    },
+    {
+      "id": "D07",
+      "domain": "D",
+      "titleZh": "DB接仓持仓超过10分钟",
+      "coverage": "🟢 L1-20",
+      "severity": "P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "持仓持续时间",
+      "remediateZh": "核对是否已对冲、处置残余敞口"
+    },
+    {
+      "id": "D08",
+      "domain": "D",
+      "titleZh": "DB接仓失败、数量错误或重复接仓",
+      "coverage": "🟡 L1-20/23",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Liquidation ID→Takeover ID",
+      "remediateZh": "幂等接仓、修复接口"
+    },
+    {
+      "id": "D09",
+      "domain": "D",
+      "titleZh": "DB接仓账户资金不足",
+      "coverage": "🟢 L1-18/21",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "钱包余额、可用保证金",
+      "remediateZh": "注资、修复划转"
+    },
+    {
+      "id": "D10",
+      "domain": "D",
+      "titleZh": "DB服务心跳中断",
+      "coverage": "🟢 L1-22",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "心跳、报价/接仓业务探针",
+      "remediateZh": "重连、故障切换"
+    },
+    {
+      "id": "D11",
+      "domain": "D",
+      "titleZh": "K线策略账户权益或可用余额不足",
+      "coverage": "🟡",
+      "severity": "P1–P2",
+      "frequency": "中 / 1min",
+      "monitorZh": "K线账户余额、权益",
+      "remediateZh": "补资、暂停策略并审批"
+    },
+    {
+      "id": "D12",
+      "domain": "D",
+      "titleZh": "K线策略账户净持仓超限",
+      "coverage": "🟡",
+      "severity": "P1",
+      "frequency": "中 / 10s",
+      "monitorZh": "净XAU仓位、Delta",
+      "remediateZh": "减仓、修复策略"
+    },
+    {
+      "id": "E01",
+      "domain": "E",
+      "titleZh": "用户快照与流水不一致",
+      "coverage": "🟢 L1-25",
+      "severity": "P1",
+      "frequency": "中 / 每批次",
+      "monitorZh": "Snapshot vs Ledger",
+      "remediateZh": "重算、补账"
+    },
+    {
+      "id": "E02",
+      "domain": "E",
+      "titleZh": "Broker汇总与用户快照不一致",
+      "coverage": "🟢 L1-26",
+      "severity": "P1",
+      "frequency": "中 / 每批次",
+      "monitorZh": "Broker vs UID汇总",
+      "remediateZh": "修复映射、重跑"
+    },
+    {
+      "id": "E03",
+      "domain": "E",
+      "titleZh": "用户或Broker快照缺失",
+      "coverage": "🟢 L1-27",
+      "severity": "P1",
+      "frequency": "中 / 每批次",
+      "monitorZh": "预期/实际快照数量",
+      "remediateZh": "补跑、修复任务"
+    },
+    {
+      "id": "E04",
+      "domain": "E",
+      "titleZh": "资金流水类型未匹配",
+      "coverage": "🟢 L1-28",
+      "severity": "P1–P2",
+      "frequency": "中 / 每批次",
+      "monitorZh": "未匹配类型及金额",
+      "remediateZh": "修复映射"
+    },
+    {
+      "id": "E05",
+      "domain": "E",
+      "titleZh": "入金确认错误、未到账或重复到账",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "Deposit ID、链上确认、入账状态",
+      "remediateZh": "确认数校验、幂等入账"
+    },
+    {
+      "id": "E06",
+      "domain": "E",
+      "titleZh": "提现重复执行或错误转出",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Withdrawal ID、审批、签名、链上交易",
+      "remediateZh": "限额、冻结异常提现、应急处置"
+    },
+    {
+      "id": "E07",
+      "domain": "E",
+      "titleZh": "USDT/USDC按1:1记USD产生脱锚损失",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "稳定币市场价、平台资产负债",
+      "remediateZh": "脱锚阈值、限额、RC审批保护"
+    },
+    {
+      "id": "E08",
+      "domain": "E",
+      "titleZh": "热钱包余额不足，无法正常提现",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "热钱包余额、待提现金额",
+      "remediateZh": "资金调拨、流动性储备"
+    },
+    {
+      "id": "E09",
+      "domain": "E",
+      "titleZh": "平台总资产与用户负债不匹配",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 5min+日终",
+      "monitorZh": "Assets vs Liabilities",
+      "remediateZh": "总账勾稽、差异调查"
+    },
+    {
+      "id": "E10",
+      "domain": "E",
+      "titleZh": "结算消息重复、丢失或顺序错误",
+      "coverage": "🟡 L1-25/28",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "Event ID、Sequence、Ledger version",
+      "remediateZh": "幂等、重放、修复账本"
+    },
+    {
+      "id": "E11",
+      "domain": "E",
+      "titleZh": "手续费计算或扣费错误",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 每笔成交",
+      "monitorZh": "预期手续费 vs 实收",
+      "remediateZh": "修复费率、批量核算"
+    },
+    {
+      "id": "E12",
+      "domain": "E",
+      "titleZh": "内部资金划转失败或重复划转",
+      "coverage": "🟡 L1-21",
+      "severity": "P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "Transfer ID、双边账户余额",
+      "remediateZh": "幂等划转、Finance对账"
+    },
+    {
+      "id": "F01",
+      "domain": "F",
+      "titleZh": "未通过KYC的用户成功交易",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "低 / 事件型",
+      "monitorZh": "KYC状态 vs 下单权限",
+      "remediateZh": "下单前校验、限制账户"
+    },
+    {
+      "id": "F02",
+      "domain": "F",
+      "titleZh": "冻结或限制账户仍可交易/提现",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "低 / 实时",
+      "monitorZh": "Account status vs action",
+      "remediateZh": "强制权限检查、修复状态同步"
+    },
+    {
+      "id": "F03",
+      "domain": "F",
+      "titleZh": "用户账户被盗、异常登录交易",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "登录设备、IP、交易行为变化",
+      "remediateZh": "MFA、限制异常操作"
+    },
+    {
+      "id": "F04",
+      "domain": "F",
+      "titleZh": "API Key泄露或异常高频交易",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "API调用、来源、失败率",
+      "remediateZh": "限流、密钥轮换、撤销"
+    },
+    {
+      "id": "F05",
+      "domain": "F",
+      "titleZh": "自成交或关联账户洗量",
+      "coverage": "🔴",
+      "severity": "P1–P2",
+      "frequency": "中 / 实时+日终",
+      "monitorZh": "Self-trade、关联账户成交",
+      "remediateZh": "STP、调查和限制"
+    },
+    {
+      "id": "F06",
+      "domain": "F",
+      "titleZh": "Spoofing：大量挂单后迅速撤销",
+      "coverage": "🔴",
+      "severity": "P1–P2",
+      "frequency": "中 / 实时",
+      "monitorZh": "Cancel ratio、订单存续时间",
+      "remediateZh": "行为监控、合规调查"
+    },
+    {
+      "id": "F07",
+      "domain": "F",
+      "titleZh": "利用薄盘口操纵Last/Mark/Funding",
+      "coverage": "🟡 L1-05/07/16",
+      "severity": "P0–P1",
+      "frequency": "中 / 实时",
+      "monitorZh": "成交行为+价格+资金费关联",
+      "remediateZh": "Mark保护、仓位限制、调查"
+    },
+    {
+      "id": "F08",
+      "domain": "F",
+      "titleZh": "套利滥用或利用延迟价格交易",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "Mark-out、报价延迟、异常盈利",
+      "remediateZh": "修复延迟、调查账户行为"
+    },
+    {
+      "id": "F09",
+      "domain": "F",
+      "titleZh": "大额账户集中获利导致平台敞口失衡",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 10s",
+      "monitorZh": "Top账户PNL、净敞口、OI",
+      "remediateZh": "集中度限制、风险缓冲"
+    },
+    {
+      "id": "F10",
+      "domain": "F",
+      "titleZh": "用户跨账户、跨产品规避风险限额",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1min",
+      "monitorZh": "关联账户综合仓位",
+      "remediateZh": "账户级及关联组级限额"
+    },
+    {
+      "id": "G01",
+      "domain": "G",
+      "titleZh": "撮合系统整体不可用",
+      "coverage": "🟡 L1-01",
+      "severity": "P0",
+      "frequency": "低 / 1s",
+      "monitorZh": "撮合健康、订单探针",
+      "remediateZh": "主备切换、恢复测试"
+    },
+    {
+      "id": "G02",
+      "domain": "G",
+      "titleZh": "风控引擎宕机，订单绕过检查",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 1s",
+      "monitorZh": "Risk check ACK、拒单率、心跳",
+      "remediateZh": "Fail-closed、阻断不安全订单"
+    },
+    {
+      "id": "G03",
+      "domain": "G",
+      "titleZh": "数据库主从延迟或故障切换异常",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "Replication lag、主备状态",
+      "remediateZh": "HA、故障切换"
+    },
+    {
+      "id": "G04",
+      "domain": "G",
+      "titleZh": "消息队列积压，导致风控延迟",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "Queue lag、Oldest message age",
+      "remediateZh": "扩容、背压、修复消费者"
+    },
+    {
+      "id": "G05",
+      "domain": "G",
+      "titleZh": "订单、仓位、余额缓存与主账不一致",
+      "coverage": "🟡 L1-25",
+      "severity": "P0–P1",
+      "frequency": "中 / 5s",
+      "monitorZh": "Cache vs DB version",
+      "remediateZh": "版本控制、重建缓存"
+    },
+    {
+      "id": "G06",
+      "domain": "G",
+      "titleZh": "WebSocket断连，用户看到旧价格",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "WS连接数、行情延迟",
+      "remediateZh": "重连、旧价提示、快照补齐"
+    },
+    {
+      "id": "G07",
+      "domain": "G",
+      "titleZh": "API错误率激增、下单超时",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 1s",
+      "monitorZh": "Error rate、P95/P99 latency",
+      "remediateZh": "限流、扩容、回滚"
+    },
+    {
+      "id": "G08",
+      "domain": "G",
+      "titleZh": "告警引擎失效，真实风险未通知",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 10s",
+      "monitorZh": "独立Synthetic Alert、投递ACK",
+      "remediateZh": "独立备用告警通道"
+    },
+    {
+      "id": "G09",
+      "domain": "G",
+      "titleZh": "Lark告警发送失败或无人响应",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "Delivery、ACK、超时升级",
+      "remediateZh": "备用通知、自动升级"
+    },
+    {
+      "id": "G10",
+      "domain": "G",
+      "titleZh": "生产配置错误或未经授权变更",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "Config diff、审批记录、版本",
+      "remediateZh": "RBAC、审计、回滚"
+    },
+    {
+      "id": "G11",
+      "domain": "G",
+      "titleZh": "系统时钟偏移造成事件顺序错误",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "低 / 10s",
+      "monitorZh": "Clock skew、NTP状态",
+      "remediateZh": "时间同步、时间戳校验"
+    },
+    {
+      "id": "G12",
+      "domain": "G",
+      "titleZh": "主备灾备切换后订单或账本不一致",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 演练+事件型",
+      "monitorZh": "DR后订单/仓位/账本勾稽",
+      "remediateZh": "灾备演练、恢复后核账"
+    },
+    {
+      "id": "H01",
+      "domain": "H",
+      "titleZh": "多个L1告警由同一根因引起",
+      "coverage": "🟡 L2-A–F",
+      "severity": "P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "合约、时间、依赖关系聚合",
+      "remediateZh": "L2确定性聚合、统一事件"
+    },
+    {
+      "id": "H02",
+      "domain": "H",
+      "titleZh": "重大风险未及时升级",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "ACK时长、升级SLA",
+      "remediateZh": "值班升级矩阵"
+    },
+    {
+      "id": "H03",
+      "domain": "H",
+      "titleZh": "事故被错误关闭，残余风险仍存在",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 事件型",
+      "monitorZh": "Close条件、风险状态",
+      "remediateZh": "结案校验、复核"
+    },
+    {
+      "id": "H04",
+      "domain": "H",
+      "titleZh": "关键风险阈值长期不适应市场变化",
+      "coverage": "🔴",
+      "severity": "P2–P1",
+      "frequency": "中 / 每日",
+      "monitorZh": "告警质量、波动率、误报漏报",
+      "remediateZh": "阈值复盘、审批调整"
+    },
+    {
+      "id": "H05",
+      "domain": "H",
+      "titleZh": "新合约上线缺少风控参数",
+      "coverage": "🔴",
+      "severity": "P0–P1",
+      "frequency": "中 / 上线前",
+      "monitorZh": "Launch checklist、配置完整率",
+      "remediateZh": "上线门禁、UAT"
+    },
+    {
+      "id": "H06",
+      "domain": "H",
+      "titleZh": "极端行情引发流动性枯竭和连锁强平",
+      "coverage": "🟡 L2-F",
+      "severity": "P0",
+      "frequency": "低 / 5s",
+      "monitorZh": "深度、临平仓位、DB容量、保险基金",
+      "remediateZh": "压力测试、分级保护"
+    },
+    {
+      "id": "H07",
+      "domain": "H",
+      "titleZh": "黄金市场休市与交易所24/7运行不匹配",
+      "coverage": "🟡 A11",
+      "severity": "P1",
+      "frequency": "中 / 日历+实时",
+      "monitorZh": "市场开闭市、报价质量、仓位",
+      "remediateZh": "休市交易规则、报价保护"
+    },
+    {
+      "id": "H08",
+      "domain": "H",
+      "titleZh": "平台净敞口超过可用资金或对冲容量",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "中 / 10s",
+      "monitorZh": "全平台净Delta、压力损失、可用资金",
+      "remediateZh": "总敞口限额、动态减险"
+    },
+    {
+      "id": "H09",
+      "domain": "H",
+      "titleZh": "关键外部供应商/价格源集中依赖",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中 / 每日",
+      "monitorZh": "源集中度、依赖图、可用性",
+      "remediateZh": "多供应商、切换演练"
+    },
+    {
+      "id": "H10",
+      "domain": "H",
+      "titleZh": "安全入侵或特权账号执行异常资金/交易操作",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低 / 实时",
+      "monitorZh": "特权审计、异常操作、权限变更",
+      "remediateZh": "最小权限、密钥隔离、应急冻结"
+    },
+    {
+      "id": "T01",
+      "domain": "I",
+      "titleZh": "买卖盘深度严重不对称",
+      "coverage": "🟡 L1-02",
+      "severity": "P1",
+      "frequency": "高",
+      "monitorZh": "Bid/Ask Depth Ratio",
+      "remediateZh": "MM补充薄弱侧深度"
+    },
+    {
+      "id": "T02",
+      "domain": "I",
+      "titleZh": "大额订单预期滑点过高",
+      "coverage": "🟡 L1-02/03",
+      "severity": "P1",
+      "frequency": "高",
+      "monitorZh": "$10K/$50K/$100K Impact Price",
+      "remediateZh": "限制市价单、补充深度"
+    },
+    {
+      "id": "T03",
+      "domain": "I",
+      "titleZh": "盘口深度瞬间消失（Liquidity Vacuum）",
+      "coverage": "🟡 L1-02/22",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "深度下降速度、撤单量",
+      "remediateZh": "检查MM批量撤单，必要时限制交易"
+    },
+    {
+      "id": "T04",
+      "domain": "I",
+      "titleZh": "盘口看似有深度，但实际成交率极低",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Fill Rate、订单拒绝率",
+      "remediateZh": "检查虚假流动性、撮合延迟"
+    },
+    {
+      "id": "T05",
+      "domain": "I",
+      "titleZh": "流动性恢复时间过长",
+      "coverage": "🟡 L1-02",
+      "severity": "P2",
+      "frequency": "中",
+      "monitorZh": "Depth Recovery Time",
+      "remediateZh": "MM恢复SLA、备用MM"
+    },
+    {
+      "id": "T06",
+      "domain": "I",
+      "titleZh": "市场波动期间Spread异常扩大",
+      "coverage": "🟢 L1-03",
+      "severity": "P1",
+      "frequency": "高",
+      "monitorZh": "Spread与波动率联合监控",
+      "remediateZh": "动态报价要求、风险升级"
+    },
+    {
+      "id": "T07",
+      "domain": "I",
+      "titleZh": "盘口深度高度集中于单一价格档位",
+      "coverage": "🔴",
+      "severity": "P2",
+      "frequency": "中",
+      "monitorZh": "Top1/Top5 Depth Ratio",
+      "remediateZh": "要求MM改善多档报价"
+    },
+    {
+      "id": "T08",
+      "domain": "I",
+      "titleZh": "强平订单规模超过可执行深度",
+      "coverage": "🟡 L2-F",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "Liquidation Size / Executable Depth",
+      "remediateZh": "分批强平、DB接仓保护"
+    },
+    {
+      "id": "T09",
+      "domain": "I",
+      "titleZh": "周末或休市期间流动性异常下降",
+      "coverage": "🟡 L1-02/03",
+      "severity": "P1",
+      "frequency": "高",
+      "monitorZh": "交易时段×深度×Spread",
+      "remediateZh": "特殊时段报价规则"
+    },
+    {
+      "id": "T10",
+      "domain": "I",
+      "titleZh": "流动性与OI不匹配，潜在连锁强平",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "OI / Depth、临平仓位",
+      "remediateZh": "限仓、降低新增风险敞口"
+    },
+    {
+      "id": "T11",
+      "domain": "J",
+      "titleZh": "MM报价在线率低于SLA",
+      "coverage": "🟡 L1-22",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Quoting Uptime %",
+      "remediateZh": "SLA整改、备用MM"
+    },
+    {
+      "id": "T12",
+      "domain": "J",
+      "titleZh": "MM未满足最低双边报价义务",
+      "coverage": "🟡 L1-02/03",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "双边报价覆盖率、最低深度",
+      "remediateZh": "触发SLA违约处理"
+    },
+    {
+      "id": "T13",
+      "domain": "J",
+      "titleZh": "MM频繁撤单导致流动性不稳定",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "MM Cancel Ratio、订单寿命",
+      "remediateZh": "调查策略、要求调整报价"
+    },
+    {
+      "id": "T14",
+      "domain": "J",
+      "titleZh": "MM在高波动时主动撤出市场",
+      "coverage": "🟡 L1-02/22",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "波动率×MM在线率",
+      "remediateZh": "应急报价机制、备用MM"
+    },
+    {
+      "id": "T15",
+      "domain": "J",
+      "titleZh": "MM实际报价偏离约定参考价格",
+      "coverage": "🟡 L1-04/07",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "MM Mid vs Index",
+      "remediateZh": "修正报价锚点"
+    },
+    {
+      "id": "T16",
+      "domain": "J",
+      "titleZh": "MM报价质量长期劣于约定标准",
+      "coverage": "🟡 L1-02/03",
+      "severity": "P2",
+      "frequency": "高",
+      "monitorZh": "Spread、Depth、Uptime综合评分",
+      "remediateZh": "周度评分、整改"
+    },
+    {
+      "id": "T17",
+      "domain": "J",
+      "titleZh": "单一MM贡献过高，存在集中依赖",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "MM Depth Share %",
+      "remediateZh": "引入备用MM、限制集中度"
+    },
+    {
+      "id": "T18",
+      "domain": "J",
+      "titleZh": "MM报价账户余额不足",
+      "coverage": "🟡 L1-18",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "MM Available Balance",
+      "remediateZh": "补资、减少报价义务"
+    },
+    {
+      "id": "T19",
+      "domain": "J",
+      "titleZh": "MM内部仓位与外部对冲不一致",
+      "coverage": "🟡 L1-20",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "Net Exposure、Hedge Coverage",
+      "remediateZh": "补充对冲、RC升级"
+    },
+    {
+      "id": "T20",
+      "domain": "J",
+      "titleZh": "MM对冲交易成本异常升高",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Hedge Slippage、Hedge Cost",
+      "remediateZh": "更换执行路径、优化对冲"
+    },
+    {
+      "id": "T21",
+      "domain": "J",
+      "titleZh": "MM使用未授权策略或超出交易权限",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "低",
+      "monitorZh": "Strategy ID、API权限、操作审计",
+      "remediateZh": "停止未授权策略、权限复核"
+    },
+    {
+      "id": "T22",
+      "domain": "J",
+      "titleZh": "MM报价或成交存在利益冲突、操纵嫌疑",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低",
+      "monitorZh": "MM订单行为、关联成交、PNL",
+      "remediateZh": "独立调查、隔离权限"
+    },
+    {
+      "id": "T23",
+      "domain": "K",
+      "titleZh": "用户订单成交滑点显著高于正常水平",
+      "coverage": "🟡 L1-05",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Slippage Distribution",
+      "remediateZh": "调查盘口和撮合"
+    },
+    {
+      "id": "T24",
+      "domain": "K",
+      "titleZh": "大额订单被异常拆分或重复成交",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "低",
+      "monitorZh": "Order ID→Trade ID数量核对",
+      "remediateZh": "幂等修复、账务核对"
+    },
+    {
+      "id": "T25",
+      "domain": "K",
+      "titleZh": "订单成交速度异常下降",
+      "coverage": "🟡 L1-01",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Time to Fill、P95/P99",
+      "remediateZh": "修复撮合/网关"
+    },
+    {
+      "id": "T26",
+      "domain": "K",
+      "titleZh": "用户与MM成交质量存在系统性差异",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "用户/账户类型分组滑点",
+      "remediateZh": "公平执行审查"
+    },
+    {
+      "id": "T27",
+      "domain": "K",
+      "titleZh": "大量订单被Price Band拒绝",
+      "coverage": "🟡 L1-06",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Reject Rate by Reason",
+      "remediateZh": "区分正常保护与错误配置"
+    },
+    {
+      "id": "T28",
+      "domain": "K",
+      "titleZh": "止损单在流动性不足时无法执行",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Trigger→Execution Delay",
+      "remediateZh": "修复触发链路、评估保护"
+    },
+    {
+      "id": "T29",
+      "domain": "K",
+      "titleZh": "订单成交价格偏离同时刻可执行盘口",
+      "coverage": "🟡 L1-05",
+      "severity": "P0–P1",
+      "frequency": "低",
+      "monitorZh": "Trade vs Order Book Replay",
+      "remediateZh": "调查异常成交、撮合修复"
+    },
+    {
+      "id": "T30",
+      "domain": "K",
+      "titleZh": "强平执行质量持续恶化",
+      "coverage": "🟡 L1-23",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "Liquidation Slippage、Execution Time",
+      "remediateZh": "改进执行机制、DB承接"
+    },
+    {
+      "id": "T31",
+      "domain": "L",
+      "titleZh": "Spoofing：大额挂单制造虚假深度",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "大额订单短时撤单、价格响应",
+      "remediateZh": "行为调查、限制滥用"
+    },
+    {
+      "id": "T32",
+      "domain": "L",
+      "titleZh": "Layering：多档挂单影响盘口",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "多档订单集中出现/撤销",
+      "remediateZh": "行为识别、合规调查"
+    },
+    {
+      "id": "T33",
+      "domain": "L",
+      "titleZh": "Wash Trading：关联账户互相成交",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "关联账户成交图谱",
+      "remediateZh": "STP、关联账户审查"
+    },
+    {
+      "id": "T34",
+      "domain": "L",
+      "titleZh": "Mark/Index临近强平时被异常交易影响",
+      "coverage": "🟡 L1-07/23",
+      "severity": "P0",
+      "frequency": "低",
+      "monitorZh": "临平仓位×异常交易×价格变化",
+      "remediateZh": "定价保护、调查操纵"
+    },
+    {
+      "id": "T35",
+      "domain": "L",
+      "titleZh": "Funding结算前集中操纵Premium",
+      "coverage": "🟡 L1-16/17",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Funding窗口内盘口及订单行为",
+      "remediateZh": "采样保护、调查异常交易"
+    },
+    {
+      "id": "T36",
+      "domain": "L",
+      "titleZh": "利用报价延迟进行Latency Arbitrage",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Mark-out、外部价差、成交时间差",
+      "remediateZh": "修复报价延迟、限制滥用"
+    },
+    {
+      "id": "T37",
+      "domain": "M",
+      "titleZh": "平台净Delta敞口超过风险限额",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "全平台Net Delta",
+      "remediateZh": "限仓、对冲、减险"
+    },
+    {
+      "id": "T38",
+      "domain": "M",
+      "titleZh": "多个大户同向持仓导致集中风险",
+      "coverage": "🔴",
+      "severity": "P1",
+      "frequency": "中",
+      "monitorZh": "Top5/Top10 OI Concentration",
+      "remediateZh": "分级限仓、压力测试"
+    },
+    {
+      "id": "T39",
+      "domain": "M",
+      "titleZh": "MM对冲容量不足以覆盖极端强平",
+      "coverage": "🔴",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "Liquidation Stress / Hedge Capacity",
+      "remediateZh": "预留流动性、降低风险容量"
+    },
+    {
+      "id": "T40",
+      "domain": "M",
+      "titleZh": "市场波动与流动性同时恶化",
+      "coverage": "🟡 L2-F",
+      "severity": "P0",
+      "frequency": "中",
+      "monitorZh": "Volatility + Depth + Liquidation Exposure",
+      "remediateZh": "动态保护、RC紧急升级"
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ProductSwitcher } from "@/components/ProductSwitcher";
+import { useI18n } from "@/lib/i18n/context";
+import { useProduct } from "@/lib/product/context";
+
+const NAV = [
+  { href: "/", zh: "RAG", en: "RAG" },
+  { href: "/tree", zh: "知识树", en: "Tree" },
+  { href: "/pipeline", zh: "定价链路", en: "Pricing" },
+  { href: "/risks", zh: "风险", en: "Risks" },
+  { href: "/skills", zh: "技能", en: "Skills" },
+  { href: "/data", zh: "数据", en: "Data" },
+  { href: "/knowledge", zh: "原则", en: "Principles" },
+  { href: "/cases", zh: "案件", en: "Cases" },
+  { href: "/admin", zh: "管理", en: "Admin" },
+];
+
+export function SiteHeader() {
+  const pathname = usePathname();
+  const { locale, setLocale, t } = useI18n();
+  const { def, product } = useProduct();
+  const [open, setOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [openAccess, setOpenAccess] = useState(false);
+  const [roleReady, setRoleReady] = useState(false);
+
+  useEffect(() => {
+    void fetch("/api/me")
+      .then((r) => r.json())
+      .then((d: { isAdmin?: boolean; openAccess?: boolean; canWrite?: boolean }) => {
+        setIsAdmin(!!(d.canWrite ?? d.isAdmin));
+        setOpenAccess(!!d.openAccess);
+        setRoleReady(true);
+      })
+      .catch(() => {
+        setIsAdmin(false);
+        setOpenAccess(false);
+        setRoleReady(true);
+      });
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const items = NAV.filter((n) => n.href !== "/admin" || isAdmin);
+
+  return (
+    <>
+      <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/95 pt-[env(safe-area-inset-top)] backdrop-blur">
+        <div className="mx-auto max-w-6xl px-3 py-2.5 sm:px-6 sm:py-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link href="/" className="min-w-0 shrink">
+              <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">
+                <span className="sm:hidden">
+                  {product === "v-exchange-perp"
+                    ? "V Exchange"
+                    : locale === "zh-CN"
+                      ? "定价"
+                      : "Pricing"}
+                </span>
+                <span className="hidden sm:inline">
+                  {locale === "zh-CN" ? def.titleZh : def.titleEn}
+                </span>
+              </span>
+              <span
+                className={`ml-2 hidden rounded px-1.5 py-0.5 text-[10px] uppercase tracking-[0.14em] md:inline ${
+                  product === "v-exchange-perp"
+                    ? "bg-teal-50 text-teal-800"
+                    : "bg-copper-soft/60 text-copper"
+                }`}
+              >
+                {locale === "zh-CN" ? def.switchZh : def.switchEn}
+              </span>
+            </Link>
+            <div className="hidden sm:block">
+              <ProductSwitcher compact />
+            </div>
+
+            {roleReady && openAccess && (
+              <span className="ml-auto rounded-md border border-amber-400/60 bg-amber-50 px-2 py-1 text-[10px] uppercase tracking-wide text-amber-800 sm:hidden">
+                {t("开放编辑", "Open edit")}
+              </span>
+            )}
+            <button
+              type="button"
+              className={`${roleReady && openAccess ? "ml-2" : "ml-auto"} inline-flex h-11 w-11 items-center justify-center rounded-lg border border-line text-base touch-manipulation sm:hidden`}
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="site-nav"
+              aria-label={open ? t("关闭菜单", "Close menu") : t("打开菜单", "Open menu")}
+            >
+              {open ? "✕" : "☰"}
+            </button>
+
+            <nav className="ml-auto hidden items-center gap-0.5 sm:flex sm:flex-wrap">
+              {items.map((item) => {
+                const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`rounded-md px-2.5 py-1.5 text-sm ${
+                      active ? "bg-ink text-paper" : "text-ink-2 hover:bg-line/50"
+                    }`}
+                  >
+                    {locale === "zh-CN" ? item.zh : item.en}
+                  </Link>
+                );
+              })}
+              {roleReady && (
+                <span
+                  className={`ml-2 rounded-md border px-2 py-1 text-[10px] uppercase tracking-wide ${
+                    openAccess
+                      ? "border-amber-400/60 bg-amber-50 text-amber-800"
+                      : isAdmin
+                        ? "border-sea/40 bg-sea-soft/50 text-sea"
+                        : "border-line bg-paper text-mist"
+                  }`}
+                >
+                  {openAccess
+                    ? t("开放编辑", "Open edit")
+                    : isAdmin
+                      ? t("管理员", "Admin")
+                      : t("只读", "Read-only")}
+                </span>
+              )}
+              <div className="ml-2 flex gap-1 rounded-md border border-line bg-white p-0.5 text-xs">
+                <button
+                  type="button"
+                  className={`rounded px-2 py-1 ${locale === "zh-CN" ? "bg-ink text-paper" : "text-mist"}`}
+                  onClick={() => setLocale("zh-CN")}
+                >
+                  中文
+                </button>
+                <button
+                  type="button"
+                  className={`rounded px-2 py-1 ${locale === "en" ? "bg-ink text-paper" : "text-mist"}`}
+                  onClick={() => setLocale("en")}
+                >
+                  EN
+                </button>
+              </div>
+            </nav>
+          </div>
+
+          {/* Always-visible product switch on mobile — no need to open the drawer */}
+          <div className="mt-2 sm:hidden">
+            <ProductSwitcher fullWidth />
+          </div>
+        </div>
+      </header>
+
+      {open && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-ink/45 sm:hidden"
+          aria-label={t("关闭菜单", "Close menu")}
+          onClick={() => setOpen(false)}
+        />
+      )}
+      <nav
+        id="site-nav"
+        className={`${
+          open ? "flex" : "hidden"
+        } fixed inset-x-0 bottom-0 top-[calc(5.6rem+env(safe-area-inset-top))] z-50 max-h-[calc(100dvh-5.6rem-env(safe-area-inset-top))] flex-col gap-1 overflow-auto border-t border-line bg-paper p-3 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:hidden`}
+      >
+        {items.map((item) => {
+          const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className={`rounded-lg px-3 py-3.5 text-base touch-manipulation ${
+                active ? "bg-ink text-paper" : "text-ink-2 hover:bg-line/50"
+              }`}
+            >
+              {locale === "zh-CN" ? item.zh : item.en}
+            </Link>
+          );
+        })}
+        {roleReady && (
+          <span
+            className={`mt-2 w-fit rounded-md border px-2 py-1.5 text-[10px] uppercase tracking-wide ${
+              openAccess
+                ? "border-amber-400/60 bg-amber-50 text-amber-800"
+                : isAdmin
+                  ? "border-sea/40 bg-sea-soft/50 text-sea"
+                  : "border-line bg-paper text-mist"
+            }`}
+          >
+            {openAccess
+              ? t("开放编辑", "Open edit")
+              : isAdmin
+                ? t("管理员", "Admin")
+                : t("只读", "Read-only")}
+          </span>
+        )}
+        <div className="mt-2 flex gap-1 rounded-lg border border-line bg-white p-1 text-sm">
+          <button
+            type="button"
+            className={`min-h-11 flex-1 rounded-md px-3 py-2 touch-manipulation ${
+              locale === "zh-CN" ? "bg-ink text-paper" : "text-mist"
+            }`}
+            onClick={() => setLocale("zh-CN")}
+          >
+            中文
+          </button>
+          <button
+            type="button"
+            className={`min-h-11 flex-1 rounded-md px-3 py-2 touch-manipulation ${
+              locale === "en" ? "bg-ink text-paper" : "text-mist"
+            }`}
+            onClick={() => setLocale("en")}
+          >
+            EN
+          </button>
+        </div>
+      </nav>
+    </>
+  );
+}
