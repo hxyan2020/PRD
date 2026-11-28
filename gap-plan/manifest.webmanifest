@@ -1,0 +1,17 @@
+{
+  "name": "Six hours — 26-week gap plan",
+  "short_name": "Six hours",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#efe8dc",
+  "theme_color": "#0c5f4e",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
