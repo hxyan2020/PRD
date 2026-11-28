@@ -3174,20 +3174,42 @@ async function main() {
   )
   record(
     'cron.daily_fixed_skeleton_sections',
-    DAILY_REPORT_SECTIONS.length === 6 &&
+    DAILY_REPORT_SECTIONS.length === 7 &&
       dailyMd.includes('过去 24 小时行情报告') &&
       dailyMd.includes('24h 价格区间') &&
       dailyMd.includes('**📋 TL;DR**') &&
       dailyMd.includes('**✨ Opportunity**') &&
       dailyMd.includes('**⚠️ Risk**') &&
+      dailyMd.includes('**📚 数据来源**') &&
       dailyMd.includes('打开网页 Market') &&
       dailyMd.includes('Binance K线') &&
       dailyMd.includes('Kitco') &&
       // Use section headers — bare "Risk" also matches "V Exchange Risk"
       dailyMd.indexOf('**📋 TL;DR**') < dailyMd.indexOf('**✨ Opportunity**') &&
-      dailyMd.indexOf('**✨ Opportunity**') < dailyMd.indexOf('**⚠️ Risk**'),
+      dailyMd.indexOf('**✨ Opportunity**') < dailyMd.indexOf('**⚠️ Risk**') &&
+      dailyMd.indexOf('**⚠️ Risk**') < dailyMd.indexOf('**📚 数据来源**'),
     dailyMd.slice(0, 280),
   )
+  {
+    const linkHits = [
+      'Binance K线',
+      'OKX K线',
+      'Kitco',
+      'Reuters',
+      'Bloomberg',
+      'CNBC',
+      'Fed',
+      'COMEX',
+      'LBMA',
+      'CoinDesk',
+    ]
+    const hitN = linkHits.filter((x) => dailyMd.includes(x)).length
+    record(
+      'cron.daily_more_data_sources',
+      dailyMd.includes('**📚 数据来源**') && hitN >= 6,
+      `hits=${hitN}/${linkHits.length} ` + linkHits.filter((x) => dailyMd.includes(x)).join(','),
+    )
+  }
   record(
     'cron.daily_tldr_always_four_beats',
     dailyBeats.length === 4 &&
