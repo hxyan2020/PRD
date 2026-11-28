@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   filterHdRelevantImages,
+  isAdOrLogoAsset,
   resolveWikimediaOriginal,
 } from "@/lib/images";
 
@@ -73,8 +74,26 @@ describe("filterHdRelevantImages", () => {
         credit: "Wikimedia",
         sourceUrl: "https://en.wikipedia.org/wiki/X",
       },
+      {
+        url: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Brand_mark_promotional.jpg",
+        alt: "Official brand mark",
+        width: 2000,
+        height: 2000,
+        credit: "promo",
+        sourceUrl: "https://en.wikipedia.org/wiki/X",
+      },
+      {
+        url: "https://upload.wikimedia.org/wikipedia/commons/5/5c/Clean_photo.jpg",
+        alt: "Clean photo of a laboratory",
+        width: 1920,
+        height: 1080,
+        credit: "Advertisement network",
+        sourceUrl: "https://en.wikipedia.org/wiki/X",
+      },
     ]);
     expect(filtered).toHaveLength(0);
+    expect(isAdOrLogoAsset("https://x/logo.png", "site logo")).toBe(true);
+    expect(isAdOrLogoAsset("https://x/photo.jpg", "lab experiment")).toBe(false);
   });
 
   it("resolves wikimedia thumb paths to originals", () => {

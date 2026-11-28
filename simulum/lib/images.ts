@@ -1,8 +1,17 @@
 import type { EvidenceImage } from "@/lib/types";
 
-/** Ads, logos, UI chrome, and non-content assets — never extract these. */
+/**
+ * Ads, logos, brand marks, and UI chrome — never extract these from a source.
+ * Matched against URL, alt text, and credit.
+ */
 const BLOCKED_NAME =
-  /logo|icon|sprite|badge|banner|advert|ads?[-_/]|sponsor|favicon|wordmark|button|smiley|emoji|stub|disambig|edit[-_]?icon|ambox|wiki\.png|commons-logo|mediawiki|w\.svg|lock-green|magnify|sound[-_]?icon|qrcode|qr[-_]?code|tracking|pixel\.gif|1x1|spacer|placeholder|avatar|profile[-_]?pic|coat[-_]?of[-_]?arms|flag[-_]?of|emblem|seal[-_]?of|signature/i;
+  /logo|logotype|wordmark|brand[-_ ]?mark|trademark|icon|sprite|badge|banner|billboard|promo|promotional|advert|advertisement|\bads?\b|ads?[-_/]|sponsor|sponsorship|favicon|cta|click[-_]?here|buy[-_]?now|shop[-_]?now|button|smiley|emoji|stub|disambig|edit[-_]?icon|ambox|wiki\.png|commons[-_]?logo|wikipedia[-_]?logo|wikimedia[-_]?logo|mediawiki|w\.svg|lock-green|magnify|sound[-_]?icon|qrcode|qr[-_]?code|tracking|pixel\.gif|1x1|spacer|placeholder|avatar|profile[-_]?pic|coat[-_]?of[-_]?arms|flag[-_]?of|emblem|seal[-_]?of|signature|newsletter|subscribe|cookie[-_]?banner/i;
+
+/** Explicit helper used by ingest + tests. */
+export function isAdOrLogoAsset(url: string, alt = "", credit = ""): boolean {
+  const hay = `${url} ${alt} ${credit}`;
+  return BLOCKED_NAME.test(hay);
+}
 
 /** True HD floor: reject anything below this. */
 const MIN_WIDTH = 1280;
@@ -82,7 +91,7 @@ export function filterHdRelevantImages(
   for (const img of images) {
     const url = resolveWikimediaOriginal(img.url);
     if (!url || !isAllowedImageHost(url)) continue;
-    if (BLOCKED_NAME.test(url) || BLOCKED_NAME.test(img.alt || "")) continue;
+    if (isAdOrLogoAsset(url, img.alt || "", img.credit || "")) continue;
     // Unknown dimensions are not trusted as HD — reject
     if (!isHighDefinition(img.width, img.height)) continue;
     if (!looksRelevantToSource(img, options?.topicHint)) continue;

@@ -120,13 +120,14 @@ export async function ingestCandidate(
   const images = filterHdRelevantImages(candidate.images ?? [], {
     topicHint: candidate.title,
   });
+  // Never copy an unfiltered source.imageUrl — ads/logos must not leak in.
   const source = {
     url: candidate.source.url,
     title: candidate.source.title ?? candidate.title,
     snippet: candidate.source.snippet ?? candidate.summary.slice(0, 280),
     language: candidate.source.language ?? language,
     publisher: candidate.source.publisher ?? "",
-    imageUrl: images[0]?.url ?? candidate.source.imageUrl ?? "",
+    imageUrl: images[0]?.url ?? "",
   };
 
   if (!candidate.source.url?.startsWith("http")) {
