@@ -483,7 +483,7 @@ export function buildOscillationStatusCard(
         '1. **振幅偏离** — 近 6 根 1H 振幅均值 ≥ 更早约 24 根均值的 **1.45×**（Binance 优先，OKX 备用）',
         '2. **资金费率／杠杆代理** — |费率| ≥ **0.01%** 且 ≥ 历史 |费率| 均值的 **1.5×**',
         '3. **突发新闻** — Fed 新闻标题命中战争／制裁／暴涨暴跌等关键词',
-        '命中任一项 → 推送群 + @Yan Haixiang 私聊。',
+        '命中任一项 → **仅推送群**（不私聊 Yan）。',
         '',
         '📊 **此刻读数**',
         `• ${volLine}`,
@@ -508,7 +508,7 @@ export function buildOscillationStatusCard(
           '1. **振幅偏離** — 近 6 根 1H 振幅均值 ≥ 更早約 24 根均值的 **1.45×**（Binance 優先，OKX 備用）',
           '2. **資金費率／槓桿代理** — |費率| ≥ **0.01%** 且 ≥ 歷史 |費率| 均值的 **1.5×**',
           '3. **突發新聞** — Fed 新聞標題命中戰爭／制裁／暴漲暴跌等關鍵詞',
-          '命中任一項 → 推送群 + @Yan Haixiang 私聊。',
+          '命中任一項 → **僅推送群**（不私聊 Yan）。',
           '',
           '📊 **此刻讀數**',
           `• ${volLine}`,
@@ -532,7 +532,7 @@ export function buildOscillationStatusCard(
           '1. **Vol spike** — last-6×1H mean range ≥ **1.45×** the prior ~24-bar mean (Binance primary, OKX backup)',
           '2. **Funding / leverage proxy** — |funding| ≥ **0.01%** and ≥ **1.5×** hist |funding| mean',
           '3. **Breaking news** — Fed headline matches war / sanctions / crash / surge keywords',
-          'Any hit → push to the group + @Yan Haixiang DM.',
+          'Any hit → push to the risk group only (no Yan DM).',
           '',
           '📊 **Live readings**',
           `• ${volLine}`,
@@ -579,7 +579,7 @@ export function buildOscillationAlertCard(
   }
   if (demo && reasons.length === 0) {
     reasons.push(
-      '演示：当前未触及实盘阈值，展示预警卡片样式与推送通道（群 + Haixiang 私聊）。',
+      '演示：当前未触及实盘阈值，展示预警卡片样式与推送通道（仅群，不私聊 Yan）。',
     )
   }
 
