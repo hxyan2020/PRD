@@ -72,6 +72,12 @@ const ROWS: Row[] = [
     hant: ['知識庫'],
   },
   {
+    intent: 'weekly_opt_log',
+    en: ['accepted opts', 'accepted opt log', 'weekly opts'],
+    hans: ['采纳日志', '已采纳', '采纳优化'],
+    hant: ['週報採納', '採納優化'],
+  },
+  {
     intent: 'weekly',
     en: ['weekly', 'weekly report', 'week report'],
     hans: ['周报', '本周总结'],

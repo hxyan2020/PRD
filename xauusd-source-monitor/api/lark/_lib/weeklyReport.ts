@@ -1,9 +1,16 @@
 /**
  * Weekly ops digest for Yan Haixiang — events handled + recommendations.
  * Window: last 7 days ending at `now`, labeled in Asia/Shanghai (东八区).
+ * Recommendation lines are tickable; accepts go to weeklyOptAccept durable log.
  */
 import { countRiskVerdicts, riskVerdictEmoji, riskVerdictLabel, type RiskVerdictCounts } from './riskVerdict.js'
 import type { IncidentRecord, Lang, RiskVerdict } from './types.js'
+import { weeklyOptRecId, type WeeklyOptAcceptEntry } from './weeklyOptAccept.js'
+
+export type WeeklyRecommendationItem = {
+  id: string
+  text: string
+}
 
 export type WeeklyWindow = {
   sinceMs: number
@@ -96,6 +103,8 @@ export type WeeklyReportPayload = {
   byRiskVerdict: RiskVerdictCounts
   topSkills: { id: string; count: number }[]
   recommendations: string[]
+  /** Same lines as recommendations, with stable ids for accept ticks. */
+  recommendationItems: WeeklyRecommendationItem[]
   markdown: string
   empty: boolean
 }
@@ -255,6 +264,10 @@ export function buildWeeklyReport(
     .sort((a, b) => b.count - a.count)
     .slice(0, 8)
   const recommendations = dedupeLines(recs, 12)
+  const recommendationItems: WeeklyRecommendationItem[] = recommendations.map((text) => ({
+    id: weeklyOptRecId(text),
+    text,
+  }))
 
   const markdown = formatWeeklyMarkdown({
     lang,
@@ -278,6 +291,7 @@ export function buildWeeklyReport(
     byRiskVerdict,
     topSkills,
     recommendations,
+    recommendationItems,
     markdown,
     empty: weekIncidents.length === 0,
   }
@@ -409,25 +423,221 @@ function formatWeeklyMarkdown(args: {
   ].join('\n')
 }
 
-export function weeklyReportCard(markdown: string, empty: boolean): Record<string, unknown> {
+/**
+ * Weekly digest card. When `report` is passed, each optimisation gets a ✓ 采纳
+ * button; accepted ids grey out as already ticked.
+ */
+export function weeklyReportCard(
+  markdownOrReport: string | WeeklyReportPayload,
+  emptyOrOpts?:
+    | boolean
+    | {
+        empty?: boolean
+        lang?: Lang
+        acceptedRecIds?: Iterable<string>
+      },
+): Record<string, unknown> {
+  const report =
+    typeof markdownOrReport === 'string' ? null : (markdownOrReport as WeeklyReportPayload)
+  const markdown = report ? report.markdown : String(markdownOrReport)
+  const opts =
+    typeof emptyOrOpts === 'boolean'
+      ? { empty: emptyOrOpts }
+      : emptyOrOpts || {}
+  const empty = report ? report.empty : Boolean(opts.empty)
+  const lang: Lang = opts.lang || 'zh-Hans'
+  const hans = lang === 'zh-Hans' || lang === 'zh-Hant'
+  const accepted = new Set(
+    [...(opts.acceptedRecIds || [])].map((x) => String(x || '').trim()).filter(Boolean),
+  )
+  const items = report?.recommendationItems || []
+
+  const elements: Record<string, unknown>[] = [
+    { tag: 'div', text: { tag: 'lark_md', content: markdown } },
+  ]
+
+  if (items.length > 0) {
+    elements.push({ tag: 'hr' })
+    elements.push({
+      tag: 'div',
+      text: {
+        tag: 'lark_md',
+        content: hans
+          ? '☑️ **勾选采纳的优化项**（采纳后写入日志，可发 **采纳日志** 查看）'
+          : '☑️ **Tick accepted optimisations** (logged; send **accepted opts** to review)',
+      },
+    })
+    for (const item of items.slice(0, 12)) {
+      const done = accepted.has(item.id)
+      const label = done
+        ? hans
+          ? '✓ 已采纳'
+          : '✓ Accepted'
+        : hans
+          ? '✓ 采纳'
+          : '✓ Accept'
+      const preview = item.text.slice(0, 120)
+      elements.push({
+        tag: 'div',
+        text: {
+          tag: 'lark_md',
+          content: done ? `~~${preview}~~` : `• ${preview}`,
+        },
+      })
+      elements.push({
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            text: { tag: 'plain_text', content: label },
+            type: done ? 'default' : 'primary',
+            value: {
+              action: 'weekly_opt_accept',
+              weekKey: report?.window.weekKey || '',
+              recId: item.id,
+              text: item.text.slice(0, 400),
+              lang,
+            },
+          },
+        ],
+      })
+    }
+  }
+
+  elements.push({
+    tag: 'note',
+    elements: [
+      {
+        tag: 'plain_text',
+        content: hans
+          ? '推送对象：风控群 + Yan Haixiang · 时区：东八区 · 周期：近 7 日 · 勾选采纳写入日志'
+          : 'Group + Yan · Asia/Shanghai · last 7 days · ticks go to accept log',
+      },
+    ],
+  })
+
   return {
     config: { wide_screen_mode: true },
     header: {
       template: empty ? 'grey' : 'blue',
-      title: { tag: 'plain_text', content: 'V Exchange · 每周周报' },
+      title: {
+        tag: 'plain_text',
+        content: hans ? 'V Exchange · 每周周报' : 'V Exchange · Weekly report',
+      },
+    },
+    elements,
+  }
+}
+
+/** Compact ack after a user ticks one optimisation. */
+export function weeklyOptAcceptAckCard(
+  lang: Lang,
+  entry: WeeklyOptAcceptEntry,
+  already: boolean,
+  weekAcceptedCount: number,
+): Record<string, unknown> {
+  const hans = lang === 'zh-Hans' || lang === 'zh-Hant'
+  const when = new Date(entry.acceptedAt).toLocaleString(hans ? 'zh-CN' : 'en-SG', {
+    timeZone: 'Asia/Shanghai',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+  const title = already
+    ? hans
+      ? '已在日志中'
+      : 'Already logged'
+    : hans
+      ? '已采纳并记录'
+      : 'Accepted & logged'
+  const body = [
+    hans ? `• **周期：** ${entry.weekKey}` : `• **Week:** ${entry.weekKey}`,
+    hans ? `• **内容：** ${entry.text}` : `• **Item:** ${entry.text}`,
+    hans
+      ? `• **记录时间：** ${when} CST`
+      : `• **Logged at:** ${when} CST`,
+    hans
+      ? `• **本周已采纳：** **${weekAcceptedCount}** 条`
+      : `• **Accepted this week:** **${weekAcceptedCount}**`,
+    '',
+    hans
+      ? '_发送 **采纳日志** / **accepted opts** 可查看全部记录。_'
+      : '_Send **accepted opts** to review the full log._',
+  ].join('\n')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: already ? 'grey' : 'green',
+      title: { tag: 'plain_text', content: title },
     },
     elements: [
-      { tag: 'div', text: { tag: 'lark_md', content: markdown } },
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
       {
-        tag: 'note',
-        elements: [
+        tag: 'action',
+        actions: [
           {
-            tag: 'plain_text',
-            content: '推送对象：风控群 + Yan Haixiang · 时区：东八区 · 周期：近 7 日',
+            tag: 'button',
+            text: {
+              tag: 'plain_text',
+              content: hans ? '查看采纳日志' : 'View accept log',
+            },
+            type: 'default',
+            value: { action: 'weekly_opt_log', weekKey: entry.weekKey, lang },
           },
         ],
       },
     ],
+  }
+}
+
+/** List card for accepted weekly optimisations. */
+export function weeklyOptAcceptLogCard(
+  lang: Lang,
+  entries: WeeklyOptAcceptEntry[],
+  weekKey?: string,
+): Record<string, unknown> {
+  const hans = lang === 'zh-Hans' || lang === 'zh-Hant'
+  const scope = weekKey
+    ? hans
+      ? `本周（${weekKey}）`
+      : `Week ${weekKey}`
+    : hans
+      ? '全部'
+      : 'All'
+  const lines =
+    entries.length === 0
+      ? [hans ? '_暂无已采纳的优化项。_' : '_No accepted optimisations yet._']
+      : entries.slice(0, 40).map((e, i) => {
+          const when = new Date(e.acceptedAt).toLocaleString(hans ? 'zh-CN' : 'en-SG', {
+            timeZone: 'Asia/Shanghai',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+          const who = e.acceptedByName || e.acceptedBy.slice(0, 12)
+          return `${i + 1}. **${e.text.slice(0, 160)}**\n• ${e.weekKey} · ${who} · ${when} CST`
+        })
+  const body = [
+    hans ? `📒 **周报优化采纳日志**（${scope}）` : `📒 **Weekly opt accept log** (${scope})`,
+    '',
+    hans ? `• **条数：** **${entries.length}**` : `• **Count:** **${entries.length}**`,
+    '',
+    ...lines,
+  ].join('\n')
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'turquoise',
+      title: {
+        tag: 'plain_text',
+        content: hans ? '周报 · 采纳日志' : 'Weekly · accept log',
+      },
+    },
+    elements: [{ tag: 'div', text: { tag: 'lark_md', content: body } }],
   }
 }
 
@@ -492,7 +702,15 @@ export function weeklyEventsTrendChartElement(
  * DEMO card with VChart severity bar + daily event line.
  * Falls back gracefully on Feishu < 7.1 (placeholder upgrade hint).
  */
-export function weeklyDemoCard(report: WeeklyReportPayload): Record<string, unknown> {
+export function weeklyDemoCard(
+  report: WeeklyReportPayload,
+  opts?: { acceptedRecIds?: Iterable<string>; lang?: Lang },
+): Record<string, unknown> {
+  const interactive = weeklyReportCard(report, {
+    lang: opts?.lang || 'zh-Hans',
+    acceptedRecIds: opts?.acceptedRecIds,
+  })
+  const tickElements = ((interactive.elements as Record<string, unknown>[]) || []).slice(1)
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -512,15 +730,7 @@ export function weeklyDemoCard(report: WeeklyReportPayload): Record<string, unkn
       weeklyEventsTrendChartElement(report.incidents, report.window),
       { tag: 'hr' },
       { tag: 'div', text: { tag: 'lark_md', content: report.markdown } },
-      {
-        tag: 'note',
-        elements: [
-          {
-            tag: 'plain_text',
-            content: 'DEMO 虚拟数据 · 推送对象：Yan Haixiang · 东八区 · 非正式周五周报',
-          },
-        ],
-      },
+      ...tickElements,
     ],
   }
 }

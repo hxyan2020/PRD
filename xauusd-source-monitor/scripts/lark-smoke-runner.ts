@@ -2830,9 +2830,51 @@ async function main() {
       weekly.markdown.includes('<at id="ou_smoke_admin"></at>') &&
       weekly.markdown.includes('IDX-01') &&
       weekly.markdown.includes('Align timestamps') &&
-      weekly.recommendations.length >= 1,
+      weekly.recommendations.length >= 1 &&
+      weekly.recommendationItems.length >= 1,
     weekly.markdown.slice(0, 200),
   )
+  const weeklyCard = weeklyReportCard(weekly, { lang: 'zh-Hans' })
+  const weeklyCardJson = JSON.stringify(weeklyCard)
+  record(
+    'weekly.card_has_opt_accept_buttons',
+    weeklyCardJson.includes('weekly_opt_accept') && weeklyCardJson.includes('采纳'),
+    weeklyCardJson.slice(0, 180),
+  )
+  {
+    const { acceptWeeklyOpt, listAcceptedWeeklyOpts, weeklyOptRecId } = await import(
+      '../api/lark/_lib/weeklyOptAccept'
+    )
+    const text = weekly.recommendationItems[0]?.text || 'Align timestamps'
+    const recId = weekly.recommendationItems[0]?.id || weeklyOptRecId(text)
+    const first = await acceptWeeklyOpt({
+      weekKey: weekly.window.weekKey,
+      text,
+      recId,
+      acceptedBy: 'ou_smoke_opt',
+      acceptedByName: 'smoke',
+      source: 'weekly_card',
+    })
+    const again = await acceptWeeklyOpt({
+      weekKey: weekly.window.weekKey,
+      text,
+      recId,
+      acceptedBy: 'ou_smoke_opt',
+      source: 'weekly_card',
+    })
+    const listed = await listAcceptedWeeklyOpts({
+      weekKey: weekly.window.weekKey,
+      limit: 20,
+    })
+    record(
+      'weekly.opt_accept_log_idempotent',
+      first.ok &&
+        !first.already &&
+        again.already &&
+        listed.some((e) => e.recId === recId && e.text.includes(text.slice(0, 12))),
+      `${first.entry.id} already=${again.already} n=${listed.length}`,
+    )
+  }
   const weeklyFallback = buildWeeklyReport([sampleInc], Date.parse('2026-11-24T08:00:00Z'), 'zh-Hans')
   record(
     'weekly.report_fallback_plain_at',

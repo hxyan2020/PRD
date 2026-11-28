@@ -13,6 +13,7 @@ export type Intent =
   | 'knowledge'
   | 'archive'
   | 'weekly'
+  | 'weekly_opt_log'
   | 'oscillation'
   | 'daily_market'
   | 'inv_report'

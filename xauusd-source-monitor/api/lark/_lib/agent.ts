@@ -67,7 +67,18 @@ import {
   resolveMarketLang,
 } from './market.js'
 import { fetchQuoteOpsRag } from './quoteOps.js'
-import { buildWeeklyReport, weeklyReportCard } from './weeklyReport.js'
+import {
+  buildWeeklyReport,
+  shanghaiWeekKey,
+  weeklyOptAcceptAckCard,
+  weeklyOptAcceptLogCard,
+  weeklyReportCard,
+} from './weeklyReport.js'
+import {
+  acceptWeeklyOpt,
+  acceptedRecIdsForWeek,
+  listAcceptedWeeklyOpts,
+} from './weeklyOptAccept.js'
 import {
   evidenceCoversStep,
   planInvestigationPath,
@@ -2221,6 +2232,59 @@ async function handleCardActionCore(args: {
       ? (langFromValue as Lang)
       : session.preferredLang || 'zh-Hans'
 
+  if (action === 'weekly_opt_accept') {
+    const weekKey =
+      String(args.value.weekKey || '').trim() || shanghaiWeekKey()
+    const text = String(args.value.text || '').trim()
+    const recId = String(args.value.recId || '').trim()
+    if (!text && !recId) {
+      return {
+        card: simpleCard(
+          lang === 'zh-Hans' || lang === 'zh-Hant' ? '无法采纳' : 'Cannot accept',
+          lang === 'zh-Hans' || lang === 'zh-Hant'
+            ? '缺少优化项内容，请从周报卡片重新勾选。'
+            : 'Missing optimisation text — tick again from the weekly card.',
+          'orange',
+        ),
+      }
+    }
+    let displayName = ''
+    try {
+      displayName = (await fetchUserDisplayName(args.openId)) || ''
+    } catch {
+      /* ignore */
+    }
+    const { entry, already } = await acceptWeeklyOpt({
+      weekKey,
+      text: text || recId,
+      recId: recId || undefined,
+      acceptedBy: args.openId,
+      acceptedByName: displayName || undefined,
+      source: 'weekly_card',
+    })
+    const weekAccepted = await listAcceptedWeeklyOpts({ weekKey, limit: 200 })
+    return {
+      card: weeklyOptAcceptAckCard(lang, entry, already, weekAccepted.length),
+    }
+  }
+
+  if (action === 'weekly_opt_log') {
+    const weekKey =
+      String(args.value.weekKey || '').trim() || shanghaiWeekKey()
+    const entries = await listAcceptedWeeklyOpts({ weekKey, limit: 50 })
+    const all =
+      entries.length > 0
+        ? entries
+        : await listAcceptedWeeklyOpts({ limit: 40 })
+    return {
+      card: weeklyOptAcceptLogCard(
+        lang,
+        all,
+        entries.length > 0 ? weekKey : undefined,
+      ),
+    }
+  }
+
   if (action === 'start_analysis') {
     const stashedAlerts = (() => {
       const raw = args.value.alerts
@@ -3325,6 +3389,7 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       intent === 'help' ||
       intent === 'market' ||
       intent === 'weekly' ||
+      intent === 'weekly_opt_log' ||
       intent === 'oscillation' ||
       intent === 'daily_market' ||
       intent === 'skills' ||
@@ -3385,6 +3450,7 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       intent === 'skills' ||
       intent === 'knowledge' ||
       intent === 'weekly' ||
+      intent === 'weekly_opt_log' ||
       intent === 'oscillation' ||
       intent === 'daily_market' ||
       intent === 'alert_optimize')
@@ -3583,8 +3649,31 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
   }
 
   if (intent === 'weekly') {
-    const report = buildWeeklyReport(await listIncidentsDurable({ status: 'all', limit: 200 }), Date.now(), lang)
-    return { card: weeklyReportCard(report.markdown, report.empty) }
+    const report = buildWeeklyReport(
+      await listIncidentsDurable({ status: 'all', limit: 200 }),
+      Date.now(),
+      lang,
+    )
+    const acceptedIds = await acceptedRecIdsForWeek(report.window.weekKey)
+    return {
+      card: weeklyReportCard(report, { lang, acceptedRecIds: acceptedIds }),
+    }
+  }
+
+  if (intent === 'weekly_opt_log') {
+    const weekKey = shanghaiWeekKey()
+    const entries = await listAcceptedWeeklyOpts({ weekKey, limit: 50 })
+    const all =
+      entries.length > 0
+        ? entries
+        : await listAcceptedWeeklyOpts({ limit: 40 })
+    return {
+      card: weeklyOptAcceptLogCard(
+        lang,
+        all,
+        entries.length > 0 ? weekKey : undefined,
+      ),
+    }
   }
 
   if (intent === 'oscillation') {

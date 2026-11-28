@@ -809,6 +809,28 @@ function investigationActionToast(
           en_us: 'Opening board',
         },
       }
+    case 'weekly_opt_accept':
+      return {
+        type: 'success',
+        content: pick('已采纳并记入日志', '已採納並記入日誌', 'Accepted & logged'),
+        i18n: {
+          zh_cn: '已采纳并记入日志',
+          zh_hk: '已採納並記入日誌',
+          zh_tw: '已採納並記入日誌',
+          en_us: 'Accepted & logged',
+        },
+      }
+    case 'weekly_opt_log':
+      return {
+        type: 'info',
+        content: pick('打开采纳日志', '打開採納日誌', 'Opening accept log'),
+        i18n: {
+          zh_cn: '打开采纳日志',
+          zh_hk: '打開採納日誌',
+          zh_tw: '打開採納日誌',
+          en_us: 'Opening accept log',
+        },
+      }
     case 'alert_nudge_ack':
       return {
         type: 'success',
