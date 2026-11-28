@@ -1,0 +1,9 @@
+{
+  "name": "vex-llm-proxy",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Desk-token OpenAI proxy for V Exchange Risk Tool (Vercel)",
+  "dependencies": {
+    "@vercel/node": "^3.2.0"
+  }
+}

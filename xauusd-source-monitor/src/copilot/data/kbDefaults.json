@@ -1,0 +1,30 @@
+[
+  {
+    "title": "CFD 定价风控范围",
+    "body": "报价 AI排查助手业务范围：CFD Broker Pricing（LP→PE→MT 报价链路）。核心场景：旧价成交、Bad Tick、LP 切源、Markout、强平、跨 Server 不一致。与 V Exchange／永续无关。生产写操作需人工审批，机器人不会直接改生产。"
+  },
+  {
+    "title": "UAT 与管理员对接",
+    "body": "报价 AI排查助手（CFD 定价风控）当前处于 UAT 阶段。管理员／问题对接人为 Yan Haixiang（@Yan Haixiang）。使用中的 Bug、权限、功能问题请报给 Yan Haixiang。若机器人需要访问后台／DB／生产数据或凭证但无法访问，也会请用户联系 @Yan Haixiang。"
+  },
+  {
+    "title": "桌面角色与知识库编辑权限",
+    "body": "桌面 Skills 与 RAG 知识库：仅 Admin 可创建／编辑；一般用户、Ops、Analyst 为只读，仍可查看知识库／Skills 并运行 investigate。需要 Admin 权限请联系 @Yan Haixiang。普通问答不要当成事故排查。"
+  },
+  {
+    "title": "安全与权限",
+    "body": "L1/L2 与 CFD Skills 同步使用确定性规则与只读查询；AI 异步生成根因报告和优化建议。AI 不得直接执行生产下单、划转、改价、改保证金或强平。P0 立即升级。"
+  },
+  {
+    "title": "根因分析规范",
+    "body": "明确区分：已证实事实、候选根因、待验证假设。优先查时间戳、对象 ID、原始指标、上下游依赖（LP→PE→MT）、变更记录、业务影响。给出谁查什么、何时、分叉、升级、收口及 Preferred Action。"
+  },
+  {
+    "title": "跨资产行情板",
+    "body": "Market 页展示加密／股指／外汇／商品主要指数（Binance·OKX + Yahoo Finance），用于 CFD 定价值班上下文。价格观察（bps／变动）≠ 根因；定价事故请走 Investigate + CFD Skills／知识库。"
+  },
+  {
+    "title": "LP→PE→MT 链路",
+    "body": "LP（流动性提供）→ PE（定价引擎）→ MT（交易终端）为 CFD 报价主链路。旧价成交、坏 tick、切源失败、Markout 异常通常沿此链路排查。证据不足标 [待确认]。"
+  }
+]
