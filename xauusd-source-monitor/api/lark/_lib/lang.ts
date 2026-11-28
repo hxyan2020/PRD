@@ -208,7 +208,7 @@ function pickZhVariant(text: string, fallback: Lang): Lang {
  * Chinese wins over English share titles / mixed doc cards; English-only share meta
  * does not override an established Chinese preference.
  */
-export function detectLang(text: string, fallback: Lang = 'en'): Lang {
+export function detectLang(text: string, fallback: Lang = 'zh-Hans'): Lang {
   const t = text.trim()
   if (!t) return fallback
 

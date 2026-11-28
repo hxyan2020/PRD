@@ -100,15 +100,21 @@ const COMMAND_INVESTIGATE = new RegExp(
   `^(?:investigate\\b|排查|开始排查|開始排查|调查|調查)${CMD_END}`,
   'i',
 )
-const COMMAND_MARKET = new RegExp(`^(?:market\\b|行情|市况|市況|趋势|趨勢)${CMD_END}`, 'i')
+const COMMAND_MARKET = new RegExp(
+  `^(?:market\\b|trends?\\b|行情|市况|市況|趋势|趨勢)${CMD_END}`,
+  'i',
+)
 /** Whole-message openers for the alerts/reports dashboard. */
 const COMMAND_REVIEW = new RegExp(
   `^(?:review\\b|archive\\b|dashboard\\b|alerts\\b|alert\\s*board\\b|复盘|複盤|归档|歸檔|看板|仪表盘|儀表盤)${CMD_END}`,
   'i',
 )
-const COMMAND_HELP = new RegExp(`^(?:help\\b|帮助|幫助|说明|說明)${CMD_END}`, 'i')
+const COMMAND_HELP = new RegExp(
+  `^(?:help\\b|guide\\b|commands?\\b|帮助|幫助|说明|說明)${CMD_END}`,
+  'i',
+)
 const COMMAND_DONE = new RegExp(
-  `^(?:done\\b|reset\\b|完成|结束排查|結束排查|重置)${CMD_END}`,
+  `^(?:done\\b|reset\\b|finish\\b|完成|结束排查|結束排查|重置)${CMD_END}`,
   'i',
 )
 /** Mark current investigate step complete (text alternative to card button). */
@@ -153,11 +159,11 @@ const COMMAND_WEEKLY =
  * Must beat INVESTIGATE_RE which also matches「预警」.
  */
 const COMMAND_OSCILLATION =
-  /^(?:oscillation(?:\s*alert)?|osc(?:illation)?\s*warn(?:ing)?|震荡行情预警|震盪行情預警|震荡预警|震盪預警|震荡预警状态|震盪預警狀態|震荡行情|震盪行情)\s*$/i
+  /^(?:oscillation(?:\s*alert|\s*status)?|osc(?:illation)?\s*warn(?:ing)?|osc\s*status|震荡行情预警|震盪行情預警|震荡预警|震盪預警|震荡预警状态|震盪預警狀態|震荡行情|震盪行情|震荡状态|震盪狀態)\s*$/i
 
 /** Daily 24h morning market digest (cron 09:00 Asia/Shanghai → group). */
 const COMMAND_DAILY_MARKET =
-  /^(?:daily(?:\s*24h)?(?:\s*market)?(?:\s*report)?|morning(?:\s*report)?|每日\s*24h\s*早报|每日24h早报|每日\s*24\s*小时早报|每日24小時早報|每日早报|每日早報|24h\s*早报|24h早報|24小时早报|24小時早報|早报|早報)\s*$/i
+  /^(?:daily(?:\s*24h)?(?:\s*market)?(?:\s*report)?|morning(?:\s*report)?|每日\s*24h\s*早报|每日24h早报|每日\s*24\s*小时早报|每日24小時早報|每日早报|每日早報|24h\s*早报|24h早報|24小时早报|24小時早報|早报|早報|晨报|晨報)\s*$/i
 
 /** Alert optimize desk (CSV / API analysis) — web + Lark greeting entry. */
 const COMMAND_ALERT_OPTIMIZE =
