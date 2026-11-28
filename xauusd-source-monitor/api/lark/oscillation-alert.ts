@@ -62,7 +62,16 @@ function alertDedupeKey(snap: OscillationSnapshot): string {
   const kinds = [...snap.triggers].filter((t) => t !== 'demo').sort().join('+') || 'demo'
   // Bucket to ~1h so we don't spam every 10m for the same condition
   const hour = shanghaiHm(snap.fetchedAt).slice(0, 2)
-  return `${day}T${hour}:${kinds}`
+  let key = `${day}T${hour}:${kinds}`
+  // Distinct major-news shocks in the same hour still fire; identical headline stays quiet.
+  if (snap.triggers.includes('breaking_news') && snap.newsHeadline) {
+    const slug = snap.newsHeadline
+      .toLowerCase()
+      .replace(/[^a-z0-9\u4e00-\u9fff]+/g, '')
+      .slice(0, 48)
+    if (slug) key += `:${slug}`
+  }
+  return key
 }
 
 /** Group only — Yan / Haixiang DM explicitly disabled for 震荡行情. */

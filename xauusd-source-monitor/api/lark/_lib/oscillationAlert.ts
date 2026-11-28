@@ -162,36 +162,245 @@ function parseBinanceCandleRanges(data: unknown): { rangePct: number; close: num
   return out.reverse()
 }
 
+function decodeXmlEntities(s: string): string {
+  return s
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+}
+
+/** Strong shock verbs / events (not alone enough for random tech headlines). */
+const NEWS_SHOCK_RE =
+  /\b(war|wars|sanctions?|invasion|airstrike|missile|default|collapse|emergency|halted?|liquidations?|flash\s*crash|crashes?|crash|surges?|spikes?|plunges?|tumbles?|slumps?|soars?|skyrockets?|unexpected|rate\s*(?:hike|cut|decision)|FOMC|Powell|央行|美联储|聯準會|突发|紧急|战争|制裁|暴跌|暴涨|强平|熔断)\b/i
+
+/** Gold / macro desk relevance — same thematic coverage as 早报 hubs. */
+const NEWS_GOLD_MACRO_RE =
+  /\b(gold|XAU|XAUUSD|bullion|precious\s+metals?|COMEX|GC=F|silver|Fed|FOMC|Powell|Federal\s+Reserve|dollar|DXY|Treasur(?:y|ies)|yields?|10[\s-]?year|inflation|CPI|PCE|NFP|payrolls|oil|crude|Brent|WTI|Iran|Israel|Ukraine|Russia|tariff|commodit(?:y|ies)|metals?|ECB|BOJ|rate\s*(?:hike|cut|hold|decision)|贵金属|黄金|白银|美联储|聯準會|美元|原油)\b/i
+
+/** Geopolitical / systemic shocks that move gold even without "gold" in the title. */
+const NEWS_ALWAYS_SHOCK_RE =
+  /\b(war|wars|sanctions?|invasion|airstrike|missile|Iran|flash\s*crash|bank\s+(?:failure|collapse)|sovereign\s+default|emergency\s+(?:rate|meeting))\b|战争|制裁|突发|紧急|熔断|强平潮/i
+
+/**
+ * Major news shock for 震荡行情预警.
+ * FOMC / Powell always count; other Fed titles need a policy/shock cue;
+ * otherwise need a shock verb + gold/macro relevance (or a systemic shock).
+ */
+export function looksMajorNewsShock(title: string): boolean {
+  const t = decodeXmlEntities(title).trim()
+  if (t.length < 8) return false
+  // Chair / FOMC are high-signal; bare "Federal Reserve Board announces…" is not.
+  if (/\b(FOMC|Powell|美联储|聯準會)\b/i.test(t)) return true
+  if (
+    /\b(Fed|Federal\s+Reserve)\b/i.test(t) &&
+    /\b(rate|rates|hike|cut|hold|inflation|emergency|policy|decision|unexpectedly|hawkish|dovish|QT|QE)\b/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  if (!NEWS_SHOCK_RE.test(t)) return false
+  if (NEWS_ALWAYS_SHOCK_RE.test(t)) return true
+  return NEWS_GOLD_MACRO_RE.test(t)
+}
+
+/** @deprecated use looksMajorNewsShock */
 function looksBreaking(title: string): boolean {
-  return /\b(Fed|FOMC|Powell|war|sanctions|oil|Iran|emergency|halt|liquidation|flash|crash|surge|spike|突发|紧急|战争|制裁|暴跌|暴涨|强平)\b/i.test(
-    title,
-  )
+  return looksMajorNewsShock(title)
+}
+
+/**
+ * Machine-readable feeds for the same news desks as 早报 DAILY_FIXED_LINKS
+ * (Fed / CNBC / MarketWatch / Investing / FT / CoinDesk / Kitco).
+ * Reuters / Bloomberg / WSJ HTML walls are skipped — RSS/JSON only when reachable.
+ */
+type OscNewsFeed = {
+  id: string
+  label: string
+  kind: 'fed-json' | 'rss' | 'html-titles'
+  url: string
+}
+
+export const OSC_NEWS_FEEDS: OscNewsFeed[] = [
+  {
+    id: 'fed-press',
+    label: 'Fed',
+    kind: 'fed-json',
+    url: 'https://www.federalreserve.gov/json/ne-press.json',
+  },
+  {
+    id: 'cnbc-gold',
+    label: 'CNBC',
+    kind: 'rss',
+    // Economy RSS — closest machine feed to the 早报 CNBC Gold desk
+    url: 'https://www.cnbc.com/id/20910258/device/rss/rss.html',
+  },
+  {
+    id: 'cnbc-markets',
+    label: 'CNBC Markets',
+    kind: 'rss',
+    url: 'https://www.cnbc.com/id/100727362/device/rss/rss.html',
+  },
+  {
+    id: 'marketwatch-gold',
+    label: 'MarketWatch',
+    kind: 'rss',
+    url: 'https://feeds.marketwatch.com/marketwatch/topstories/',
+  },
+  {
+    id: 'investing-gold',
+    label: 'Investing',
+    kind: 'rss',
+    url: 'https://www.investing.com/rss/news_25.rss',
+  },
+  {
+    id: 'ft-commodities',
+    label: 'FT',
+    kind: 'rss',
+    url: 'https://www.ft.com/commodities?format=rss',
+  },
+  {
+    id: 'coindesk-markets',
+    label: 'CoinDesk',
+    kind: 'rss',
+    url: 'https://www.coindesk.com/arc/outboundfeeds/rss/',
+  },
+  {
+    id: 'kitco-news',
+    label: 'Kitco News',
+    kind: 'html-titles',
+    url: 'https://www.kitco.com/news/category/metals',
+  },
+]
+
+async function fetchText(url: string): Promise<string | null> {
+  try {
+    const r = await fetch(url, {
+      headers: {
+        'User-Agent': 'VE-Risk-Copilot/1.0 (+oscillation)',
+        Accept: 'application/rss+xml, application/xml, text/xml, text/html, */*',
+      },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    })
+    if (!r.ok) return null
+    return await r.text()
+  } catch {
+    return null
+  }
+}
+
+function parseRssItems(xml: string): { title: string; url: string }[] {
+  const items: { title: string; url: string }[] = []
+  const blocks = xml.match(/<item[\s>][\s\S]*?<\/item>/gi) || []
+  for (const block of blocks.slice(0, 12)) {
+    const titleM =
+      block.match(/<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>/i) ||
+      block.match(/<title>([\s\S]*?)<\/title>/i)
+    const linkM =
+      block.match(/<link><!\[CDATA\[([\s\S]*?)\]\]><\/link>/i) ||
+      block.match(/<link>([\s\S]*?)<\/link>/i) ||
+      block.match(/<guid[^>]*>([\s\S]*?)<\/guid>/i)
+    const title = decodeXmlEntities(
+      (titleM?.[1] || '').replace(/<[^>]+>/g, '').trim(),
+    )
+    let url = decodeXmlEntities((linkM?.[1] || '').trim())
+    if (!title) continue
+    if (!/^https?:\/\//i.test(url)) url = ''
+    items.push({ title, url })
+  }
+  return items
+}
+
+function parseHtmlTitles(
+  html: string,
+  baseUrl: string,
+): { title: string; url: string }[] {
+  const items: { title: string; url: string }[] = []
+  const seen = new Set<string>()
+  const re = /<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi
+  let m: RegExpExecArray | null
+  while ((m = re.exec(html)) && items.length < 24) {
+    const href = m[1]!
+    const raw = m[2]!
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+    if (raw.length < 28 || raw.length > 180) continue
+    if (/^(home|news|markets|login|subscribe|read more|kitco news)$/i.test(raw)) {
+      continue
+    }
+    if (!/\/news\//i.test(href) && !/article/i.test(href)) continue
+    const title = decodeXmlEntities(raw)
+    const key = title.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    let url = href
+    try {
+      url = href.startsWith('http') ? href : new URL(href, baseUrl).toString()
+    } catch {
+      url = baseUrl
+    }
+    items.push({ title, url })
+  }
+  return items
+}
+
+type OscNewsHit = { title: string; url: string; source: string }
+
+async function collectFeedHeadlines(feed: OscNewsFeed): Promise<OscNewsHit[]> {
+  try {
+    if (feed.kind === 'fed-json') {
+      const fed = await fetchJson(feed.url)
+      const rows = Array.isArray(fed)
+        ? (fed as { title?: string; link?: string }[])
+        : []
+      return rows
+        .slice(0, 15)
+        .map((r) => {
+          const title = String(r?.title || '').trim()
+          const link = String(r?.link || '')
+          const url = link.startsWith('http')
+            ? link
+            : link
+              ? `https://www.federalreserve.gov${link}`
+              : 'https://www.federalreserve.gov/newsevents/pressreleases.htm'
+          return { title, url, source: feed.label }
+        })
+        .filter((x) => x.title)
+    }
+    const text = await fetchText(feed.url)
+    if (!text) return []
+    const items =
+      feed.kind === 'rss' ? parseRssItems(text) : parseHtmlTitles(text, feed.url)
+    return items.map((it) => ({
+      title: it.title,
+      url: it.url || feed.url,
+      source: feed.label,
+    }))
+  } catch {
+    return []
+  }
 }
 
 export async function fetchBreakingHeadline(): Promise<{
   title: string
   url: string
 } | null> {
-  // Reuse Fed press JSON (same feed as hourly scan)
-  const fed = await fetchJson('https://www.federalreserve.gov/json/ne-press.json')
-  try {
-    const rows = fed as { title?: string; link?: string }[]
-    if (!Array.isArray(rows)) return null
-    const hit = rows.find((r) => r?.title && looksBreaking(String(r.title)))
-    if (!hit?.title) {
-      const first = rows.find((r) => r?.title)
-      if (!first?.title) return null
-      // Only treat as breaking if keyword hit; otherwise null for live path
-      return null
+  // Scan 早报-aligned news desks in parallel (budget shared with venue probes).
+  const batches = await Promise.all(OSC_NEWS_FEEDS.map(collectFeedHeadlines))
+  for (const batch of batches) {
+    for (const item of batch) {
+      if (!looksBreaking(item.title)) continue
+      const tagged = `[${item.source}] ${item.title}`
+      return { title: tagged, url: item.url }
     }
-    const link = String(hit.link || '')
-    const url = link.startsWith('http')
-      ? link
-      : `https://www.federalreserve.gov${link}`
-    return { title: String(hit.title), url }
-  } catch {
-    return null
   }
+  return null
 }
 
 type VenueTape = {
@@ -483,14 +692,14 @@ export function buildOscillationStatusCard(
   const newsLine = hans
     ? snap.newsHeadline
       ? `突发新闻：**命中** — ${snap.newsHeadline}`
-      : '突发新闻：**未命中**（Fed 新闻关键词过滤）'
+      : '突发新闻：**未命中**（早报同源新闻台 · 重大冲击关键词）'
     : hant
       ? snap.newsHeadline
         ? `突發新聞：**命中** — ${snap.newsHeadline}`
-        : '突發新聞：**未命中**（Fed 新聞關鍵詞過濾）'
+        : '突發新聞：**未命中**（早報同源新聞台 · 重大衝擊關鍵詞）'
       : snap.newsHeadline
         ? `Breaking news: **hit** — ${snap.newsHeadline}`
-        : 'Breaking news: **no hit** (Fed headline keyword filter)'
+        : 'Breaking news: **no hit** (daily-report news desks · major-shock keywords)'
 
   const body = hans
     ? [
@@ -504,7 +713,7 @@ export function buildOscillationStatusCard(
         '📌 **触发机制**（你发「震荡行情预警」会即时评估；cron 每 **15** 分钟自动跑同一套）',
         '1. **振幅偏离** — 近 6 根 1H 振幅均值 ≥ 更早约 24 根均值的 **1.45×**（Binance 优先，OKX 备用）',
         '2. **资金费率／杠杆代理** — |费率| ≥ **0.01%** 且 ≥ 历史 |费率| 均值的 **1.5×**',
-        '3. **突发新闻** — Fed 新闻标题命中战争／制裁／暴涨暴跌等关键词',
+        '3. **突发新闻** — 与早报同源（Fed／CNBC／MarketWatch／Investing／FT／CoinDesk／Kitco 等）标题命中战争／制裁／央行／暴涨暴跌等重大冲击',
         '命中任一项 → **仅推送群**（不私聊 Yan）。',
         '',
         '📊 **此刻读数**',
@@ -529,7 +738,7 @@ export function buildOscillationStatusCard(
           '📌 **觸發機制**（你發「震盪行情預警」會即時評估；cron 每 **15** 分鐘自動跑同一套）',
           '1. **振幅偏離** — 近 6 根 1H 振幅均值 ≥ 更早約 24 根均值的 **1.45×**（Binance 優先，OKX 備用）',
           '2. **資金費率／槓桿代理** — |費率| ≥ **0.01%** 且 ≥ 歷史 |費率| 均值的 **1.5×**',
-          '3. **突發新聞** — Fed 新聞標題命中戰爭／制裁／暴漲暴跌等關鍵詞',
+          '3. **突發新聞** — 與早報同源（Fed／CNBC／MarketWatch／Investing／FT／CoinDesk／Kitco 等）標題命中戰爭／制裁／央行／暴漲暴跌等重大衝擊',
           '命中任一項 → **僅推送群**（不私聊 Yan）。',
           '',
           '📊 **此刻讀數**',
@@ -553,7 +762,7 @@ export function buildOscillationStatusCard(
           '📌 **Trigger mechanism** (this command evaluates live; cron runs the same check every **15** minutes)',
           '1. **Vol spike** — last-6×1H mean range ≥ **1.45×** the prior ~24-bar mean (Binance primary, OKX backup)',
           '2. **Funding / leverage proxy** — |funding| ≥ **0.01%** and ≥ **1.5×** hist |funding| mean',
-          '3. **Breaking news** — Fed headline matches war / sanctions / crash / surge keywords',
+          '3. **Breaking news** — same desks as the morning report (Fed / CNBC / MarketWatch / Investing / FT / CoinDesk / Kitco); headline matches war / sanctions / Fed / crash / surge shocks',
           'Any hit → push to the risk group only (no Yan DM).',
           '',
           '📊 **Live readings**',
