@@ -4,6 +4,7 @@ import path from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import pg from "pg";
 import { CATEGORIES } from "@/lib/data/categories";
+import { filterHdRelevantImages } from "@/lib/images";
 import { rateEvidence } from "@/lib/ratings";
 import type {
   CatalogueStats,
@@ -181,7 +182,10 @@ async function hydrateEvidence(row: Record<string, unknown>): Promise<Evidence> 
     how: String(row.body_how ?? ""),
     why: String(row.body_why ?? ""),
   };
-  const images = parseJson<EvidenceImage[]>(row.images, []);
+  const title = String(row.title);
+  const images = filterHdRelevantImages(parseJson<EvidenceImage[]>(row.images, []), {
+    topicHint: title,
+  });
   const storedRatings = parseJson<EvidenceRatings | Record<string, never>>(
     row.ratings,
     {},
@@ -208,7 +212,7 @@ async function hydrateEvidence(row: Record<string, unknown>): Promise<Evidence> 
   return {
     id,
     slug: String(row.slug),
-    title: String(row.title),
+    title,
     caption: String(row.caption || row.summary || row.title),
     summary: String(row.summary),
     detail: String(row.detail ?? ""),
@@ -433,12 +437,13 @@ export async function mergeIntoEvidence(input: {
     detail = detail ? `${detail}\n\n${input.detailAppend}` : input.detailAppend;
   }
 
-  const images = parseJson<EvidenceImage[]>(existing.images, []);
-  if (input.images?.length) {
-    for (const img of input.images) {
-      if (!images.some((i) => i.url === img.url)) images.push(img);
-    }
-  }
+  const images = filterHdRelevantImages(
+    [
+      ...parseJson<EvidenceImage[]>(existing.images, []),
+      ...(input.images ?? []),
+    ],
+    { topicHint: String(existing.title ?? existing.caption ?? "") },
+  );
 
   const translations = parseJson<Record<string, EvidenceLocalePack>>(
     existing.translations,
@@ -499,7 +504,7 @@ export async function mergeIntoEvidence(input: {
       sourceCount,
       now,
       detail,
-      JSON.stringify(images.slice(0, 4)),
+      JSON.stringify(images),
       JSON.stringify(ratings),
       JSON.stringify(translations),
     ],

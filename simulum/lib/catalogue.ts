@@ -117,7 +117,9 @@ export async function ingestCandidate(
   const language = candidate.language ?? candidate.source.language ?? "en";
   const caption = buildCaption(candidate);
   const body = buildBody(candidate);
-  const images = filterHdRelevantImages(candidate.images ?? []);
+  const images = filterHdRelevantImages(candidate.images ?? [], {
+    topicHint: candidate.title,
+  });
   const source = {
     url: candidate.source.url,
     title: candidate.source.title ?? candidate.title,
