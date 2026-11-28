@@ -69,6 +69,32 @@ body {
   min-width: 44px;
 }
 
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Prefer dynamic viewport units on mobile when available */
+@supports (height: 100dvh) {
+  .min-h-dvh-hero {
+    min-height: 100dvh;
+  }
+}
+
+/* Avoid sticky hover stuck states on touch devices */
+@media (hover: none) {
+  .group:hover .group-hover\:translate-x-1 {
+    transform: none;
+  }
+}
+
+/* Improve tap feedback without sticky hover wash */
+@media (pointer: coarse) {
+  a:active,
+  button:active {
+    opacity: 0.92;
+  }
+}
+
 @keyframes ticker {
   from { opacity: 0.35; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }

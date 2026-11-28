@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="pointer-events-none fixed inset-0 starfield" aria-hidden />
           <div className="pointer-events-none fixed inset-0 grid-veil opacity-70" aria-hidden />
           <SiteHeader />
-          <main className="relative mx-auto min-h-[70vh] max-w-6xl px-4 pb-24 pt-4 sm:px-6 sm:pt-6">
+          <main className="relative mx-auto min-h-[70vh] max-w-6xl px-4 pb-[max(5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-3 sm:px-6 sm:pt-6">
             {children}
           </main>
           <FooterNote />

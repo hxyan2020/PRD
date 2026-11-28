@@ -63,17 +63,17 @@ export function RatingsPanel({ ratings }: { ratings: EvidenceRatings }) {
   ];
 
   return (
-    <section className="mt-10 border-t border-line/80 pt-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <section className="mt-8 border-t border-line/80 pt-5 sm:mt-10 sm:pt-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-2xl text-ink">{t("detail.ratings")}</h2>
+          <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.ratings")}</h2>
           <p className="mt-1 font-mono text-sm tabular-nums text-mist">
             overall {ratings.overall}/5 · fact-backed
           </p>
         </div>
         <button
           type="button"
-          className="touch-target border border-line px-3 py-2 text-sm text-ink transition hover:border-signal hover:text-signal"
+          className="touch-target w-full border border-line px-3 py-2.5 text-sm text-ink transition hover:border-signal hover:text-signal sm:w-auto"
           onClick={() => {
             setOpenAll((v) => !v);
             setOpenKey(null);
@@ -84,14 +84,14 @@ export function RatingsPanel({ ratings }: { ratings: EvidenceRatings }) {
         </button>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
         {dims.map(({ key, dim }) => {
           const expanded = openAll || openKey === key;
           return (
             <button
               key={key}
               type="button"
-              className={`touch-target border border-line/80 p-3 text-left transition hover:border-signal ${
+              className={`touch-target border border-line/80 p-3.5 text-left transition hover:border-signal sm:p-3 ${
                 expanded ? "border-signal bg-signal-soft/20" : "bg-transparent"
               }`}
               aria-expanded={expanded}

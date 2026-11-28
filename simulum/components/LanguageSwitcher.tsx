@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useI18n } from "@/lib/i18n/context";
 import { flagSvgUrl, type LocaleMeta } from "@/lib/i18n/locales";
 
@@ -19,7 +21,7 @@ function FlagIcon({
     // eslint-disable-next-line @next/next/no-img-element -- national flag SVG from flagcdn
     <img
       src={flagSvgUrl(locale.flag)}
-      alt={`${locale.name} flag`}
+      alt=""
       width={dims.width}
       height={dims.height}
       loading="lazy"
@@ -29,60 +31,153 @@ function FlagIcon({
   );
 }
 
-/** Dropdown with a real national flag image icon in front of every language. */
-export function LanguageMenu() {
+/** Dropdown / sheet with a national flag before every language. */
+export function LanguageMenu({ compact = false }: { compact?: boolean }) {
   const { locale, setLocale, locales, t } = useI18n();
   const current = locales.find((l) => l.code === locale) ?? locales[0];
+  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [isNarrow, setIsNarrow] = useState(true);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const listId = useId();
 
-  return (
-    <div className="relative">
-      <details className="group">
-        <summary className="touch-target flex cursor-pointer list-none items-center gap-2 rounded-md border border-line/70 bg-paper/80 px-2 py-1.5 text-xs sm:px-3 sm:text-sm">
-          <FlagIcon locale={current} size="sm" />
-          <span className="max-w-[5.5rem] truncate sm:max-w-[7rem]">
-            {current.nativeName}
-          </span>
-          <span className="text-mist" aria-hidden>
-            ▾
-          </span>
-        </summary>
-        <div
-          className="absolute end-0 z-40 mt-1 max-h-[min(24rem,70vh)] w-60 overflow-auto border border-line bg-paper py-1 shadow-lg"
-          role="listbox"
-          aria-label={t("lang.label")}
-        >
-          <p className="px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-mist">
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsNarrow(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        const list = document.getElementById(listId);
+        if (list?.contains(event.target as Node)) return;
+        setOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("mousedown", onPointer);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("mousedown", onPointer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, listId]);
+
+  useEffect(() => {
+    if (!open || !isNarrow) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open, isNarrow]);
+
+  const panel = open ? (
+    <>
+      {isNarrow ? (
+        <button
+          type="button"
+          className="fixed inset-0 z-[60] bg-ink/30"
+          aria-label={t("nav.close")}
+          onClick={() => setOpen(false)}
+        />
+      ) : null}
+      <div
+        id={listId}
+        className={
+          isNarrow
+            ? "fixed inset-x-0 bottom-0 z-[70] max-h-[min(70vh,28rem)] overflow-auto rounded-t-2xl border border-line bg-paper pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-2xl"
+            : "absolute end-0 z-[70] mt-1 max-h-[min(24rem,70vh)] w-64 overflow-auto rounded-md border border-line bg-paper py-1 shadow-lg"
+        }
+        role="listbox"
+        aria-label={t("lang.label")}
+      >
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line/70 bg-paper px-4 py-3 md:px-3 md:py-1.5">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-mist">
             {t("lang.label")} · {locales.length}
           </p>
-          {locales.map((l) => {
-            const selected = l.code === locale;
-            return (
-              <button
-                key={l.code}
-                type="button"
-                role="option"
-                aria-selected={selected}
-                className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition hover:bg-signal-soft/50 ${
-                  selected ? "bg-signal-soft/40 text-ink" : "text-ink-soft"
-                }`}
-                onClick={() => {
-                  setLocale(l.code);
-                  const details = document.querySelectorAll("header details.group");
-                  details.forEach((d) => d.removeAttribute("open"));
-                }}
-              >
-                <FlagIcon locale={l} />
-                <span className="flex min-w-0 flex-col leading-tight">
-                  <span className="truncate font-medium text-ink">{l.nativeName}</span>
-                  <span className="truncate font-mono text-[10px] text-mist">
-                    {l.name}
-                  </span>
-                </span>
-              </button>
-            );
-          })}
+          {isNarrow ? (
+            <button
+              type="button"
+              className="touch-target rounded-md px-2 text-sm text-mist"
+              onClick={() => setOpen(false)}
+            >
+              {t("nav.close")}
+            </button>
+          ) : null}
         </div>
-      </details>
+        {locales.map((l) => {
+          const selected = l.code === locale;
+          return (
+            <button
+              key={l.code}
+              type="button"
+              role="option"
+              aria-selected={selected}
+              className={`flex w-full items-center gap-3 px-4 py-3.5 text-left text-base transition hover:bg-signal-soft/50 md:px-3 md:py-2.5 md:text-sm ${
+                selected ? "bg-signal-soft/40 text-ink" : "text-ink-soft"
+              }`}
+              onClick={() => {
+                setLocale(l.code);
+                setOpen(false);
+              }}
+            >
+              <FlagIcon locale={l} />
+              <span className="flex min-w-0 flex-col leading-tight">
+                <span className="truncate font-medium text-ink">{l.nativeName}</span>
+                <span className="truncate font-mono text-[10px] text-mist">
+                  {l.name}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </>
+  ) : null;
+
+  return (
+    <div className="relative" ref={rootRef}>
+      <button
+        type="button"
+        className={`touch-target flex items-center gap-2 rounded-md border border-line/70 bg-paper/80 text-xs sm:text-sm ${
+          compact ? "px-2 py-1.5" : "px-2.5 py-1.5 sm:px-3"
+        }`}
+        aria-expanded={open}
+        aria-controls={listId}
+        aria-label={t("lang.label")}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <FlagIcon locale={current} size="sm" />
+        <span
+          className={`truncate ${
+            compact
+              ? "hidden max-w-[5.5rem] sm:inline sm:max-w-[7rem]"
+              : "max-w-[5.5rem] sm:max-w-[7rem]"
+          }`}
+        >
+          {current.nativeName}
+        </span>
+        <span className="text-mist" aria-hidden>
+          ▾
+        </span>
+      </button>
+
+      {mounted && open
+        ? isNarrow
+          ? createPortal(panel, document.body)
+          : panel
+        : null}
     </div>
   );
 }

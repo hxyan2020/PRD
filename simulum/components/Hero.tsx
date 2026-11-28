@@ -23,7 +23,7 @@ export function Hero({
     });
 
   return (
-    <section className="relative min-h-[78vh] overflow-hidden pb-12 pt-8 sm:min-h-[84vh] sm:pb-16 sm:pt-14">
+    <section className="relative flex min-h-[min(78dvh,780px)] flex-col justify-center overflow-hidden pb-10 pt-6 sm:min-h-[84vh] sm:pb-16 sm:pt-14">
       <div className="pointer-events-none absolute inset-0 sci-fi-grid opacity-40" aria-hidden />
       <div
         className="pointer-events-none absolute -right-20 top-8 h-80 w-80 animate-drift rounded-full bg-signal/20 blur-3xl"
@@ -40,33 +40,40 @@ export function Hero({
         <div className="h-full w-1/2 animate-scan-line bg-gradient-to-r from-transparent via-signal to-transparent opacity-50" />
       </div>
 
-      <p className="animate-rise relative font-mono text-[11px] uppercase tracking-[0.28em] text-signal">
+      <p className="animate-rise relative font-mono text-[10px] uppercase tracking-[0.22em] text-signal sm:text-[11px] sm:tracking-[0.28em]">
         {t("hero.kicker")}
       </p>
 
-      <h1 className="animate-rise relative mt-5 font-display text-[clamp(3rem,12vw,6.5rem)] leading-[0.9] tracking-tight text-ink [animation-delay:80ms]">
+      <h1 className="animate-rise relative mt-4 font-display text-[clamp(2.75rem,14vw,6.5rem)] leading-[0.9] tracking-tight text-ink sm:mt-5 [animation-delay:80ms]">
         SIMULUM
       </h1>
 
-      <p className="animate-rise relative mt-6 max-w-lg text-base text-ink-soft sm:text-lg [animation-delay:140ms]">
+      <p className="animate-rise relative mt-5 max-w-lg text-[0.95rem] leading-relaxed text-ink-soft sm:mt-6 sm:text-lg [animation-delay:140ms]">
         {t("hero.blurb")}
       </p>
 
-      <div className="animate-rise relative mt-12 [animation-delay:200ms]">
+      <div className="animate-rise relative mt-8 sm:mt-12 [animation-delay:200ms]">
         <EvidenceCounter value={uniqueEvidence} />
-        <p className="mt-3 font-mono text-sm uppercase tracking-[0.18em] text-mist">
+        <p className="mt-3 font-mono text-xs uppercase tracking-[0.16em] text-mist sm:text-sm sm:tracking-[0.18em]">
           {t("hero.counting")}
         </p>
-        <p className="mt-2 text-sm text-mist">
-          {languageCount} {t("hero.languages")}
-          {scanned ? ` · ${t("hero.lastScan")} ${scanned} (Asia/Singapore)` : ""}
-        </p>
+        <div className="mt-2 space-y-1 text-sm text-mist sm:space-y-0">
+          <p>
+            {languageCount} {t("hero.languages")}
+          </p>
+          {scanned ? (
+            <p className="text-xs leading-relaxed sm:text-sm">
+              {t("hero.lastScan")} {scanned}
+              <span className="text-mist/80"> (Asia/Singapore)</span>
+            </p>
+          ) : null}
+        </div>
       </div>
 
-      <div className="animate-rise relative mt-10 [animation-delay:280ms]">
+      <div className="animate-rise relative mt-8 w-full max-w-md sm:mt-10 sm:max-w-none [animation-delay:280ms]">
         <Link
           href="/evidence"
-          className="group touch-target inline-flex items-center gap-3 border border-signal/50 bg-ink px-7 py-4 text-sm font-medium tracking-[0.08em] text-paper shadow-[0_0_24px_rgba(13,148,136,0.25)] transition hover:border-signal hover:bg-ink-soft hover:shadow-[0_0_36px_rgba(13,148,136,0.4)]"
+          className="group touch-target flex w-full items-center justify-center gap-3 border border-signal/50 bg-ink px-7 py-4 text-sm font-medium tracking-[0.08em] text-paper shadow-[0_0_24px_rgba(13,148,136,0.25)] transition hover:border-signal hover:bg-ink-soft hover:shadow-[0_0_36px_rgba(13,148,136,0.4)] sm:inline-flex sm:w-auto sm:justify-start"
         >
           <span>{t("hero.jump")}</span>
           <span

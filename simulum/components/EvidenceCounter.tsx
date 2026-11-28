@@ -31,7 +31,7 @@ export function EvidenceCounter({ value }: { value: number }) {
 
   return (
     <p
-      className="animate-count-pulse font-display text-[clamp(4.5rem,16vw,9rem)] leading-none tracking-tight text-ink"
+      className="animate-count-pulse font-display text-[clamp(3.75rem,18vw,9rem)] leading-none tracking-tight text-ink"
       aria-live="polite"
     >
       <span className="count-digit tabular-nums">{display.toLocaleString()}</span>

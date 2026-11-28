@@ -38,19 +38,19 @@ export function EvidenceDetail({
   ];
 
   return (
-    <article className="pt-4 sm:pt-8">
+    <article className="pt-2 sm:pt-8">
       <Link
         href="/evidence"
-        className="font-mono text-[11px] uppercase tracking-wider text-mist hover:text-signal"
+        className="touch-target inline-flex items-center font-mono text-[11px] uppercase tracking-wider text-mist hover:text-signal"
       >
         ← {t("nav.evidence")}
       </Link>
 
-      <p className="mt-5 max-w-3xl font-display text-3xl leading-snug text-ink sm:text-4xl">
+      <p className="mt-4 max-w-3xl font-display text-[1.65rem] leading-snug text-ink sm:mt-5 sm:text-4xl">
         {presented.caption}
       </p>
 
-      <dl className="mt-6 grid gap-3 font-mono text-xs uppercase tracking-wider text-mist sm:grid-cols-3">
+      <dl className="mt-5 grid grid-cols-2 gap-3 font-mono text-xs uppercase tracking-wider text-mist sm:mt-6 sm:grid-cols-3">
         <div>
           <dt>{t("detail.sources")}</dt>
           <dd className="mt-1 text-sm normal-case tracking-normal text-ink">
@@ -59,11 +59,11 @@ export function EvidenceDetail({
         </div>
         <div>
           <dt>{t("detail.languages")}</dt>
-          <dd className="mt-1 text-sm normal-case tracking-normal text-ink">
+          <dd className="mt-1 break-words text-sm normal-case tracking-normal text-ink">
             {item.languages.join(", ")}
           </dd>
         </div>
-        <div>
+        <div className="col-span-2 sm:col-span-1">
           <dt>{t("detail.firstSeen")}</dt>
           <dd className="mt-1 text-sm normal-case tracking-normal text-ink">
             {new Date(item.firstSeenAt).toLocaleDateString(locale, {
@@ -75,7 +75,7 @@ export function EvidenceDetail({
 
       {item.images.length > 0 ? (
         <section className="mt-8">
-          <h2 className="font-display text-2xl text-ink">{t("detail.images")}</h2>
+          <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.images")}</h2>
           <ul className="mt-4 grid gap-4 sm:grid-cols-2">
             {item.images.map((img) => (
               <li key={img.url} className="overflow-hidden border border-line/70 bg-ink/5">
@@ -96,14 +96,14 @@ export function EvidenceDetail({
         </section>
       ) : null}
 
-      <section className="mt-10 space-y-6 border-t border-line/80 pt-6">
+      <section className="mt-8 space-y-5 border-t border-line/80 pt-5 sm:mt-10 sm:space-y-6 sm:pt-6">
         {bodyFields.map(({ key, label }) =>
           presented.body[key] ? (
             <div key={key}>
               <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
                 {label}
               </h2>
-              <p className="mt-2 max-w-3xl text-base leading-relaxed text-ink-soft sm:text-lg">
+              <p className="mt-2 max-w-3xl text-[0.95rem] leading-relaxed text-ink-soft sm:text-lg">
                 {presented.body[key]}
               </p>
             </div>
@@ -116,7 +116,7 @@ export function EvidenceDetail({
           <Link
             key={cat.id}
             href={`/categories/${cat.slug}`}
-            className="inline-flex border border-line px-3 py-2 text-sm text-ink transition hover:border-signal hover:text-signal"
+            className="touch-target inline-flex items-center border border-line px-3 py-2 text-sm text-ink transition hover:border-signal hover:text-signal"
           >
             {cat.name}
           </Link>
@@ -125,8 +125,8 @@ export function EvidenceDetail({
 
       <RatingsPanel ratings={item.ratings} />
 
-      <section className="mt-10 border-t border-line/80 pt-6">
-        <h2 className="font-display text-2xl text-ink">{t("detail.original")}</h2>
+      <section className="mt-8 border-t border-line/80 pt-5 sm:mt-10 sm:pt-6">
+        <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.original")}</h2>
         <ul className="mt-4 divide-y divide-line/70 border-y border-line/70">
           {item.sources.map((source) => (
             <li key={source.id} className="py-4">
@@ -134,7 +134,7 @@ export function EvidenceDetail({
                 href={source.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="break-all font-medium text-signal hover:underline"
+                className="break-all text-sm font-medium leading-relaxed text-signal hover:underline sm:text-base"
               >
                 {source.url}
               </a>
@@ -149,8 +149,8 @@ export function EvidenceDetail({
         </ul>
       </section>
 
-      <section className="mt-10 border-t border-line/80 pt-6">
-        <h2 className="font-display text-2xl text-ink">{t("detail.related")}</h2>
+      <section className="mt-8 border-t border-line/80 pt-5 sm:mt-10 sm:pt-6">
+        <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.related")}</h2>
         {related.length === 0 ? (
           <p className="mt-3 text-mist">—</p>
         ) : (
@@ -165,10 +165,10 @@ export function EvidenceDetail({
                     : t("detail.contentSimilar");
               return (
                 <li key={row.evidence.id} className="py-4">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-2">
                     <Link
                       href={`/evidence/${row.evidence.slug}`}
-                      className="font-display text-xl text-ink transition hover:text-signal"
+                      className="font-display text-lg text-ink transition hover:text-signal sm:text-xl"
                     >
                       {other.caption}
                     </Link>

@@ -13,15 +13,17 @@ export function EvidenceCatalogue({
 }) {
   const { t } = useI18n();
   return (
-    <section className="pt-4 sm:pt-8">
+    <section className="pt-2 sm:pt-8">
       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-signal">
         {t("nav.evidence")}
       </p>
-      <h1 className="mt-2 font-display text-4xl text-ink sm:text-5xl">{t("evidence.title")}</h1>
-      <p className="mt-3 max-w-2xl text-ink-soft">
+      <h1 className="mt-2 font-display text-[2rem] leading-tight text-ink sm:text-5xl">
+        {t("evidence.title")}
+      </h1>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft sm:text-base">
         {total.toLocaleString()} {t("evidence.blurb")}
       </p>
-      <div className="mt-8">
+      <div className="mt-6 sm:mt-8">
         <EvidenceList evidence={evidence} />
       </div>
     </section>
