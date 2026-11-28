@@ -42,16 +42,32 @@ export async function sql<T = Record<string, unknown>>(
 }
 
 async function startLocal(): Promise<PGlite> {
-  // Vitest needs an isolated in-memory DB; local/dev persists so cron + pages share state.
-  const useMemory =
-    process.env.VITEST === "true" || process.env.SIMULUM_PGLITE_MEMORY === "1";
-  const db = useMemory
-    ? new PGlite()
-    : await (async () => {
-        const dataDir = path.join(process.cwd(), ".data", "pglite");
-        await mkdir(dataDir, { recursive: true });
-        return new PGlite(dataDir);
-      })();
+  // Vitest / explicit memory flag → pure in-memory (isolated, no disk).
+  const forceMemory =
+    process.env.VITEST === "true" ||
+    process.env.SIMULUM_PGLITE_MEMORY === "1" ||
+    process.env.SIMULUM_PGLITE_MEMORY === "true";
+
+  // Prefer .data locally; on Vercel the app dir is read-only so use /tmp, then memory.
+  const onVercel = process.env.VERCEL === "1" || process.env.VERCEL === "true";
+  const candidates = forceMemory
+    ? []
+    : onVercel
+      ? [path.join("/tmp", "simulum-pglite")]
+      : [path.join(process.cwd(), ".data", "pglite"), path.join("/tmp", "simulum-pglite")];
+
+  let db: PGlite | undefined;
+  for (const dataDir of candidates) {
+    try {
+      await mkdir(dataDir, { recursive: true });
+      db = new PGlite(dataDir);
+      break;
+    } catch {
+      db = undefined;
+    }
+  }
+  db ??= new PGlite();
+
   const dir = path.join(process.cwd(), "migrations");
   const files = (await readdir(dir).catch(() => [])).filter((f) => f.endsWith(".sql")).sort();
   for (const file of files) {
