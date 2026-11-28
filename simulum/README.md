@@ -37,19 +37,17 @@ Daily scan: Vercel Cron hits `GET /api/cron/daily-scan` at `0 23 * * *` UTC (07:
 
 ## Deploy (Vercel)
 
-Permanent production URL (CLI):
+Live production: **https://simulum.vercel.app**  
+(also aliased as `https://simulum-hxyan2015-1529s-projects.vercel.app`)
 
 ```bash
 cd simulum
-# Interactive:
 npx vercel login
-npx vercel deploy --prod --yes
+npx vercel deploy --prod --yes --project simulum --create-if-missing
 
-# Or non-interactive with a token from https://vercel.com/account/tokens:
+# Or non-interactive:
 export VERCEL_TOKEN=…   # never commit this
-npx vercel deploy --prod --yes --token "$VERCEL_TOKEN"
+npx vercel deploy --prod --yes --token "$VERCEL_TOKEN" --project simulum --create-if-missing
 ```
 
 Set `SCAN_SECRET` / `CRON_SECRET` in the Vercel project so daily cron (`0 23 * * *` UTC) can call `/api/cron/daily-scan`.
-
-Anonymous `vercel deploy --temporary` only yields a short-lived `*.tmp.now` URL — claim it in the browser, or log in / supply `VERCEL_TOKEN`, for a permanent `*.vercel.app` project.
