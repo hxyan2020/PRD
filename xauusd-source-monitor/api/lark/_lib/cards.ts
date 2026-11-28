@@ -1976,13 +1976,12 @@ function deskFooterNote(lang: Lang): Record<string, unknown> {
 }
 
 export function greetingCard(lang: Lang, body: string): Record<string, unknown> {
-  const hans = lang === 'zh-Hans'
-  const zh = isZh(lang)
-  const title = hans
-    ? '你好 · Risk Copilot'
-    : zh
+  const title =
+    lang === 'zh-Hans'
       ? '你好 · Risk Copilot'
-      : 'Hello · Risk Copilot'
+      : lang === 'zh-Hant'
+        ? '你好 · Risk Copilot'
+        : 'Hello · Risk Copilot'
   return {
     config: { wide_screen_mode: true },
     header: {
@@ -1997,9 +1996,8 @@ export function greetingCard(lang: Lang, body: string): Record<string, unknown> 
 }
 
 export function helpCard(lang: Lang, body: string): Record<string, unknown> {
-  const hans = lang === 'zh-Hans'
-  const zh = isZh(lang)
-  const title = hans ? '使用说明' : zh ? '使用說明' : 'How to use'
+  const title =
+    lang === 'zh-Hans' ? '使用说明' : lang === 'zh-Hant' ? '使用說明' : 'How to use'
   return {
     config: { wide_screen_mode: true },
     header: {

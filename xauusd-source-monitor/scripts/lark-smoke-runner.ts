@@ -299,6 +299,79 @@ async function main() {
     ) === 'zh-Hans',
     '',
   )
+  // EN keyword commands must flip to English even when the session preferred ZH
+  {
+    const enCmds = [
+      'market',
+      'help',
+      'investigate',
+      'review',
+      'dashboard',
+      'skills',
+      'knowledge',
+      'weekly',
+      'oscillation',
+      'daily',
+      'alert optimize',
+      'wiki',
+      'done',
+      'hi',
+      'hello',
+    ]
+    const flipped = enCmds.every((c) => detectLang(c, 'zh-Hans') === 'en')
+    record(
+      'lang.en_cmds_override_zh_session',
+      flipped && detectLang('ok', 'zh-Hans') === 'zh-Hans',
+      flipped ? 'EN cmds→en; soft ack stays zh' : 'EN cmd stuck on zh-Hans under ZH session',
+    )
+  }
+  // Traditional short commands must detect zh-Hant (not collapse to Hans)
+  {
+    const hantCmds: Array<[string, string]> = [
+      ['市況', 'market'],
+      ['幫助', 'help'],
+      ['說明', 'help'],
+      ['複盤', 'review'],
+      ['歸檔', 'review'],
+      ['儀表盤', 'review'],
+      ['結束排查', 'archive'],
+      ['技能庫', 'skills'],
+      ['場景', 'skills'],
+      ['知識庫', 'knowledge'],
+      ['週報', 'weekly'],
+      ['震盪行情預警', 'oscillation'],
+      ['告警優化', 'alert_optimize'],
+      ['每日早報', 'daily_market'],
+      ['開始排查', 'investigate'],
+    ]
+    const opts = { inInvestigateSession: false, mentionedBot: true, chatType: 'p2p' }
+    let bad = ''
+    for (const [text, intent] of hantCmds) {
+      const lang = detectLang(text, 'en')
+      const got = classifyIntent(text, opts)
+      if (lang !== 'zh-Hant' || got !== intent) {
+        bad = `${text} lang=${lang} intent=${got} want zh-Hant/${intent}`
+        break
+      }
+    }
+    record('lang.hant_short_cmds', !bad, bad || 'hant cmds ok')
+  }
+  // Reply bodies match trigger language (EN / Hans / Hant)
+  record(
+    'lang.reply_mirrors_trigger',
+    detectLang('help', 'zh-Hans') === 'en' &&
+      helpReply('en').includes('Keywords') &&
+      !helpReply('en').includes('关键词') &&
+      detectLang('帮助', 'en') === 'zh-Hans' &&
+      helpReply('zh-Hans').includes('关键词') &&
+      detectLang('幫助', 'en') === 'zh-Hant' &&
+      helpReply('zh-Hant').includes('關鍵詞') &&
+      /Risk Copilot/.test(greetingReply('en')) &&
+      !/关键词|關鍵詞/.test(greetingReply('en')) &&
+      greetingReply('zh-Hans').includes('我是') &&
+      greetingReply('zh-Hant').includes('關鍵詞'),
+    '',
+  )
   record('doc.can_read_detect', isLarkWikiQuestion('你能读取这里面的数据吗'), '')
   record(
     'doc.can_read_reply_zh',
@@ -1311,6 +1384,51 @@ async function main() {
     }) === 'daily_market',
     '',
   )
+  // EN ↔ ZH (+ Hant) keyword matrix — every greeting command both sides
+  {
+    const opts = { inInvestigateSession: false, mentionedBot: true, chatType: 'p2p' as const }
+    const pairs: Array<{ en: string; zh: string; hant?: string; intent: string }> = [
+      { en: 'market', zh: '行情', hant: '市況', intent: 'market' },
+      { en: 'investigate', zh: '排查', hant: '開始排查', intent: 'investigate' },
+      { en: 'review', zh: '复盘', hant: '複盤', intent: 'review' },
+      { en: 'dashboard', zh: '看板', hant: '儀表盤', intent: 'review' },
+      { en: 'help', zh: '帮助', hant: '幫助', intent: 'help' },
+      { en: 'done', zh: '完成', hant: '結束排查', intent: 'archive' },
+      { en: 'skills', zh: '技能', hant: '技能庫', intent: 'skills' },
+      { en: 'knowledge', zh: '知识库', hant: '知識庫', intent: 'knowledge' },
+      { en: 'weekly', zh: '周报', hant: '週報', intent: 'weekly' },
+      { en: 'oscillation', zh: '震荡预警', hant: '震盪預警', intent: 'oscillation' },
+      { en: 'morning report', zh: '每日早报', hant: '每日早報', intent: 'daily_market' },
+      { en: 'alert optimize', zh: '告警优化', hant: '告警優化', intent: 'alert_optimize' },
+      { en: 'wiki', zh: '文档', hant: '文檔', intent: 'general_risk' },
+    ]
+    let matrixBad = ''
+    for (const p of pairs) {
+      if (classifyIntent(p.en, opts) !== p.intent || detectLang(p.en, 'zh-Hans') !== 'en') {
+        matrixBad = `en ${p.en}`
+        break
+      }
+      if (classifyIntent(p.zh, opts) !== p.intent || detectLang(p.zh, 'en') !== 'zh-Hans') {
+        matrixBad = `zh ${p.zh}`
+        break
+      }
+      if (p.hant) {
+        const hl = detectLang(p.hant, 'en')
+        if (classifyIntent(p.hant, opts) !== p.intent || hl !== 'zh-Hant') {
+          matrixBad = `hant ${p.hant} lang=${hl}`
+          break
+        }
+      }
+    }
+    record(
+      'cmd.en_zh_hant_matrix',
+      !matrixBad &&
+        classifyIntent('调查', opts) === 'investigate' &&
+        classifyIntent('早报', opts) === 'daily_market' &&
+        classifyIntent('震荡行情', opts) === 'oscillation',
+      matrixBad || 'matrix + aliases ok',
+    )
+  }
   record(
     'intent.skills_natural_zh',
     classifyIntent('有哪些排查场景', {
