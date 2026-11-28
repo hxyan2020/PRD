@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import { useLocale } from '../i18n/locale'
+import { submitMemoryProposal } from '../copilot/memorySubmitClient'
 import { loadSkills, saveSkills } from '../copilot/storage'
 import type { SkillLevel, SkillRecord } from '../copilot/types'
 
@@ -29,8 +30,8 @@ function severityClass(sev: string) {
 }
 
 export function SkillsPage() {
-  const { t } = useLocale()
-  const { isAdmin } = useAuth()
+  const { t, lang } = useLocale()
+  const { isAdmin, user } = useAuth()
   const canWrite = isAdmin
   const [skills, setSkills] = useState<SkillRecord[]>(() => loadSkills())
   const [q, setQ] = useState('')
@@ -38,6 +39,8 @@ export function SkillsPage() {
   const [showArchived, setShowArchived] = useState(false)
   const [editing, setEditing] = useState<SkillRecord | null>(null)
   const [creating, setCreating] = useState(false)
+  const [proposing, setProposing] = useState(false)
+  const [proposeStatus, setProposeStatus] = useState('')
 
   const persist = (next: SkillRecord[]) => {
     if (!canWrite) return
@@ -58,13 +61,20 @@ export function SkillsPage() {
   }, [skills, q, levelFilter, showArchived])
 
   const startCreate = () => {
-    if (!canWrite) return
+    if (!canWrite && !proposing) return
     setCreating(true)
     setEditing(emptyDraft())
   }
 
-  const saveEditor = () => {
-    if (!canWrite || !editing) return
+  const startPropose = () => {
+    setProposing(true)
+    setCreating(true)
+    setEditing(emptyDraft())
+    setProposeStatus('')
+  }
+
+  const saveEditor = async () => {
+    if (!editing) return
     const id = editing.id.trim()
     const name = editing.name.trim()
     if (!id || !name) return
@@ -75,6 +85,40 @@ export function SkillsPage() {
       description: editing.description.trim() || name,
       matchHints: editing.matchHints.trim() || `${id} ${name}`,
       updatedAt: Date.now(),
+    }
+    if (!canWrite) {
+      setProposeStatus('')
+      const exists = skills.some((s) => s.id === id)
+      const res = await submitMemoryProposal({
+        kind: 'skill',
+        op: exists ? 'update' : 'create',
+        payload: {
+          id: record.id,
+          level: record.level,
+          name: record.name,
+          severity: record.severity,
+          matchHints: record.matchHints,
+          linkedL1: record.linkedL1,
+          check: record.check,
+          action: record.action,
+          opt: record.opt,
+        },
+        note: record.description,
+        submitterName: user?.name,
+        submitterEmail: user?.email,
+        lang,
+      })
+      setProposeStatus(
+        res.ok
+          ? `${t('proposeSubmitted')}${res.itemId ? ` · ${res.itemId}` : ''}`
+          : `${t('proposeFailed')}: ${res.error || ''}`,
+      )
+      if (res.ok) {
+        setEditing(null)
+        setCreating(false)
+        setProposing(false)
+      }
+      return
     }
     const exists = skills.some((s) => s.id === id)
     const next = exists
@@ -121,6 +165,7 @@ export function SkillsPage() {
       <h2>{t('skillsTitle')}</h2>
       <p className="sub">{t('skillsSub')}</p>
       {!canWrite ? <p className="banner-warn">{t('adminOnlyWrite')}</p> : null}
+      {proposeStatus ? <p className="banner-ok">{proposeStatus}</p> : null}
 
       <div className="skills-toolbar">
         <input
@@ -148,10 +193,14 @@ export function SkillsPage() {
           <button type="button" className="archive-btn primary-archive" onClick={startCreate}>
             {t('skillsCreate')}
           </button>
-        ) : null}
+        ) : (
+          <button type="button" className="archive-btn primary-archive" onClick={startPropose}>
+            {t('proposeChange')}
+          </button>
+        )}
       </div>
 
-      {creating && editing && canWrite ? (
+      {creating && editing && (canWrite || proposing) ? (
         <article className="std-card std-card-edit">
           <header className="std-card-head">
             <div className="std-card-title-block">
@@ -181,21 +230,22 @@ export function SkillsPage() {
       <p className="sub">{t('skillsCount').replace('{n}', String(visible.length))}</p>
 
       {visible.map((s) =>
-        isEditing(s.id) && editing ? (
+        isEditing(s.id) && editing && (canWrite || proposing) ? (
           <article key={s.id} className="std-card std-card-edit">
             <header className="std-card-head">
               <div className="std-card-title-block">
                 <span className="std-badge">{s.level}</span>
                 <h3>
-                  {s.id} · {t('skillsEdit')}
+                  {s.id} · {proposing && !canWrite ? t('proposeChange') : t('skillsEdit')}
                 </h3>
               </div>
               <span className={`std-sev ${severityClass(editing.severity)}`}>{editing.severity}</span>
             </header>
+            {!canWrite ? <p className="sub">{t('proposeChangeHint')}</p> : null}
             <SkillEditorFields editing={editing} setEditing={setEditing} creating={false} />
             <div className="std-card-actions">
-              <button type="button" className="archive-btn primary-archive" onClick={saveEditor}>
-                {t('skillsSave')}
+              <button type="button" className="archive-btn primary-archive" onClick={() => void saveEditor()}>
+                {proposing && !canWrite ? t('proposeChange') : t('skillsSave')}
               </button>
               <button
                 type="button"
@@ -203,6 +253,7 @@ export function SkillsPage() {
                 onClick={() => {
                   setEditing(null)
                   setCreating(false)
+                  setProposing(false)
                 }}
               >
                 {t('skillsCancel')}
@@ -255,6 +306,21 @@ export function SkillsPage() {
               <p>{s.opt || '—'}</p>
             </section>
 
+            {!canWrite ? (
+              <div className="std-card-actions">
+                <button
+                  type="button"
+                  className="archive-btn primary-archive"
+                  onClick={() => {
+                    setProposing(true)
+                    setCreating(false)
+                    setEditing({ ...s })
+                  }}
+                >
+                  {t('proposeChange')}
+                </button>
+              </div>
+            ) : null}
             {canWrite ? (
               <div className="std-card-actions">
                 <button

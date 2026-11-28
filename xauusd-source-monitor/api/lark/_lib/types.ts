@@ -8,6 +8,7 @@ export type Intent =
   | 'followup'
   | 'review'
   | 'clear_review'
+  | 'memory_submit'
   | 'skills'
   | 'knowledge'
   | 'archive'

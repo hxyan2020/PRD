@@ -2353,6 +2353,18 @@ async function handleCardActionCore(args: {
     return { card: simpleCard(title, body, 'turquoise') }
   }
 
+  {
+    const { handleMemorySubmitCardAction } = await import('./memorySubmitAgent.js')
+    const mem = await handleMemorySubmitCardAction({
+      action,
+      submissionId: String(args.value.submissionId || ''),
+      openId: args.openId,
+      chatId,
+      lang,
+    })
+    if (mem) return mem
+  }
+
   if (action === 'open_incident') {
     const id = incidentId || String(args.value.incidentId || '')
     const inc = id ? await getIncidentDurable(id) : undefined
@@ -3001,6 +3013,14 @@ export async function handleMessage(msg: IncomingMessage): Promise<BotReply | nu
 async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null> {
   if (!msg.messageId) return null
 
+  // Load Haixiang-approved Skills/KB overlays before catalogue / RAG reads.
+  try {
+    const { hydrateMemoryOverlays } = await import('./memorySubmit.js')
+    await hydrateMemoryOverlays()
+  } catch {
+    /* ignore */
+  }
+
   // Forwarded cards / merge_forward / reply-to-alert often lack body in the event —
   // re-fetch via message API before intent routing (otherwise empty → greeting).
   let inbound = msg
@@ -3502,6 +3522,16 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       chatId: msg.chatId,
       lang,
       confirmed: isClearReviewConfirmCommand(workingText),
+    })
+  }
+
+  if (intent === 'memory_submit') {
+    const { handleMemorySubmitMessage } = await import('./memorySubmitAgent.js')
+    return handleMemorySubmitMessage({
+      text: workingText,
+      openId: realOpenId,
+      chatId: msg.chatId,
+      lang,
     })
   }
 

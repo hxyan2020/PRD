@@ -161,6 +161,32 @@ export function isInvReportCommand(text: string): boolean {
 export function isStepDoneCommand(text: string): boolean {
   return COMMAND_STEP_DONE.test(text.trim())
 }
+/**
+ * Propose Skills/KB changes (routed to Haixiang for approval).
+ * Also matches soft “I want to edit skills/kb” so we can gently route non-admins.
+ */
+const COMMAND_MEMORY_SUBMIT = new RegExp(
+  `^(?:submit\\s*(?:skill|skills|knowledge|kb)|propose\\s*(?:skill|skills|knowledge|kb|change)|提交技能|提交知识库|提交知識庫|提议修改|提議修改|申请修改|申請修改)${CMD_END}`,
+  'i',
+)
+const MEMORY_SUBMIT_BODY_RE =
+  /^(?:submit\s*(?:skill|skills|knowledge|kb)|propose\s*(?:skill|skills|knowledge|kb)|提交技能|提交知识库|提交知識庫)[\s:：]+/i
+const MEMORY_DELETE_SUBMISSION_RE =
+  /^(?:delete\s*submission|withdraw\s*submission|删除提交|刪除提交|撤回提交)\s+([A-Za-z0-9_:-]+)\s*$/i
+/** Soft ask to edit skills/KB without admin rights. */
+export const MEMORY_EDIT_SOFT_RE =
+  /^(?:我想|我想要|我要|帮我|幫我)?\s*(?:改|修改|编辑|編輯|更新|新增|删除|刪除).{0,12}(技能|skills?|知识库|知識庫|kb)|(?:edit|change|update|add|delete)\s+(?:a\s+)?(?:skill|skills|knowledge|kb)\b/i
+
+export function isMemorySubmitCommand(text: string): boolean {
+  const t = text.trim()
+  return COMMAND_MEMORY_SUBMIT.test(t) || MEMORY_SUBMIT_BODY_RE.test(t)
+}
+
+export function parseDeleteSubmissionId(text: string): string | null {
+  const m = text.trim().match(MEMORY_DELETE_SUBMISSION_RE)
+  return m?.[1] || null
+}
+
 const COMMAND_SKILLS = new RegExp(
   `^(?:skills?\\b|skill\\s*list\\b|技能|技能库|技能庫|场景|場景|查看\\s*skills?|看\\s*skills?)${CMD_END}` +
     `|(?:有哪些|列出|查看|打开|打開).{0,8}(?:排查场景|排查場景|skills?|技能)|(?:排查场景|排查場景|技能目录|技能目錄)\\s*(?:有哪些|列表|目录|目錄)?\\s*$`,
@@ -427,6 +453,14 @@ export function classifyIntent(
   // Explicit commands first — investigate before review so "Alert: …" paste is not a dashboard
   if (COMMAND_INVESTIGATE.test(t)) return 'investigate'
   if (COMMAND_MARKET.test(t)) return 'market'
+  if (
+    COMMAND_MEMORY_SUBMIT.test(t) ||
+    MEMORY_SUBMIT_BODY_RE.test(t) ||
+    MEMORY_DELETE_SUBMISSION_RE.test(t) ||
+    MEMORY_EDIT_SOFT_RE.test(t)
+  ) {
+    return 'memory_submit'
+  }
   if (COMMAND_SKILLS.test(t)) return 'skills'
   if (COMMAND_KNOWLEDGE.test(t)) return 'knowledge'
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
@@ -486,6 +520,14 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   if (!t) return false
   if (intent === 'investigate') return COMMAND_INVESTIGATE.test(t)
   if (intent === 'market') return COMMAND_MARKET.test(t)
+  if (intent === 'memory_submit') {
+    return (
+      COMMAND_MEMORY_SUBMIT.test(t) ||
+      MEMORY_SUBMIT_BODY_RE.test(t) ||
+      MEMORY_DELETE_SUBMISSION_RE.test(t) ||
+      MEMORY_EDIT_SOFT_RE.test(t)
+    )
+  }
   if (intent === 'skills') return COMMAND_SKILLS.test(t)
   if (intent === 'knowledge') return COMMAND_KNOWLEDGE.test(t)
   if (intent === 'weekly') return COMMAND_WEEKLY.test(t)
@@ -502,6 +544,8 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   return (
     COMMAND_INVESTIGATE.test(t) ||
     COMMAND_MARKET.test(t) ||
+    COMMAND_MEMORY_SUBMIT.test(t) ||
+    MEMORY_SUBMIT_BODY_RE.test(t) ||
     COMMAND_SKILLS.test(t) ||
     COMMAND_KNOWLEDGE.test(t) ||
     COMMAND_WEEKLY.test(t) ||
@@ -624,6 +668,10 @@ export function pendingCommandLabel(
     market: { zh: '查看行情', en: 'open a market scan' },
     investigate: { zh: '开始排查', en: 'start an investigation' },
     clear_review: { zh: '清空复盘历史案件', en: 'clear review history' },
+    memory_submit: {
+      zh: '提交 Skills／知识库修改（待 Haixiang 审批）',
+      en: 'propose a Skills/KB change (Haixiang approval)',
+    },
     review: { zh: '打开复盘／看板', en: 'open the review / dashboard' },
     skills: { zh: '打开 Skills 目录', en: 'open the Skills catalogue' },
     knowledge: { zh: '打开知识库目录', en: 'open the knowledge catalogue' },
@@ -727,10 +775,9 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
     return [
       '🔐 **桌面权限说明**',
       '',
-      '• **结论：** 知识库／Skills **仅 Admin 可写**；一般用户／Ops／Analyst **不能编辑**。',
-      '• **“只有我能改吗？”** 若你的账号是 **Admin**，则只有 Admin（含你）能改；否则你也改不了。',
-      '• **只读角色：** Ops／Analyst／一般用户可 **查看** 知识库与 Skills，并仍可做 **investigate**。',
-      '• **需要开通 Admin：** 请联系 **@Yan Haixiang**。',
+      '• **直接写入：** 知识库／Skills **仅 Yan Haixiang（Admin）** 可最终写入。',
+      '• **你可以提议修改：** 发送 **提交技能**／**提交知识库**（或桌面「提交提议」），内容会路由给 Haixiang 审批；通过后你会收到通知与节点链接。',
+      '• **只读角色：** Ops／Analyst／一般用户可 **查看** 并做 **investigate**。',
       '',
       '_桌面页：[知识库](https://vex-llm-proxy.vercel.app/#/knowledge) · [Skills](https://vex-llm-proxy.vercel.app/#/skills)_',
     ].join('\n')
@@ -739,10 +786,9 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
     return [
       '🔐 **桌面權限說明**',
       '',
-      '• **結論：** 知識庫／Skills **僅 Admin 可寫**；一般用戶／Ops／Analyst **不能編輯**。',
-      '• **「只有我能改嗎？」** 若你的帳號是 **Admin**，則只有 Admin（含你）能改；否則你也改不了。',
-      '• **只讀角色：** Ops／Analyst／一般用戶可 **查看** 知識庫與 Skills，並仍可做 **investigate**。',
-      '• **需要開通 Admin：** 請聯繫 **@Yan Haixiang**。',
+      '• **直接寫入：** 知識庫／Skills **僅 Yan Haixiang（Admin）** 可最終寫入。',
+      '• **你可以提議修改：** 發送 **提交技能**／**提交知識庫**，內容會路由給 Haixiang 審批；通過後會通知你。',
+      '• **只讀角色：** Ops／Analyst／一般用戶可 **查看** 並做 **investigate**。',
       '',
       '_桌面頁：[知識庫](https://vex-llm-proxy.vercel.app/#/knowledge) · [Skills](https://vex-llm-proxy.vercel.app/#/skills)_',
     ].join('\n')
@@ -750,10 +796,9 @@ export function deskFaqReply(lang: Lang, question: string): string | null {
   return [
     '🔐 **Desk permissions**',
     '',
-    '• **Answer:** Knowledge / Skills are **Admin-write only**. General / Ops / Analyst **cannot edit**.',
-    '• **“Only I can change it?”** If your account is **Admin**, then only Admins (including you) can edit; otherwise you cannot either.',
-    '• **Read access:** Ops / Analyst / general users can **view** knowledge & Skills and still run **investigate**.',
-    '• **Need Admin:** contact **@Yan Haixiang**.',
+    '• **Direct write:** Knowledge / Skills — **Yan Haixiang (Admin) only**.',
+    '• **You can propose:** say **submit skill** / **submit knowledge** (or use desk “Propose change”); Haixiang approves, then you get a node link.',
+    '• **Read access:** Ops / Analyst / general users can **view** and still **investigate**.',
     '',
     '_Desk: [Knowledge](https://vex-llm-proxy.vercel.app/#/knowledge) · [Skills](https://vex-llm-proxy.vercel.app/#/skills)_',
   ].join('\n')

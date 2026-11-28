@@ -44,7 +44,13 @@ const ROWS: Row[] = [
     intent: 'clear_review',
     en: ['clear review', 'clear review history', 'wipe review', 'confirm clear review'],
     hans: ['清空复盘', '清空历史案件', '确认清空复盘'],
-    hant: ['清空複盤', '清空歷史案件', '確認清空複盤'],
+    hant: ['清空複盤', '確認清空複盤'],
+  },
+  {
+    intent: 'memory_submit',
+    en: ['submit skill', 'submit knowledge', 'propose change'],
+    hans: ['提交技能', '提交知识库', '提议修改'],
+    hant: ['提交知識庫', '提議修改'],
   },
   { intent: 'help', en: ['help', 'guide', 'commands'], hans: ['帮助', '说明'], hant: ['幫助', '說明'] },
   {

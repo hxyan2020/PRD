@@ -1,11 +1,18 @@
 import kbRaw from '../_data/kbDefaults.json' with { type: 'json' }
 import skills34Raw from '../_data/skills34.json' with { type: 'json' }
 import veQuoteOps from '../_data/veQuoteOps.json' with { type: 'json' }
+import { peekKbOverlay, peekSkillOverlay } from './memorySubmit.js'
 import { cleanLarkMd } from './plain.js'
 import type { KbHit, KbItem, Lang, SkillHit, SkillRec } from './types.js'
 
 let skillsCache: SkillRec[] | null = null
 let kbCache: KbItem[] | null = null
+
+/** Drop in-memory catalogue caches after durable overlay apply. */
+export function clearSkillsKbCaches(): void {
+  skillsCache = null
+  kbCache = null
+}
 
 type VePack = {
   knowledge?: { id: string; title: string; body: string }[]
@@ -220,12 +227,13 @@ function matchSkills(text: string, pool: SkillRec[]): SkillHit[] {
 }
 
 /**
- * Skills = Runbook V18 的 34 个排查场景（28 L1 + 6 L2）。
+ * Skills = Runbook V18 的 34 个排查场景（28 L1 + 6 L2）
+ * + Haixiang-approved durable overlays (memory-skills-overlay.json).
  * 监控指标／「可能出现的风险」清单在知识库，不混进 Skills。
  */
 export function loadSkills(): SkillRec[] {
   if (skillsCache) return skillsCache
-  skillsCache = (skills34.skills || []).map((s) => ({
+  const base = (skills34.skills || []).map((s) => ({
     id: s.id,
     level: s.level,
     name: s.name,
@@ -236,6 +244,18 @@ export function loadSkills(): SkillRec[] {
     action: s.action,
     opt: s.opt,
   }))
+  const overlay = peekSkillOverlay()
+  const deleted = new Set((overlay.deleted || []).map((x) => x.toLowerCase()))
+  const byId = new Map<string, SkillRec>()
+  for (const s of base) {
+    if (!deleted.has(s.id.toLowerCase())) byId.set(s.id.toLowerCase(), s)
+  }
+  for (const s of Object.values(overlay.upserts || {})) {
+    if (!s?.id) continue
+    if (deleted.has(s.id.toLowerCase())) continue
+    byId.set(s.id.toLowerCase(), s)
+  }
+  skillsCache = [...byId.values()]
   return skillsCache
 }
 
@@ -251,7 +271,18 @@ export function loadKnowledge(): KbItem[] {
     title: k.title,
     body: k.body,
   }))
-  kbCache = [...base, ...veKb]
+  const overlay = peekKbOverlay()
+  const deleted = new Set((overlay.deleted || []).map((x) => x.toLowerCase()))
+  const byId = new Map<string, KbItem>()
+  for (const k of [...base, ...veKb]) {
+    if (!deleted.has(k.id.toLowerCase())) byId.set(k.id.toLowerCase(), k)
+  }
+  for (const k of Object.values(overlay.upserts || {})) {
+    if (!k?.id) continue
+    if (deleted.has(k.id.toLowerCase())) continue
+    byId.set(k.id.toLowerCase(), k)
+  }
+  kbCache = [...byId.values()]
   return kbCache
 }
 

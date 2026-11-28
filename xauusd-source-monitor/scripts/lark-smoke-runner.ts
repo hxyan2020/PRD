@@ -1406,6 +1406,25 @@ async function main() {
     '清空复盘 must not open the board',
   )
   record(
+    'cmd.zh_memory_submit',
+    classifyIntent('提交技能', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'memory_submit' &&
+      classifyIntent('提交知识库', {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      }) === 'memory_submit' &&
+      classifyIntent('我想修改知识库', {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      }) === 'memory_submit',
+    'skills/KB propose routes to memory_submit',
+  )
+  record(
     'cmd.zh_oscillation_not_investigate',
     classifyIntent('震荡行情预警', {
       inInvestigateSession: false,

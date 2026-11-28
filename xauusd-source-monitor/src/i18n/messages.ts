@@ -240,7 +240,12 @@ const en: Dict = {
   authDemoHint:
     'Demo: ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026! (also risk.ops@ / analyst@ with RiskDemo2026!)',
   adminOnlyWrite:
-    'Read-only for your role. Only Admin can write Skills, RAG knowledge (memory), and related overrides. Ops/Analyst may still run Investigate.',
+    'Direct write is Admin (Yan Haixiang) only. You can still propose changes — submissions are routed to Haixiang for approval; you will be notified with a node link when approved.',
+  proposeChange: 'Propose change',
+  proposeChangeHint:
+    'Your draft will be sent to Yan Haixiang for approval. Once approved, you will get a link to the updated node.',
+  proposeSubmitted: 'Submitted for Haixiang approval',
+  proposeFailed: 'Could not submit proposal',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
   roleAnalyst: 'Analyst',
@@ -779,7 +784,11 @@ const zhHant: Dict = {
   authDemoHint:
     '示範：ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026!（另有 risk.ops@ / analyst@ 密碼 RiskDemo2026!）',
   adminOnlyWrite:
-    '你的角色為唯讀。僅 Admin 可寫入 Skills、RAG 知識庫（記憶）與相關覆寫。Ops／Analyst 仍可執行 Investigate。',
+    '直接寫入僅 Admin（Yan Haixiang）。你仍可提議修改 — 提交會路由給 Haixiang 審批；通過後會通知你並附上節點連結。',
+  proposeChange: '提交提議',
+  proposeChangeHint: '草稿會送交 Yan Haixiang 審批。通過後你會收到更新節點連結。',
+  proposeSubmitted: '已提交，待 Haixiang 審批',
+  proposeFailed: '提交失敗',
   roleAdmin: 'Admin',
   roleOps: 'Ops',
   roleAnalyst: 'Analyst',
@@ -1283,7 +1292,11 @@ const zhHans: Dict = {
   "authHytechOnly": "请使用 Hytech 邮箱（@hytech.com / @hytechc.com / @hytechpro.com）。",
   "authFailed": "邮箱或密码错误。请查看 README 示范帐密。",
   "authDemoHint": "示范：ops@hytech.com / OpsDemo2026! · admin@hytech.com / AdminDemo2026!（另有 risk.ops@ / analyst@ 密码 RiskDemo2026!）",
-  "adminOnlyWrite": "你的角色为唯读。仅 Admin 可写入 Skills、RAG 知识库（记忆）与相关覆写。Ops／Analyst 仍可执行 Investigate。",
+  "adminOnlyWrite": "直接写入仅 Admin（Yan Haixiang）。你仍可提议修改 — 提交会路由给 Haixiang 审批；通过后会通知你并附上节点链接。",
+  "proposeChange": "提交提议",
+  "proposeChangeHint": "草稿会送交 Yan Haixiang 审批。通过后你会收到更新节点链接。",
+  "proposeSubmitted": "已提交，待 Haixiang 审批",
+  "proposeFailed": "提交失败",
   "roleAdmin": "Admin",
   "roleOps": "Ops",
   "roleAnalyst": "Analyst",
