@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
-# From this Cloud Agent / laptop: push relay onto the droplet over SSH.
-# Requires env:
-#   DROPLET_SSH_HOST
-#   DROPLET_SSH_PRIVATE_KEY  (PEM contents)  OR  DROPLET_SSH_KEY_PATH
-# Optional:
-#   DROPLET_SSH_USER (default root)
-#   DROPLET_SSH_PORT (default 22)
+# Push permanent relay onto the droplet over SSH.
+# Requires: DROPLET_SSH_HOST + DROPLET_SSH_PRIVATE_KEY (or DROPLET_SSH_KEY_PATH)
 set -euo pipefail
 
 HOST="${DROPLET_SSH_HOST:?set DROPLET_SSH_HOST}"
@@ -31,8 +26,9 @@ SCP=(scp -i "$KEY_FILE" -P "$PORT" -o StrictHostKeyChecking=accept-new -o Identi
 
 REMOTE_TMP="/tmp/lark-cron-relay-$$"
 "${SSH[@]}" "mkdir -p $REMOTE_TMP"
-"${SCP[@]}" "$ROOT/cron-relay.sh" "$ROOT/install-cron.sh" "$USER@$HOST:$REMOTE_TMP/"
+"${SCP[@]}" "$ROOT/cron-relay.sh" "$ROOT/install-cron.sh" "$ROOT/JOBS.md" "$ROOT/README.md" "$USER@$HOST:$REMOTE_TMP/"
 "${SSH[@]}" "sudo bash $REMOTE_TMP/install-cron.sh && rm -rf $REMOTE_TMP"
 
-echo "Droplet relay installed on $USER@$HOST"
-echo "Next: unsubscribe Cursor quiet timers lark-osc-ping-5m / lark-cron-health-30m once logs look healthy."
+echo "Permanent droplet relay installed on $USER@$HOST"
+echo "Crons will NOT stop unless Yan runs: CONFIRM_STOP=yan-said-so install-cron.sh uninstall"
+echo "After verifying /var/log/lark-cron-relay/relay.log, unsubscribe Cursor quiet timers only."
