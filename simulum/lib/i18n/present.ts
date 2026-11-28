@@ -1,3 +1,4 @@
+import { localizeClaimCaption } from "@/lib/i18n/claim-locale";
 import { cleanTitle, isMostlyLatin, stripLanguageLabel } from "@/lib/summarize";
 import type { Evidence, EvidenceBody, EvidenceLocalePack, LocaleCode } from "@/lib/types";
 
@@ -438,9 +439,16 @@ function captionTopicForLocale(evidence: Evidence, locale: LocaleCode): string {
   if (enCaption) {
     const localizedFacing = localizeEnglishFacingCaption(enCaption, locale);
     if (localizedFacing) return localizedFacing;
-    // Real English claim sentences stay as lingua franca (never slug fragments).
-    return enCaption;
+    // Translate English claim sentences into the UI language (never leave EN in zh UI).
+    const localizedClaim = localizeClaimCaption(enCaption, locale, evidence);
+    if (localizedClaim) return localizedClaim;
+    // Latin-script UI locales may keep English claim text as lingua franca.
+    if (!scriptMismatch(enCaption, locale)) return enCaption;
   }
+
+  // Script-sensitive locales: synthesize from title/summary rather than English leftovers.
+  const fromTitle = localizeClaimCaption(topic, locale, evidence);
+  if (fromTitle && !scriptMismatch(fromTitle, locale)) return fromTitle;
 
   return fallbackClaimLabel(evidence, locale);
 }

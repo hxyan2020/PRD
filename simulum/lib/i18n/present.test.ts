@@ -129,7 +129,7 @@ describe("presentEvidence", () => {
     }
   });
 
-  it("uses English claim text for Chinese UI when no zh pack exists", () => {
+  it("translates English claim text into Chinese when no zh pack exists", () => {
     const ev = sample({
       language: "en",
       title: "Ancestor simulations imply we are simulated",
@@ -150,10 +150,12 @@ describe("presentEvidence", () => {
       },
     });
     const zh = presentEvidence(ev, "zh");
-    expect(zh.caption).toMatch(/ancestor simulations/i);
-    expect(zh.caption).not.toMatch(/模拟主张/);
+    expect(zh.caption).toMatch(/祖先模拟|模拟/);
+    expect(zh.caption).not.toMatch(/If civilizations|odds favor/i);
+    expect(zh.caption).not.toMatch(/模拟主张\s*·/);
     expect(zh.caption).not.toMatch(/eality|nalogy|-minds/i);
     expect(zh.body.what).toMatch(/本目录|选择的语言/);
+    expect(zh.body.what).toMatch(/祖先模拟|模拟/);
   });
 
   it("localizes generic Wikipedia English packs into Chinese", () => {
@@ -225,7 +227,8 @@ describe("presentEvidence", () => {
     const zh = presentEvidence(ev, "zh");
     expect(zh.caption).not.toMatch(/eality/);
     expect(zh.caption).not.toMatch(/模拟主张\s*·/);
-    expect(zh.caption).toMatch(/Chalmers|virtual realities/i);
+    expect(zh.caption).toMatch(/查默斯|虚拟现实|实在/);
+    expect(zh.caption).not.toMatch(/Chalmers|virtual realities/i);
   });
 
   it("prefers a same-locale source title for Chinese UI", () => {
