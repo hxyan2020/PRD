@@ -1,3 +1,4 @@
+import { atOpenIdMarkdown } from './client.js'
 import { detectSafetyViolation } from './safety.js'
 import type { Intent, Lang } from './types.js'
 
@@ -1161,11 +1162,15 @@ export function offtopicReply(lang: Lang): string {
 /**
  * Greeting / help body for Lark interactive cards (lark_md).
  * Uses blank lines, bold command names, bullets, and per-command trigger hints.
+ * Haixiang is @mentioned **only** in the UAT footer (by open_id), nowhere else.
  */
-export function greetingReply(lang: Lang): string {
+export function greetingReply(lang: Lang, adminOpenId?: string | null): string {
   const hour = east8Hour()
   const open = greetingOpenForHour(lang, hour)
   const variant = Math.floor(Date.now() / 60_000) % 3
+  const atHaixiang = atOpenIdMarkdown(
+    (adminOpenId || process.env.LARK_ADMIN_OPEN_ID || '').trim() || null,
+  )
 
   if (lang === 'zh-Hans') {
     const intros = [
@@ -1191,15 +1196,15 @@ export function greetingReply(lang: Lang): string {
       '',
       '• 📚 **知识库** — 知识库（含「可能出现的风险」指标清单）',
       '',
-      '• 📖 **文档** — 只读检索已授权飞书 Wiki／文档（未授权联系 **@Yan Haixiang**）',
+      '• 📖 **文档** — 只读检索已授权飞书 Wiki／文档',
       '',
-      '• 📊 **周报** — 本周汇总；每周五 **16:00（东八区）** 自动推送给 **@Yan Haixiang**',
+      '• 📊 **周报** — 本周汇总；每周五 **16:00（东八区）** 自动推送群',
       '',
-      '• ⚠️ **震荡行情预警** — Binance（OKX 备用）振幅／资金费率偏离动态均值或突发新闻时，**仅推送群**（不私聊 Yan）',
+      '• ⚠️ **震荡行情预警** — Binance（OKX 备用）振幅／资金费率偏离或突发新闻时，**仅推送群**',
       '',
       '• ❓ **帮助** — 完整说明',
       '',
-      '_说中文我会用中文回复。我还在 UAT 阶段，有问题请报给 @Yan Haixiang。_',
+      `_说中文我会用中文回复。我还在 **UAT** 阶段，有问题请报给 ${atHaixiang}。_`,
     ].join('\n')
   }
 
@@ -1227,15 +1232,15 @@ export function greetingReply(lang: Lang): string {
       '',
       '• 📚 **知識庫** — 知識庫（含「可能出現的風險」指標清單）',
       '',
-      '• 📖 **文檔** — 唯讀檢索已授權飛書 Wiki／文檔（未授權聯繫 **@Yan Haixiang**）',
+      '• 📖 **文檔** — 唯讀檢索已授權飛書 Wiki／文檔',
       '',
-      '• 📊 **週報** — 本週匯總；每週五 **16:00（東八區）** 自動推送給 **@Yan Haixiang**',
+      '• 📊 **週報** — 本週匯總；每週五 **16:00（東八區）** 自動推送群',
       '',
-      '• ⚠️ **震盪行情預警** — Binance（OKX 備用）振幅／資金費率偏離動態均值或突發新聞時，**僅推送群**（不私聊 Yan）',
+      '• ⚠️ **震盪行情預警** — Binance（OKX 備用）振幅／資金費率偏離或突發新聞時，**僅推送群**',
       '',
       '• ❓ **幫助** — 完整說明',
       '',
-      '_說中文我會用中文回覆。我還在 UAT 階段，有問題請報給 @Yan Haixiang。_',
+      `_說中文我會用中文回覆。我還在 **UAT** 階段，有問題請報給 ${atHaixiang}。_`,
     ].join('\n')
   }
 
@@ -1262,15 +1267,15 @@ export function greetingReply(lang: Lang): string {
     '',
     '• 📚 **knowledge** / **kb** — knowledge base (incl. possible-risks inventory)',
     '',
-    '• 📖 **wiki** — read-only Lark Wiki / Docs (unauthorized → **@Yan Haixiang**)',
+    '• 📖 **wiki** — read-only Lark Wiki / Docs',
     '',
-    '• 📊 **weekly** — weekly digest; auto-pushed to **group + @Yan Haixiang** Fridays **16:00 Asia/Shanghai**',
+    '• 📊 **weekly** — weekly digest; auto-pushed to the **group** Fridays **16:00 Asia/Shanghai**',
     '',
-    '• ⚠️ **oscillation alert** — Binance (OKX backup) vol / funding-vs-mean or breaking news → **group only** (no Yan DM)',
+    '• ⚠️ **oscillation alert** — Binance (OKX backup) vol / funding / news → **group only**',
     '',
     '• ❓ **help** — full guide',
     '',
-    '_I’m still in UAT — please report any issues to @Yan Haixiang._',
+    `_I’m still in **UAT** — please report any issues to ${atHaixiang}._`,
   ].join('\n')
 }
 

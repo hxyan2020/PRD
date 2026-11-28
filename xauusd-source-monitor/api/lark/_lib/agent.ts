@@ -1,4 +1,8 @@
-import { downloadMessageImage, fetchUserDisplayName } from './client.js'
+import {
+  downloadMessageImage,
+  fetchUserDisplayName,
+  resolveAdminOpenId,
+} from './client.js'
 import {
   alertGatherCard,
   alertOptimizeCard,
@@ -3246,7 +3250,9 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       return { card: simpleCard(title, body, 'orange') }
     }
     // Token usage is a private daily DM to Yan (18:00 SGT) — not on greeting.
-    return { card: greetingCard(lang, greetingReply(lang)) }
+    // @Haixiang only in the UAT footer (by open_id), not in feature bullets.
+    const admin = await resolveAdminOpenId({ preferChatId: inbound.chatId })
+    return { card: greetingCard(lang, greetingReply(lang, admin.openId)) }
   }
 
   if (intent === 'help') {
