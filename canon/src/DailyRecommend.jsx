@@ -153,9 +153,9 @@ export default function DailyRecommend({
             </p>
             <p className="daily-reason">{reasonText(result, t)}</p>
             {track.anecdote ? <TranslatedProse className="anecdote-text" text={track.anecdote} /> : null}
-            <p className="daily-stamp">
-              {hasPrefs ? t("prefsNow", { prefs: activePrefs.join(" · ") }) : t("noPrefs")}
-            </p>
+            {hasPrefs ? (
+              <p className="daily-stamp">{t("prefsNow", { prefs: activePrefs.join(" · ") })}</p>
+            ) : null}
             {collectedIds.includes(track.id) ? (
               <p className="collected-date">{collectedStamp(collectedAt?.[track.id], t, locale)}</p>
             ) : null}
