@@ -6,7 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { LANG_LABEL, messages, type AppLang } from './messages'
+import { DEFAULT_APP_LANG, LANG_LABEL, messages, type AppLang } from './messages'
 
 const STORAGE_KEY = 'xauusd-monitor-lang'
 
@@ -26,7 +26,7 @@ function readLang(): AppLang {
   } catch {
     /* ignore */
   }
-  return 'en'
+  return DEFAULT_APP_LANG
 }
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
@@ -49,7 +49,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     () => ({
       lang,
       setLang,
-      t: (key) => messages[lang][key] ?? messages.en[key] ?? key,
+      // Missing keys fall back to Simplified Chinese, then English.
+      t: (key) =>
+        messages[lang][key] ??
+        messages[DEFAULT_APP_LANG][key] ??
+        messages.en[key] ??
+        key,
       langLabel: LANG_LABEL,
     }),
     [lang],

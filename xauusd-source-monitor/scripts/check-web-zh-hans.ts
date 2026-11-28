@@ -1,9 +1,12 @@
-import { LANG_LABEL, messages, type AppLang } from '../src/i18n/messages.ts'
+import { DEFAULT_APP_LANG, LANG_LABEL, messages, type AppLang } from '../src/i18n/messages.ts'
 import { isZh, zhUi } from '../src/i18n/zh.ts'
 
 const langs = Object.keys(LANG_LABEL) as AppLang[]
 const fails: string[] = []
 
+if (DEFAULT_APP_LANG !== 'zh-Hans') {
+  fails.push(`DEFAULT_APP_LANG=${DEFAULT_APP_LANG} (want zh-Hans)`)
+}
 if (langs.join(',') !== 'en,zh-Hant,zh-Hans') {
   fails.push(`LANG_LABEL order/keys = ${langs.join(',')} (want en,zh-Hant,zh-Hans)`)
 }

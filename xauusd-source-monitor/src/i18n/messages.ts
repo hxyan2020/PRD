@@ -1,5 +1,8 @@
 export type AppLang = 'en' | 'zh-Hant' | 'zh-Hans'
 
+/** Default / fallback UI language when none is stored or passed. */
+export const DEFAULT_APP_LANG: AppLang = 'zh-Hans'
+
 export const LANG_LABEL: Record<AppLang, string> = {
   en: 'EN',
   'zh-Hant': '繁中',

@@ -116,7 +116,7 @@ export function analyzeWithRules(args: {
   dataSources?: { label: string; url: string }[]
 }): RuleAnalysis {
   const lang: AppLang =
-    args.lang === 'zh-Hans' ? 'zh-Hans' : args.lang === 'zh-Hant' ? 'zh-Hant' : 'en'
+    args.lang === 'en' ? 'en' : args.lang === 'zh-Hant' ? 'zh-Hant' : 'zh-Hans'
   const zh = isZh(lang)
   const startedAt = args.startedAt ?? Date.now()
   const l1Pool = args.skills.filter((s) => s.level === 'L1')
@@ -455,7 +455,7 @@ export function analyzeWithRules(args: {
 export function followUpWithRules(
   question: string,
   activeFacts: string,
-  lang: AppLang = 'en',
+  lang: AppLang = 'zh-Hans',
 ): string {
   const q = question.trim()
   const lower = q.toLowerCase()

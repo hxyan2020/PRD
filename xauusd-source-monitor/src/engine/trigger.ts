@@ -16,7 +16,7 @@ export function evaluateTrigger(
   compositeHistory: { t: number; px: number }[],
   rules: MonitorRules,
   now = Date.now(),
-  lang: AppLang = 'en',
+  lang: AppLang = 'zh-Hans',
 ): TriggerEval {
   const alertSources = health.filter((h) => h.health === 'alert')
   const watchOrWorse = health.filter((h) => h.health === 'alert' || h.health === 'watch')

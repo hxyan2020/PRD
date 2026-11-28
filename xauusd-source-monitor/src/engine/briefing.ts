@@ -14,7 +14,7 @@ function directionWord(bps: number, lang: AppLang): string {
   return 'two-way but uneven'
 }
 
-function sessionBucket(d = new Date(), lang: AppLang = 'en'): string {
+function sessionBucket(d = new Date(), lang: AppLang = 'zh-Hans'): string {
   const h = d.getUTCHours()
   if (isZh(lang)) {
     if (h >= 0 && h < 7) return zhUi(lang, '亞洲尾盤 / 倫敦開盤前')
@@ -123,7 +123,7 @@ export async function generateBriefing(args: {
   lang?: AppLang
 }): Promise<Briefing> {
   const { trigger, health, composite, spot, history } = args
-  const lang = args.lang ?? 'en'
+  const lang = args.lang ?? 'zh-Hans'
   const breached = health.filter((h) => trigger.breachedSources.includes(h.id))
   const exch = breached.filter((h) => h.kind === 'exchange' || h.kind === 'exchange_index')
   const lps = breached.filter((h) => h.kind === 'lp')
@@ -316,7 +316,7 @@ function buildImpactActions(args: {
 
 function normalizeBriefing(b: Briefing): Briefing {
   const lang: AppLang =
-    b.lang === 'zh-Hans' ? 'zh-Hans' : b.lang === 'zh-Hant' ? 'zh-Hant' : 'en'
+    b.lang === 'en' ? 'en' : b.lang === 'zh-Hant' ? 'zh-Hant' : 'zh-Hans'
   const citations =
     b.citations?.length
       ? b.citations

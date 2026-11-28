@@ -58,10 +58,10 @@ Rules:
 /** @deprecated Prefer systemPromptFor(lang) */
 export const SYSTEM_PROMPT = SYSTEM_PROMPT_ZH
 
-export function systemPromptFor(lang: AppLang = 'zh-Hant'): string {
+export function systemPromptFor(lang: AppLang = 'zh-Hans'): string {
   if (lang === 'en') return SYSTEM_PROMPT_EN
-  if (lang === 'zh-Hans') return SYSTEM_PROMPT_HANS
-  return SYSTEM_PROMPT_ZH
+  if (lang === 'zh-Hant') return SYSTEM_PROMPT_ZH
+  return SYSTEM_PROMPT_HANS
 }
 
 export function modelOptions(provider: LlmProvider): { id: string; label: string }[] {
@@ -175,7 +175,8 @@ export async function runLlm(args: {
   lang?: AppLang
 }): Promise<string> {
   const { settings } = args
-  const lang: AppLang = args.lang === 'en' ? 'en' : args.lang === 'zh-Hans' ? 'zh-Hans' : 'zh-Hant'
+  const lang: AppLang =
+    args.lang === 'en' ? 'en' : args.lang === 'zh-Hant' ? 'zh-Hant' : 'zh-Hans'
   if (settings.provider === 'rules') {
     throw new Error('规则模式请使用本地分析，不走 LLM。')
   }
