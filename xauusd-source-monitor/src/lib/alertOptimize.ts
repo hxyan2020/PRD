@@ -1,3 +1,4 @@
+import type { AppLang } from '../i18n/messages'
 /** Client-side ingest + profiling for Alert Optimize / General analysis. */
 
 /**
@@ -359,7 +360,7 @@ export function runPreprocessAgent(args: {
 /** Human-readable preprocess + optimization bullets for reports. */
 export function formatPreprocessNotes(
   datasets: IngestedDataset[],
-  lang: 'en' | 'zh-Hant',
+  lang: AppLang,
 ): { preprocessNotes: string[]; optimizeSuggestions: string[] } {
   const zh = lang !== 'en'
   const preprocessNotes: string[] = []
@@ -821,14 +822,14 @@ const ALERT_NAME_COLS =
 const LABEL_VALID_COLS =
   /^(valid|is[_\s-]?valid|label|human[_\s-]?label|effective|是否有效|有效|标注|人工标注)$/i
 
-export function slotLabel(slot: AlertDataSlot, lang: 'en' | 'zh-Hant'): string {
+export function slotLabel(slot: AlertDataSlot, lang: AppLang): string {
   const zh = lang !== 'en'
   if (slot === 'underlying') return zh ? '底层数据' : 'Underlying data'
   if (slot === 'alert_logs') return zh ? '告警日志' : 'Alert logs'
   return zh ? '人工标注（是否有效）' : 'Human labels (valid?)'
 }
 
-export function directionLabel(id: OptimizeDirectionId, lang: 'en' | 'zh-Hant'): string {
+export function directionLabel(id: OptimizeDirectionId, lang: AppLang): string {
   const row = OPTIMIZE_DIRECTIONS.find((d) => d.id === id)
   if (!row) return id
   return lang === 'en' ? row.en : row.zh
@@ -1021,7 +1022,7 @@ export function buildThresholdOptimizeBullets(args: {
   underlying: IngestedDataset[]
   labels: IngestedDataset[]
   alertName: string
-  lang: 'en' | 'zh-Hant'
+  lang: AppLang
 }): string {
   const zh = args.lang !== 'en'
   const focus = args.alertName.trim()
@@ -1187,7 +1188,7 @@ function directionGuidance(
     logs: IngestedDataset[]
     underlying: IngestedDataset[]
     labels: IngestedDataset[]
-    lang: 'en' | 'zh-Hant'
+    lang: AppLang
   },
 ): string {
   const focus = ctx.alertName
@@ -1238,7 +1239,7 @@ function profileDatasets(
   const readback: string[] = []
   const dataIssues: string[] = []
   for (const ds of datasets) {
-    const slot = ds.slot ? slotLabel(ds.slot, zh ? 'zh-Hant' : 'en') : null
+    const slot = ds.slot ? slotLabel(ds.slot, zh ? 'zh-Hans' : 'en') : null
     const profiles = profileColumns(ds)
     readback.push(
       zh
@@ -1318,7 +1319,7 @@ function buildReport(args: {
 export function analyzeLocally(args: {
   datasets: IngestedDataset[]
   question: string
-  lang: 'en' | 'zh-Hant'
+  lang: AppLang
 }): AnalysisResult {
   const zh = args.lang !== 'en'
   const { readback, dataIssues } = profileDatasets(args.datasets, zh)
@@ -1437,7 +1438,7 @@ export function analyzeAlertOptimize(args: {
   alertName: string
   directions: OptimizeDirectionId[]
   notes: string
-  lang: 'en' | 'zh-Hant'
+  lang: AppLang
 }): AnalysisResult {
   const zh = args.lang !== 'en'
   const scoped = filterByAlertName(args.datasets, args.alertName)
@@ -1475,7 +1476,7 @@ export function analyzeAlertOptimize(args: {
         '摄入：底层数据／告警日志／人工标注（至少一项）',
         '预处理 Agent：巨型数据 → 抽样 + min/max/P50/P90/P99',
         args.alertName ? `锁定告警名称：${args.alertName}` : '未指定告警名称 — 按全体规则汇总',
-        `选定优化方向：${dirs.map((d) => directionLabel(d, 'zh-Hant')).join('、')}`,
+        `选定优化方向：${dirs.map((d) => directionLabel(d, args.lang)).join('、')}`,
         '画像字段质量并画图',
         '按方向输出建议，并说明预处理与优化建议',
       ]
@@ -1572,14 +1573,14 @@ function assumptionsNoteMissing(
   dataIssues: string[],
   slot: AlertDataSlot,
 ) {
-  const label = slotLabel(slot, zh ? 'zh-Hant' : 'en')
+  const label = slotLabel(slot, zh ? 'zh-Hans' : 'en')
   dataIssues.push(
     zh ? `未提供「${label}」— 相关结论将受限。` : `Missing “${label}” — related conclusions are limited.`,
   )
 }
 
 export function initialStatusSteps(
-  lang: 'en' | 'zh-Hant',
+  lang: AppLang,
   mode: DeskMode = 'general',
 ): StatusStep[] {
   const zh = lang !== 'en'
@@ -1620,7 +1621,7 @@ export function buildAoFollowUpContext(args: {
   alertName?: string
   directions?: OptimizeDirectionId[]
   question?: string
-  lang: 'en' | 'zh-Hant'
+  lang: AppLang
 }): string {
   const zh = args.lang !== 'en'
   const dsLines = args.datasets.map((d) => {
@@ -1632,7 +1633,7 @@ export function buildAoFollowUpContext(args: {
     args.alertName ? (zh ? `告警名：${args.alertName}` : `Alert: ${args.alertName}`) : '',
     args.directions?.length
       ? zh
-        ? `方向：${args.directions.map((d) => directionLabel(d, 'zh-Hant')).join('、')}`
+        ? `方向：${args.directions.map((d) => directionLabel(d, args.lang)).join('、')}`
         : `Directions: ${args.directions.map((d) => directionLabel(d, 'en')).join(', ')}`
       : '',
     args.question?.trim() ? (zh ? `原问题：${args.question.trim().slice(0, 240)}` : `Question: ${args.question.trim().slice(0, 240)}`) : '',
@@ -1657,7 +1658,7 @@ export function followUpAlertOptimize(args: {
   question: string
   result: AnalysisResult
   datasets: IngestedDataset[]
-  lang: 'en' | 'zh-Hant'
+  lang: AppLang
   mode: DeskMode
   alertName?: string
   directions?: OptimizeDirectionId[]
@@ -1754,7 +1755,7 @@ export function followUpAlertOptimize(args: {
 export function appendFollowUpsToReport(
   reportMarkdown: string,
   turns: AoFollowUpTurn[],
-  lang: 'en' | 'zh-Hant',
+  lang: AppLang,
 ): string {
   if (!turns.length) return reportMarkdown
   const zh = lang !== 'en'

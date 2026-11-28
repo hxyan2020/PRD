@@ -117,7 +117,7 @@ export function InvestigatePage() {
 
   const briefings = useMemo(() => {
     const all = loadMonitorBriefings()
-    return all.filter((b) => !b.lang || b.lang === (lang === 'zh-Hant' ? 'zh-Hant' : 'en'))
+    return all.filter((b) => !b.lang || b.lang === lang)
   }, [lang])
 
   const previewBound = useMemo(() => {

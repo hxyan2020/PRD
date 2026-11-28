@@ -1,4 +1,5 @@
-import type { AppLang } from '../i18n/messages'
+import { isZh, type AppLang } from '../i18n/messages'
+import { zhField, zhUi } from '../i18n/zh'
 import type { BriefingCitation, InfoSourceKind, InfoSourceProbe } from '../types'
 import { staticCitationCatalog } from './citations'
 
@@ -78,7 +79,7 @@ function baseResult(
 ): InfoSourceProbe {
   return {
     id: def.id,
-    label: lang === 'zh-Hant' ? def.zh : def.en,
+    label: isZh(lang) ? zhField(lang, def.zh, def.en) : def.en,
     url: def.url,
     kind: def.kind,
     check: partial.check,
@@ -121,12 +122,10 @@ async function probeOne(def: ProbeDef, lang: AppLang): Promise<InfoSourceProbe> 
         status: slow ? 'degraded' : 'ok',
         latencyMs,
         detail: slow
-          ? lang === 'zh-Hant'
-            ? `JSON 可讀但偏慢（${latencyMs}ms）`
+          ? isZh(lang)
+            ? zhUi(lang, `JSON 可讀但偏慢（${latencyMs}ms）`)
             : `JSON readable but slow (${latencyMs}ms)`
-          : lang === 'zh-Hant'
-            ? 'JSON 可讀、CORS 正常'
-            : 'JSON readable, CORS ok',
+          : isZh(lang) ? zhUi(lang, 'JSON 可讀、CORS 正常') : 'JSON readable, CORS ok',
         checkedAt,
       })
     } catch (e) {
@@ -181,12 +180,10 @@ async function probeOne(def: ProbeDef, lang: AppLang): Promise<InfoSourceProbe> 
       status: slow ? 'degraded' : 'ok',
       latencyMs,
       detail: slow
-        ? lang === 'zh-Hant'
-          ? `HTTP 可讀但偏慢（${latencyMs}ms）`
+        ? isZh(lang)
+          ? zhUi(lang, `HTTP 可讀但偏慢（${latencyMs}ms）`)
           : `HTTP readable but slow (${latencyMs}ms)`
-        : lang === 'zh-Hant'
-          ? 'HTTP 可讀'
-          : 'HTTP readable',
+        : isZh(lang) ? zhUi(lang, 'HTTP 可讀') : 'HTTP readable',
       checkedAt,
     })
   } catch {
@@ -220,10 +217,9 @@ async function probeOpaqueHtml(
       check: 'cors_opaque',
       status: 'ok',
       latencyMs,
-      detail:
-        lang === 'zh-Hant'
-          ? `網址可達（瀏覽器 CORS 無法讀正文${prior ? `；${prior}` : ''}）`
-          : `URL reachable (browser CORS cannot read body${prior ? `; ${prior}` : ''})`,
+      detail: isZh(lang)
+        ? zhUi(lang, `網址可達（瀏覽器 CORS 無法讀正文${prior ? `；${prior}` : ''}）`)
+        : `URL reachable (browser CORS cannot read body${prior ? `; ${prior}` : ''})`,
       checkedAt,
     })
   } catch (e) {
@@ -236,9 +232,7 @@ async function probeOpaqueHtml(
         status: 'degraded',
         latencyMs: null,
         detail:
-          lang === 'zh-Hant'
-            ? '來源已列入目錄；瀏覽器自動化探測被擋，請手動開啟核對'
-            : 'Listed in catalog; browser automation blocked — open manually to verify',
+          isZh(lang) ? zhUi(lang, '來源已列入目錄；瀏覽器自動化探測被擋，請手動開啟核對') : 'Listed in catalog; browser automation blocked — open manually to verify',
         checkedAt,
       })
     }
@@ -261,7 +255,7 @@ export function probeDefsForLang(lang: AppLang) {
   return buildProbeDefs(lang).map((d) => ({
     id: d.id,
     kind: d.kind,
-    label: lang === 'zh-Hant' ? d.zh : d.en,
+    label: isZh(lang) ? zhField(lang, d.zh, d.en) : d.en,
     url: d.url,
     check: d.check,
   }))

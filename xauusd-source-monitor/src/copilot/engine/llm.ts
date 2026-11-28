@@ -19,6 +19,24 @@ export const SYSTEM_PROMPT_ZH = `你是 V Exchange 永續合約 Risk Copilot（�
 - 若輸入含 XAUUSD 源監控簡報，把它當作事故輸入量，並保留其中的原因／觀察／citations URL。
 - 不提供／不套取個人隱私；不使用髒話；不討論政治敏感話題（黨派／意識形態）。與 XAUUSD 風險相關的貨幣／利率政策可用。`
 
+export const SYSTEM_PROMPT_HANS = `你是 V Exchange 永续合约 Risk Copilot（风险归因助手）。
+业务范围：XAUUSD MVP 永续、指数源/Mark、LP、强平/ADL、对冲与监控。
+你必须输出结构化简体中文报告，包含（每段用 emoji 标题 + 粗体关键词子弹，提升可读性）：
+🔎 根因判定（区分：已证实事实 / 候选根因 / 待验证假设；找不到外部新闻或宏观催化时要明确声明）
+🧭 排查路径（按优先级，引用匹配到的 L1 指标技能与 L2 链路；• **步骤：** …）
+🔗 使用的数据来源（必须列出直连 URL：行情 API、场所页、新闻／宏观文章；没有就写「无」）
+⚡ 推荐解决方案 / Preferred Action（须标注需人工审批，禁止声称已自动执行）
+🛠️ 后续优化点
+🕳️ 缺失证据清单
+
+规则：
+- 格式：每个小节一个 emoji；子弹用「• **粗体关键词：** 说明」；避免 emoji 刷屏。
+- 不得建议未经授权的生产操作（下单、改价、强平执行、划转）。
+- 价格异动「观察」（bps/基差/场所结构）≠「原因」（新闻/宏观/政策）。
+- 优先使用用户提供的 Skill 上下文、RAG 知识库与简报引用连结；没有证据就说不确定。
+- 若输入含 XAUUSD 源监控简报，把它当作事故输入量，并保留其中的原因／观察／citations URL。
+- 不提供／不套取个人隐私；不使用脏话；不讨论政治敏感话题（党派／意识形态）。与 XAUUSD 风险相关的货币／利率政策可用。`
+
 export const SYSTEM_PROMPT_EN = `You are V Exchange perpetual Risk Copilot (root-cause assistant).
 Scope: XAUUSD MVP perpetual, index/Mark sources, LPs, liquidation/ADL, hedge and monitoring.
 You MUST output a structured English report with emoji section headers + bold-keyword bullets for readability:
@@ -41,7 +59,9 @@ Rules:
 export const SYSTEM_PROMPT = SYSTEM_PROMPT_ZH
 
 export function systemPromptFor(lang: AppLang = 'zh-Hant'): string {
-  return lang === 'en' ? SYSTEM_PROMPT_EN : SYSTEM_PROMPT_ZH
+  if (lang === 'en') return SYSTEM_PROMPT_EN
+  if (lang === 'zh-Hans') return SYSTEM_PROMPT_HANS
+  return SYSTEM_PROMPT_ZH
 }
 
 export function modelOptions(provider: LlmProvider): { id: string; label: string }[] {
@@ -155,7 +175,7 @@ export async function runLlm(args: {
   lang?: AppLang
 }): Promise<string> {
   const { settings } = args
-  const lang: AppLang = args.lang === 'en' ? 'en' : 'zh-Hant'
+  const lang: AppLang = args.lang === 'en' ? 'en' : args.lang === 'zh-Hans' ? 'zh-Hans' : 'zh-Hant'
   if (settings.provider === 'rules') {
     throw new Error('规则模式请使用本地分析，不走 LLM。')
   }
@@ -178,18 +198,31 @@ export async function runLlm(args: {
               '',
               'Respond in English. Keep the investigation path, data-source URLs, and approval-gated recommendations explicit.',
             ].join('\n')
-          : [
-              '## Skill 上下文（L1/L2）',
-              args.skillContext || '（無）',
-              '',
-              '## RAG 知識庫摘錄',
-              args.kbContext || '（無匹配條目）',
-              '',
-              '## 用戶輸入／對話',
-              args.userPrompt,
-              '',
-              '請用繁體中文回覆。排查路徑、數據來源直連 URL、需審批的建議方案必須清楚列出。',
-            ].join('\n'),
+          : lang === 'zh-Hans'
+            ? [
+                '## Skill 上下文（L1/L2）',
+                args.skillContext || '（无）',
+                '',
+                '## RAG 知识库摘录',
+                args.kbContext || '（无匹配条目）',
+                '',
+                '## 用户输入／对话',
+                args.userPrompt,
+                '',
+                '请用简体中文回复。排查路径、数据来源直连 URL、需审批的建议方案必须清楚列出。',
+              ].join('\n')
+            : [
+                '## Skill 上下文（L1/L2）',
+                args.skillContext || '（無）',
+                '',
+                '## RAG 知識庫摘錄',
+                args.kbContext || '（無匹配條目）',
+                '',
+                '## 用戶輸入／對話',
+                args.userPrompt,
+                '',
+                '請用繁體中文回覆。排查路徑、數據來源直連 URL、需審批的建議方案必須清楚列出。',
+              ].join('\n'),
     },
     ...(args.priorMessages || []).map((m) => ({ role: m.role, content: m.content })),
   ]

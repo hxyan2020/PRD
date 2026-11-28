@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import type { AppLang } from '../i18n/messages'
 import { useLocale } from '../i18n/locale'
+import { isZh, zhFromHans, zhUi } from '../i18n/zh'
 import { loadHistory, weeklyOptimisationCandidates } from '../copilot/storage'
 import type { IncidentRecord as DeskIncident } from '../copilot/types'
 
@@ -100,11 +102,16 @@ function larkToRow(h: LarkIncident): DashboardRow {
   }
 }
 
-function riskVerdictLabelUi(v: DashboardRow['riskVerdict'], zh: boolean) {
-  if (v === 'at_risk') return zh ? '有风险' : 'At risk'
-  if (v === 'no_risk') return zh ? '无风险' : 'No risk'
-  if (v === 'unclear') return zh ? '尚不明确' : 'Unclear'
-  return zh ? '未判定' : 'Unset'
+function riskVerdictLabelUi(v: DashboardRow['riskVerdict'], lang: AppLang) {
+  if (!isZh(lang)) {
+    if (v === 'at_risk') return 'At risk'
+    if (v === 'no_risk') return 'No risk'
+    if (v === 'unclear') return 'Unclear'
+    return 'Unset'
+  }
+  const hans =
+    v === 'at_risk' ? '有风险' : v === 'no_risk' ? '无风险' : v === 'unclear' ? '尚不明确' : '未判定'
+  return zhFromHans(lang, hans)
 }
 
 async function fetchLarkIncidents(): Promise<{
@@ -130,7 +137,8 @@ async function fetchLarkIncidents(): Promise<{
 
 export function ReportsDashboardPage() {
   const { t, lang } = useLocale()
-  const zh = lang === 'zh-Hant'
+  const zh = isZh(lang)
+  const z = (s: string) => zhUi(lang, s)
   const [tick, setTick] = useState(0)
   const [lark, setLark] = useState<LarkIncident[]>([])
   const [larkState, setLarkState] = useState<'idle' | 'loading' | 'ok' | 'empty' | 'error'>('idle')
@@ -300,7 +308,7 @@ export function ReportsDashboardPage() {
             {viz.lark}
           </strong>
           <span className="reports-sources-hint">
-            {zh ? '桌面 / Lark' : 'Desk / Lark'}
+            {zh ? z('桌面 / Lark') : 'Desk / Lark'}
             {larkState === 'loading' ? ` · ${t('reportsLoadingLark')}` : ''}
             {larkState === 'error' ? ` · ${t('reportsLarkUnavailable')}` : ''}
           </span>
@@ -462,7 +470,7 @@ export function ReportsDashboardPage() {
                         {r.status === 'open' ? t('reportsOpen') : t('reportsArchived')}
                       </span>
                       <span className="pill status-pill">
-                        {riskVerdictLabelUi(r.riskVerdict, zh)}
+                        {riskVerdictLabelUi(r.riskVerdict, lang)}
                       </span>
                       <span className="mono reports-list-time">{sgt(r.updatedAt)} SGT</span>
                     </div>

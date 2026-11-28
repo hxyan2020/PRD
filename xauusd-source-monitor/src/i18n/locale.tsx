@@ -22,7 +22,7 @@ const Ctx = createContext<LocaleCtx | null>(null)
 function readLang(): AppLang {
   try {
     const v = localStorage.getItem(STORAGE_KEY)
-    if (v === 'en' || v === 'zh-Hant') return v
+    if (v === 'en' || v === 'zh-Hant' || v === 'zh-Hans') return v
   } catch {
     /* ignore */
   }
@@ -42,7 +42,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    document.documentElement.lang = lang === 'zh-Hant' ? 'zh-Hant' : 'en'
+    document.documentElement.lang = lang
   }, [lang])
 
   const value = useMemo<LocaleCtx>(

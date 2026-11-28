@@ -1,4 +1,5 @@
-import type { AppLang } from '../i18n/messages'
+import { isZh, type AppLang } from '../i18n/messages'
+import { zhUi } from '../i18n/zh'
 import type { BriefingSeverity, MonitorRules, SourceHealth, TriggerEvent } from '../types'
 
 export interface TriggerEval {
@@ -32,7 +33,7 @@ export function evaluateTrigger(
   }
 
   const breached = [...new Set([...alertSources, ...watchOrWorse].map((h) => h.id))]
-  const zh = lang === 'zh-Hant'
+  const zh = isZh(lang)
 
   if (alertSources.length >= rules.minAlertSources) {
     const severity: BriefingSeverity =
@@ -43,7 +44,7 @@ export function evaluateTrigger(
       shouldFire: true,
       severity,
       reason: zh
-        ? `${alertSources.length} 個來源處於告警（需 ≥${rules.minAlertSources}）`
+        ? zhUi(lang, `${alertSources.length} 個來源處於告警（需 ≥${rules.minAlertSources}）`)
         : `${alertSources.length} sources in Alert (≥${rules.minAlertSources} required)`,
       breachedSources: alertSources.map((h) => h.id),
       compositeMoveBps5m,
@@ -58,7 +59,7 @@ export function evaluateTrigger(
       shouldFire: true,
       severity: 'watch',
       reason: zh
-        ? `跨層級錯位：${exchangeWatch.length} 個交易所 + ${lpWatch.length} 個 LP 處於觀察/告警`
+        ? zhUi(lang, `跨層級錯位：${exchangeWatch.length} 個交易所 + ${lpWatch.length} 個 LP 處於觀察/告警`)
         : `Cross-tier dislocation: ${exchangeWatch.length} exchange + ${lpWatch.length} LP at Watch/Alert`,
       breachedSources: breached,
       compositeMoveBps5m,
@@ -70,7 +71,7 @@ export function evaluateTrigger(
       shouldFire: true,
       severity: Math.abs(compositeMoveBps5m) >= rules.compositeMoveBps5m * 1.5 ? 'critical' : 'alert',
       reason: zh
-        ? `綜合價 5 分鐘變動 ${compositeMoveBps5m.toFixed(1)} bps（閾值 ${rules.compositeMoveBps5m} bps）`
+        ? zhUi(lang, `綜合價 5 分鐘變動 ${compositeMoveBps5m.toFixed(1)} bps（閾值 ${rules.compositeMoveBps5m} bps）`)
         : `Composite moved ${compositeMoveBps5m.toFixed(1)} bps over 5m (threshold ${rules.compositeMoveBps5m} bps)`,
       breachedSources: watchOrWorse.map((h) => h.id),
       compositeMoveBps5m,
@@ -80,7 +81,7 @@ export function evaluateTrigger(
   return {
     shouldFire: false,
     severity: 'watch',
-    reason: zh ? '未觸發' : 'No trigger',
+    reason: zh ? zhUi(lang, '未觸發') : 'No trigger',
     breachedSources: [],
     compositeMoveBps5m,
   }

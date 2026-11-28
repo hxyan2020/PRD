@@ -10,7 +10,8 @@ import type {
   SkillRecord,
   TimelineEvent,
 } from '../types'
-import type { AppLang } from '../../i18n/messages'
+import { isZh, type AppLang } from '../../i18n/messages'
+import { zhUi } from '../../i18n/zh'
 
 export function skillsToL1(active: SkillRecord[]): L1Skill[] {
   return active
@@ -114,8 +115,9 @@ export function analyzeWithRules(args: {
   lang?: AppLang
   dataSources?: { label: string; url: string }[]
 }): RuleAnalysis {
-  const lang: AppLang = args.lang === 'zh-Hant' ? 'zh-Hant' : 'en'
-  const zh = lang === 'zh-Hant'
+  const lang: AppLang =
+    args.lang === 'zh-Hans' ? 'zh-Hans' : args.lang === 'zh-Hant' ? 'zh-Hant' : 'en'
+  const zh = isZh(lang)
   const startedAt = args.startedAt ?? Date.now()
   const l1Pool = args.skills.filter((s) => s.level === 'L1')
   const l2Pool = args.skills.filter((s) => s.level === 'L2')
@@ -433,18 +435,19 @@ export function analyzeWithRules(args: {
 
   const kbContext = k.map((o) => `### ${o.path}\n${o.item.body}`).join('\n\n')
 
+  const hans = (s: string) => (lang === 'zh-Hans' ? zhUi(lang, s) : s)
   return {
-    body: lines.join('\n'),
+    body: hans(lines.join('\n')),
     sev,
     hits: ids,
     l2: l2.map((o) => o.x.id),
     skillContext,
     kbContext,
-    thinking,
-    timeline,
+    thinking: thinking.map(hans),
+    timeline: timeline.map((e) => ({ ...e, label: hans(e.label) })),
     skillsUsed,
     knowledgeUsed,
-    nextSteps,
+    nextSteps: nextSteps.map(hans),
   }
 }
 
@@ -456,7 +459,7 @@ export function followUpWithRules(
 ): string {
   const q = question.trim()
   const lower = q.toLowerCase()
-  const zh = lang === 'zh-Hant'
+  const zh = isZh(lang)
   const wantsAdmin =
     /admin|账号|账户|倉位|仓位|持仓|數據庫|数据库|db\b|sql|后台|管理台|內部數據|拉取|查詢用戶|查询用户/i.test(
       q,
@@ -524,5 +527,6 @@ export function followUpWithRules(
           ]),
     )
   }
-  return lines.join('\n')
+  const out = lines.join('\n')
+  return lang === 'zh-Hans' ? zhUi(lang, out) : out
 }

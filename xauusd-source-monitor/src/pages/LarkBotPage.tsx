@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocale } from '../i18n/locale'
+import { isZh, zhUi } from '../i18n/zh'
 
 const EVENT_URL = 'https://vex-llm-proxy.vercel.app/api/lark/event'
 const INCIDENTS_URL = 'https://vex-llm-proxy.vercel.app/api/lark/incidents'
@@ -69,7 +70,8 @@ export function LarkBotPage() {
     }
   }
 
-  const zh = lang === 'zh-Hant'
+  const zh = isZh(lang)
+  const z = (s: string) => zhUi(lang, s)
   const bot = status?.bot
 
   return (
@@ -109,14 +111,14 @@ export function LarkBotPage() {
             <code className={bot?.name ? 'ok' : 'bad'}>{bot?.name || '…'}</code>
           </li>
           <li>
-            {zh ? '已加入會話：' : 'Chats joined: '}
+            {zh ? z('已加入會話：') : 'Chats joined: '}
             <code className={(bot?.chatCount || 0) > 0 ? 'ok' : 'bad'}>
               {typeof bot?.chatCount === 'number' ? bot.chatCount : '…'}
             </code>
             {(bot?.chatNames || []).length > 0 ? ` — ${bot?.chatNames?.join(', ')}` : ''}
           </li>
           <li>
-            {zh ? '事件送達 webhook：' : 'Events reaching webhook: '}
+            {zh ? z('事件送達 webhook：') : 'Events reaching webhook: '}
             <code className={status?.eventsDelivered ? 'ok' : 'bad'}>
               {status?.eventsDelivered ? 'yes' : 'none yet'}
             </code>
@@ -131,24 +133,26 @@ export function LarkBotPage() {
           <div className="lark-section" style={{ marginTop: '0.5rem', padding: 0, border: 'none' }}>
             <p>
               {zh
-                ? '目前伺服器已就緒，但飛書沒有把訊息推到 webhook——所以私聊沒有回覆。請在開放平台完成下方事件訂閱（最常見原因）。'
+                ? z(
+                    '目前伺服器已就緒，但飛書沒有把訊息推到 webhook——所以私聊沒有回覆。請在開放平台完成下方事件訂閱（最常見原因）。',
+                  )
                 : 'Server is ready, but Feishu/Lark is not pushing messages to the webhook — that is why DMs stay silent. Fix Event Subscription in the Developer Console (most common cause):'}
             </p>
             <ol className="lark-steps">
               <li>
-                {zh ? '事件訂閱 → 选择「将事件发送至开发者服务器」（不要用长连接）' : 'Event Subscription → “Send events to developer’s server” (NOT long connection)'}
+                {zh ? z('事件訂閱 → 选择「将事件发送至开发者服务器」（不要用长连接）') : 'Event Subscription → “Send events to developer’s server” (NOT long connection)'}
               </li>
               <li>
-                Request URL = <code>{EVENT_URL}</code> → {zh ? '保存并通过校验' : 'Save & pass verification'}
+                Request URL = <code>{EVENT_URL}</code> → {zh ? z('保存并通过校验') : 'Save & pass verification'}
               </li>
               <li>
-                {zh ? 'Encrypt Key 留空／关闭' : 'Encrypt Key empty / OFF'}
+                {zh ? z('Encrypt Key 留空／关闭') : 'Encrypt Key empty / OFF'}
               </li>
               <li>
-                {zh ? '已订阅' : 'Subscribed:'} <code>im.message.receive_v1</code>
+                {zh ? z('已订阅') : 'Subscribed:'} <code>im.message.receive_v1</code>
               </li>
               <li>
-                {zh ? '发布应用版本后，再给机器人发 Hi' : 'Publish the app version, then send Hi again'}
+                {zh ? z('发布应用版本后，再给机器人发 Hi') : 'Publish the app version, then send Hi again'}
               </li>
             </ol>
           </div>
@@ -161,31 +165,31 @@ export function LarkBotPage() {
         <div className="lark-smoke-actions" style={{ marginTop: '0.75rem' }}>
           {bot?.openDmFeishu ? (
             <a className="archive-btn" href={bot.openDmFeishu} target="_blank" rel="noreferrer">
-              {zh ? '飛書打開私聊' : 'Open DM (Feishu)'}
+              {zh ? z('飛書打開私聊') : 'Open DM (Feishu)'}
             </a>
           ) : null}
           {bot?.openDmLark ? (
             <a className="archive-btn" href={bot.openDmLark} target="_blank" rel="noreferrer">
-              {zh ? 'Lark 打開私聊' : 'Open DM (Lark)'}
+              {zh ? z('Lark 打開私聊') : 'Open DM (Lark)'}
             </a>
           ) : null}
         </div>
         <p className="muted">
-          {zh ? '網頁版風險台保持不變。' : 'The web risk desk stays fully available.'}{' '}
-          <a href="/#/investigate">{zh ? '打開 Investigate' : 'Open Investigate'}</a>
+          {zh ? z('網頁版風險台保持不變。') : 'The web risk desk stays fully available.'}{' '}
+          <a href="/#/investigate">{zh ? z('打開 Investigate') : 'Open Investigate'}</a>
         </p>
       </section>
 
       <section className="lark-section">
-        <h3>{zh ? '開始對話' : 'Start chatting'}</h3>
+        <h3>{zh ? z('開始對話') : 'Start chatting'}</h3>
         <ol className="lark-steps">
           <li>
-            {zh ? '事件訂閱 Request URL 必須是：' : 'Event subscription Request URL must be:'}{' '}
+            {zh ? z('事件訂閱 Request URL 必須是：') : 'Event subscription Request URL must be:'}{' '}
             <code>{EVENT_URL}</code>
-            {zh ? '（Encrypt Key 關閉）' : ' (Encrypt Key OFF)'}
+            {zh ? z('（Encrypt Key 關閉）') : ' (Encrypt Key OFF)'}
           </li>
           <li>
-            {zh ? '訂閱：' : 'Subscribe:'} <code>im.message.receive_v1</code>,{' '}
+            {zh ? z('訂閱：') : 'Subscribe:'} <code>im.message.receive_v1</code>,{' '}
             <code>card.action.trigger</code>
           </li>
           <li>
@@ -227,9 +231,9 @@ export function LarkBotPage() {
             type="button"
             className="archive-btn"
             disabled={smokeBusy}
-            onClick={() => runSmoke(zh ? '今天黄金行情怎么样' : 'What are gold market trends today?')}
+            onClick={() => runSmoke(zh ? z('今天黄金行情怎么样') : 'What are gold market trends today?')}
           >
-            {zh ? '測市況' : 'Test market'}
+            {zh ? z('測市況') : 'Test market'}
           </button>
           <button
             type="button"
@@ -243,7 +247,7 @@ export function LarkBotPage() {
               )
             }
           >
-            {zh ? '測排查' : 'Test investigate'}
+            {zh ? z('測排查') : 'Test investigate'}
           </button>
           <a className="muted" href={INCIDENTS_URL} target="_blank" rel="noreferrer">
             incidents API

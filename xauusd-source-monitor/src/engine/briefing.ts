@@ -1,12 +1,13 @@
-import type { AppLang } from '../i18n/messages'
+import { isZh, type AppLang } from '../i18n/messages'
+import { zhField, zhUi } from '../i18n/zh'
 import type { Briefing, BriefingSeverity, SourceHealth, TriggerEvent } from '../types'
 import { citationsToLegacyLines, collectCitations, staticCitationCatalog } from './citations'
 
 function directionWord(bps: number, lang: AppLang): string {
-  if (lang === 'zh-Hant') {
-    if (bps > 5) return '買盤上抬 / 賣盤被抬'
-    if (bps < -5) return '賣盤下壓 / 買盤被打'
-    return '雙向但分布不均'
+  if (isZh(lang)) {
+    if (bps > 5) return zhUi(lang, '買盤上抬 / 賣盤被抬')
+    if (bps < -5) return zhUi(lang, '賣盤下壓 / 買盤被打')
+    return zhUi(lang, '雙向但分布不均')
   }
   if (bps > 5) return 'bid higher / offer lifted'
   if (bps < -5) return 'offer lower / bid hit'
@@ -15,11 +16,11 @@ function directionWord(bps: number, lang: AppLang): string {
 
 function sessionBucket(d = new Date(), lang: AppLang = 'en'): string {
   const h = d.getUTCHours()
-  if (lang === 'zh-Hant') {
-    if (h >= 0 && h < 7) return '亞洲尾盤 / 倫敦開盤前'
-    if (h >= 7 && h < 12) return '倫敦現貨黃金時段'
-    if (h >= 12 && h < 17) return '倫敦–紐約重疊時段'
-    return '紐約午後 / 亞洲開盤前'
+  if (isZh(lang)) {
+    if (h >= 0 && h < 7) return zhUi(lang, '亞洲尾盤 / 倫敦開盤前')
+    if (h >= 7 && h < 12) return zhUi(lang, '倫敦現貨黃金時段')
+    if (h >= 12 && h < 17) return zhUi(lang, '倫敦–紐約重疊時段')
+    return zhUi(lang, '紐約午後 / 亞洲開盤前')
   }
   if (h >= 0 && h < 7) return 'Asia late / London pre-open'
   if (h >= 7 && h < 12) return 'London cash gold hours'
@@ -29,8 +30,8 @@ function sessionBucket(d = new Date(), lang: AppLang = 'en'): string {
 
 function techNote(history: { t: number; px: number }[], composite: number, lang: AppLang): string {
   if (history.length < 5) {
-    return lang === 'zh-Hant'
-      ? '本地 tick 不足以計算 RSI/MA；改以跨場所結構為主。'
+    return isZh(lang)
+      ? zhUi(lang, '本地 tick 不足以計算 RSI/MA；改以跨場所結構為主。')
       : 'Insufficient local ticks for RSI/MA; relying on cross-venue structure.'
   }
   const window = history.slice(-30)
@@ -41,8 +42,11 @@ function techNote(history: { t: number; px: number }[], composite: number, lang:
   const max = Math.max(...highs)
   const min = Math.min(...highs)
   const rangeBps = ((max - min) / last) * 10_000
-  if (lang === 'zh-Hant') {
-    return `本地 ${window.length} tick 視窗：${ret >= 0 ? '+' : ''}${ret.toFixed(3)}%，振幅 ${rangeBps.toFixed(1)} bps；最新 ${last.toFixed(2)} vs 高 ${max.toFixed(2)} / 低 ${min.toFixed(2)}。`
+  if (isZh(lang)) {
+    return zhUi(
+      lang,
+      `本地 ${window.length} tick 視窗：${ret >= 0 ? '+' : ''}${ret.toFixed(3)}%，振幅 ${rangeBps.toFixed(1)} bps；最新 ${last.toFixed(2)} vs 高 ${max.toFixed(2)} / 低 ${min.toFixed(2)}。`,
+    )
   }
   return `Local ${window.length}-tick window: ${ret >= 0 ? '+' : ''}${ret.toFixed(3)}%, range ${rangeBps.toFixed(1)} bps; last ${last.toFixed(2)} vs window high ${max.toFixed(2)} / low ${min.toFixed(2)}.`
 }
@@ -73,26 +77,26 @@ function titleForCause(args: {
   const { lang, severity, breachedCount, cause } = args
   const undeclared =
     cause.kind === 'undeclared'
-      ? lang === 'zh-Hant'
-        ? '排查後未發現造成異常變動的明確原因'
+      ? isZh(lang)
+        ? zhUi(lang, '排查後未發現造成異常變動的明確原因')
         : 'no clear cause found after checks'
       : null
-  const known = cause.kind === 'known' ? (lang === 'zh-Hant' ? cause.zh : cause.en) : null
+  const known = cause.kind === 'known' ? (zhField(lang, cause.zh, cause.en)) : null
 
-  if (lang === 'zh-Hant') {
-    if (severity === 'critical') {
-      return undeclared
-        ? `【紅】突發衝擊 — ${breachedCount} 源越界；${undeclared}`
-        : `【紅】突發衝擊 — ${breachedCount} 源越界；${known}`
-    }
-    if (severity === 'alert') {
-      return undeclared
-        ? `【黃】多源錯位升高 — ${undeclared}`
-        : `【黃】多源錯位升高 — ${known}`
-    }
-    return undeclared
-      ? `【綠】跨層級觀察 — ${undeclared}`
-      : `【綠】常見誘因 — ${known}`
+  if (isZh(lang)) {
+    const out =
+      severity === 'critical'
+        ? undeclared
+          ? `【紅】突發衝擊 — ${breachedCount} 源越界；${undeclared}`
+          : `【紅】突發衝擊 — ${breachedCount} 源越界；${known}`
+        : severity === 'alert'
+          ? undeclared
+            ? `【黃】多源錯位升高 — ${undeclared}`
+            : `【黃】多源錯位升高 — ${known}`
+          : undeclared
+            ? `【綠】跨層級觀察 — ${undeclared}`
+            : `【綠】常見誘因 — ${known}`
+    return zhUi(lang, out)
   }
 
   if (severity === 'critical') {
@@ -152,7 +156,7 @@ export async function generateBriefing(args: {
   const observations: string[] = []
   const causes: string[] = []
 
-  if (lang === 'zh-Hant') {
+  if (isZh(lang)) {
     observations.push(`觸發：${trigger.reason}。時段背景：${session}（UTC）。`)
     observations.push(
       `綜合中位數 ${composite.toFixed(2)}；5 分鐘綜合變動 ${move >= 0 ? '+' : ''}${move.toFixed(1)} bps；越界源平均 |偏離| ${avgDev.toFixed(1)} bps（${directionWord(move, lang)}）。`,
@@ -281,7 +285,7 @@ function buildImpactActions(args: {
     basis == null ? null : `${basis >= 0 ? '+' : ''}${basis.toFixed(1)} bps`
   const sevHi = severity === 'critical' || severity === 'alert'
 
-  if (lang === 'zh-Hant') {
+  if (isZh(lang)) {
     return {
       impact: [
         `指數/標記/交易者：越界源 ${names}（均偏 ${avgDev.toFixed(1)} bps，5m ${moveTxt}）若仍入籃，公允與標記相對同行漂移；高槓桿 XAUUSD 永續易見跳動、對手基差擴大與強平風險上升。`,
@@ -311,7 +315,8 @@ function buildImpactActions(args: {
 }
 
 function normalizeBriefing(b: Briefing): Briefing {
-  const lang = b.lang === 'zh-Hant' ? 'zh-Hant' : 'en'
+  const lang: AppLang =
+    b.lang === 'zh-Hans' ? 'zh-Hans' : b.lang === 'zh-Hant' ? 'zh-Hant' : 'en'
   const citations =
     b.citations?.length
       ? b.citations
@@ -325,9 +330,14 @@ function normalizeBriefing(b: Briefing): Briefing {
   const causes =
     b.causes?.length
       ? b.causes
-      : lang === 'zh-Hant'
-        ? ['（舊版簡報）未分欄「原因」；請以可驗證來源中的新聞/宏觀鏈接自行核對。']
+      : isZh(lang)
+        ? [zhUi(lang, '（舊版簡報）未分欄「原因」；請以可驗證來源中的新聞/宏觀鏈接自行核對。')]
         : ['(Legacy briefing) Causes were not split; verify news/macro links below.']
+  if (lang === 'zh-Hans') {
+    for (let i = 0; i < observations.length; i++) observations[i] = zhUi(lang, observations[i]!)
+    for (let i = 0; i < causes.length; i++) causes[i] = zhUi(lang, causes[i]!)
+  }
+
   return {
     ...b,
     citations,

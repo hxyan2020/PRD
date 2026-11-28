@@ -130,7 +130,7 @@ const SLOTS: AlertDataSlot[] = ['underlying', 'alert_logs', 'human_labels']
 
 export function AlertOptimizePage() {
   const { t, lang } = useLocale()
-  const appLang = lang === 'en' ? 'en' : 'zh-Hant'
+  const appLang = lang
 
   const [mode, setMode] = useState<DeskMode>('alert_optimize')
 
@@ -459,11 +459,13 @@ export function AlertOptimizePage() {
         })
         reply = await runLlm({
           settings,
-          lang: appLang === 'en' ? 'en' : 'zh-Hant',
+          lang: appLang,
           userPrompt: [
             appLang === 'en'
               ? 'Continue interactive analysis of the alert-optimize / general-analysis desk result. Answer the user follow-up using only the provided context; if unknown, say so. Prefer concrete bullets with data support.'
-              : '继续对告警优化／通用分析桌面结论做交互追问。仅依据所给上下文作答；不知道就说不知道。优先用带数据支持的具体要点。',
+              : appLang === 'zh-Hant'
+                ? '繼續對告警優化／通用分析桌面結論做交互追問。僅依據所給上下文作答；不知道就說不知道。優先用帶數據支持的具體要點。'
+                : '继续对告警优化／通用分析桌面结论做交互追问。仅依据所给上下文作答；不知道就说不知道。优先用带数据支持的具体要点。',
             '',
             q,
           ].join('\n'),

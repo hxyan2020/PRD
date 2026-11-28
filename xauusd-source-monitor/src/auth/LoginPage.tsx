@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import type { AppLang } from '../i18n/messages'
 import { useLocale } from '../i18n/locale'
 import { isHytechEmail } from './users'
 import { useAuth } from './AuthContext'
@@ -30,7 +31,7 @@ export function LoginPage() {
         <div className="login-top">
           <p className="brand">{t('brand')}</p>
           <div className="lang-switch" role="group" aria-label="Language">
-            {(Object.keys(langLabel) as Array<'en' | 'zh-Hant'>).map((code) => (
+            {(Object.keys(langLabel) as AppLang[]).map((code) => (
               <button
                 key={code}
                 type="button"

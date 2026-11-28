@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { isBriefingActive } from '../engine/briefing'
 import { useLocale } from '../i18n/locale'
+import { isZh, zhUi } from '../i18n/zh'
 import { severityLabelKey, severityTone } from '../lib/severity'
 import type { Briefing, PricePoint } from '../types'
 
@@ -290,14 +291,14 @@ export function PriceChart(props: {
           >
             <div className="tip-top">
               <span className={`pill sev-${tip.severity}`}>{t(`sev_${tip.severity}`)}</span>
-              {tip.pinned ? <span className="tip-pin">{lang === 'zh-Hant' ? '已固定' : 'pinned'}</span> : null}
+              {tip.pinned ? <span className="tip-pin">{isZh(lang) ? zhUi(lang, '已固定') : 'pinned'}</span> : null}
             </div>
             <strong>{tip.title}</strong>
             {tip.lines.map((line) => (
               <div key={line}>{line}</div>
             ))}
             <div className="tip-hint">
-              {lang === 'zh-Hant' ? '點標記固定 tooltip；再點關閉' : 'Tap mark to pin tooltip; tap again to close'}
+              {isZh(lang) ? zhUi(lang, '點標記固定 tooltip；再點關閉') : 'Tap mark to pin tooltip; tap again to close'}
             </div>
           </div>
         ) : null}

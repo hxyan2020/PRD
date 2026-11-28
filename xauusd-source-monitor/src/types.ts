@@ -78,7 +78,7 @@ export interface Briefing {
   createdAt: number
   severity: BriefingSeverity
   /** Language the briefing body was generated in */
-  lang?: 'en' | 'zh-Hant'
+  lang?: 'en' | 'zh-Hant' | 'zh-Hans'
   title: string
   triggerReason: string
   breachedSources: string[]

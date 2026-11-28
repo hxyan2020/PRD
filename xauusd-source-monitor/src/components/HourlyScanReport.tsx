@@ -12,7 +12,9 @@ import {
   type ReportSource,
   type SentimentBarometer,
 } from '../engine/hourlyScan'
+import type { AppLang } from '../i18n/messages'
 import { useLocale } from '../i18n/locale'
+import { isZh, zhField, zhUi } from '../i18n/zh'
 import type { SourceHealth } from '../types'
 import { HourlyKlineChart } from './HourlyKlineChart'
 
@@ -41,7 +43,7 @@ function SourcesModal({
   highlightIds?: string[]
   onClose: () => void
   t: (k: string) => string
-  lang: string
+  lang: AppLang
 }) {
   useEffect(() => {
     if (!open) return
@@ -119,7 +121,7 @@ function SourcesModal({
                     <span className="sources-modal-copy">
                       <span className="sources-modal-caption-row">
                         <span className="sources-modal-caption">
-                          {lang === 'zh-Hant' ? s.captionZh : s.captionEn}
+                          {zhField(lang, s.captionZh, s.captionEn)}
                         </span>
                         <span
                           className={`sources-modal-health health-${s.health || 'unchecked'}`}
@@ -165,7 +167,7 @@ function SectionBlock({
   emptyLabel: string
   onOpenSources: (sourceIds: string[]) => void
   t: (k: string) => string
-  lang: string
+  lang: AppLang
   /** TL;DR: single balanced blurb (prints + opp/risk), no numbered list */
   oneLine?: boolean
 }) {
@@ -178,7 +180,7 @@ function SectionBlock({
           <p className="hourly-empty">{emptyLabel}</p>
         ) : (
           <div className="hourly-tldr-line">
-            {(lang === 'zh-Hant' || lang === 'zh-Hans' ? p.zh || p.en : p.en)
+            {(isZh(lang) ? zhField(lang, p.zh || p.en, p.en) : p.en)
               .split(/\n+/)
               .map((line) => line.trim())
               .filter(Boolean)
@@ -213,7 +215,7 @@ function SectionBlock({
                 {p.rank}
               </div>
               <div className="hourly-point-body">
-                <p>{lang === 'zh-Hant' ? p.zh : p.en}</p>
+                <p>{zhField(lang, p.zh, p.en)}</p>
                 {p.sourceIds.length ? (
                   <button
                     type="button"
@@ -232,11 +234,13 @@ function SectionBlock({
   )
 }
 
-function SentimentMeter({ sentiment, lang }: { sentiment: SentimentBarometer; lang: string }) {
+function SentimentMeter({ sentiment, lang }: { sentiment: SentimentBarometer; lang: AppLang }) {
   const { t } = useLocale()
   const pct = ((sentiment.score + 100) / 200) * 100
-  const defs = lang === 'zh-Hant' ? sentiment.definitionZh : sentiment.definitionEn
-  const label = lang === 'zh-Hant' ? sentiment.labelZh : sentiment.labelEn
+  const defs = isZh(lang)
+    ? sentiment.definitionZh.map((line) => zhUi(lang, line))
+    : sentiment.definitionEn
+  const label = zhField(lang, sentiment.labelZh, sentiment.labelEn)
   const scoreText = sentiment.score > 0 ? `+${sentiment.score}` : String(sentiment.score)
 
   return (
@@ -287,7 +291,7 @@ function ReportCard({
   onOpenSources: (sources: ReportSource[], highlightIds?: string[]) => void
 }) {
   const { t, lang } = useLocale()
-  const empty = lang === 'zh-Hant' ? EMPTY_SECTION_ZH : EMPTY_SECTION_EN
+  const empty = isZh(lang) ? zhUi(lang, EMPTY_SECTION_ZH) : EMPTY_SECTION_EN
   const sentiment =
     report.sentiment ?? computeSentiment(report.opportunity || [], report.risk || [])
 
@@ -349,7 +353,7 @@ function ReportCard({
       <section className="hourly-section hourly-vex">
         <h3>{t('hourlyVexTitle')}</h3>
         <p className="hourly-empty">
-          {lang === 'zh-Hant' ? report.vexNoteZh : report.vexNoteEn}
+          {zhField(lang, report.vexNoteZh, report.vexNoteEn)}
         </p>
       </section>
     </article>
@@ -470,7 +474,7 @@ export function HourlyScanReport({
             <details key={r.id} className="hourly-history-item">
               <summary>
                 {r.hourKey} SGT · {fmtSgt(r.createdAt)} ·{' '}
-                {lang === 'zh-Hant' ? '要點' : 'points'}{' '}
+                {isZh(lang) ? zhUi(lang, '要點') : 'points'}{' '}
                 {r.tldr.length + r.opportunity.length + r.risk.length}
               </summary>
               <ReportCard report={r} onOpenSources={openSources} />

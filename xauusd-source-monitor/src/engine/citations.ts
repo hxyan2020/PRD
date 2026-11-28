@@ -1,4 +1,5 @@
-import type { AppLang } from '../i18n/messages'
+import { isZh, type AppLang } from '../i18n/messages'
+import { zhUi } from '../i18n/zh'
 import type { BriefingCitation, SourceHealth } from '../types'
 
 const OKX_TICKER = 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP'
@@ -63,7 +64,7 @@ const GOLD_NEWS_ARTICLES = [
 
 /** Full static catalog used by seed briefings — every row is a clickable deep link. */
 export function staticCitationCatalog(lang: AppLang): BriefingCitation[] {
-  const zh = lang === 'zh-Hant'
+  const zh = isZh(lang)
   const rows: BriefingCitation[] = [
     {
       id: 'okx-ticker-api',
@@ -170,6 +171,10 @@ export function staticCitationCatalog(lang: AppLang): BriefingCitation[] {
     })
   }
 
+  
+  if (lang === 'zh-Hans') {
+    for (const r of rows) r.label = zhUi(lang, r.label)
+  }
   return rows
 }
 
@@ -216,7 +221,7 @@ export async function collectCitations(args: {
   createdAt: number
 }): Promise<BriefingCitation[]> {
   const { lang, health, composite, spot, createdAt } = args
-  const zh = lang === 'zh-Hant'
+  const zh = isZh(lang)
   const ts = new Date(createdAt).toISOString()
   const citations = staticCitationCatalog(lang)
 
