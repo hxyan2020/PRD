@@ -39,6 +39,12 @@ export function isLocale(value: string): value is LocaleCode {
   return LOCALES.some((l) => l.code === value);
 }
 
+/** Raster flag (PNG) — useful for fixed-width layouts. */
 export function flagUrl(flag: string, width = 40): string {
   return `https://flagcdn.com/w${width}/${flag}.png`;
+}
+
+/** Crisp national flag SVG icon from flagcdn. */
+export function flagSvgUrl(flag: string): string {
+  return `https://flagcdn.com/${flag}.svg`;
 }
