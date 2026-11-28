@@ -175,6 +175,11 @@ const OKX_CANDLES =
   'https://www.okx.com/api/v5/market/candles?instId=XAU-USDT-SWAP&bar=1H&limit=36'
 const BITGET_TICKER =
   'https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=XAUUSDT'
+const BITGET_CANDLES =
+  'https://api.bitget.com/api/v2/mix/market/candles?productType=USDT-FUTURES&symbol=XAUUSDT&granularity=1H&limit=36'
+
+/** Human-facing Bitget XAUUSDT perpetual K-line (third venue). */
+export const BITGET_KLINE_URL = 'https://www.bitget.com/futures/usdt/XAUUSDT'
 
 type CatalogEntry = {
   id: string
@@ -330,7 +335,8 @@ function humanLinkFor(id: string, probeUrl: string): string {
     case 'okx-funding':
       return OKX_KLINE_URL
     case 'bitget-ticker':
-      return 'https://www.bitget.com/futures/usdt/XAUUSDT'
+    case 'bitget-candles':
+      return BITGET_KLINE_URL
     case 'gold-api':
       return KITCO_GOLD_URL
     case 'yahoo-gc':
@@ -415,9 +421,18 @@ const SOURCE_CATALOG: CatalogEntry[] = [
     id: 'bitget-ticker',
     kind: 'api',
     url: BITGET_TICKER,
-    linkUrl: 'https://www.bitget.com/futures/usdt/XAUUSDT',
-    captionEn: 'Bitget XAUUSDT perpetual / K-line',
-    captionZh: 'Bitget XAUUSDT 永续／K线',
+    linkUrl: BITGET_KLINE_URL,
+    captionEn: 'Bitget XAUUSDT perpetual / K-line (3rd)',
+    captionZh: 'Bitget XAUUSDT 永续／K线（第三）',
+    json: true,
+  },
+  {
+    id: 'bitget-candles',
+    kind: 'price',
+    url: BITGET_CANDLES,
+    linkUrl: BITGET_KLINE_URL,
+    captionEn: 'Bitget XAUUSDT 1H K-line (3rd)',
+    captionZh: 'Bitget XAUUSDT 1H K线（第三）',
     json: true,
   },
   {
@@ -1992,6 +2007,14 @@ function binanceInterval(bar: KlineIntervalBar): string {
   return '1h'
 }
 
+/** Bitget mix candle granularity (matches KLINE_INTERVALS bars). */
+function bitgetGranularity(bar: KlineIntervalBar): string {
+  if (bar === '15m') return '15m'
+  if (bar === '4H') return '4H'
+  if (bar === '1D') return '1D'
+  return '1H'
+}
+
 function goldApiPrice(data: unknown): number | null {
   try {
     const n = Number((data as { price?: number })?.price)
@@ -2093,6 +2116,70 @@ export async function fetchOkxKline(
   }
 }
 
+/**
+ * Bitget mix candles: [ts, o, h, l, c, baseVol, quoteVol] (string ms).
+ * Order is not guaranteed — always sort oldest → newest.
+ */
+export function bitgetCandles(data: unknown): KlineBar[] {
+  try {
+    const rows = (data as { data?: string[][] })?.data
+    if (!Array.isArray(rows)) return []
+    const bars: KlineBar[] = []
+    for (const row of rows) {
+      if (!Array.isArray(row) || row.length < 5) continue
+      const t = Number(row[0])
+      const o = Number(row[1])
+      const h = Number(row[2])
+      const l = Number(row[3])
+      const c = Number(row[4])
+      const v = Number(row[5])
+      if (![t, o, h, l, c].every((n) => Number.isFinite(n))) continue
+      bars.push({
+        t,
+        o,
+        h,
+        l,
+        c,
+        v: Number.isFinite(v) ? v : undefined,
+      })
+    }
+    return bars.sort((a, b) => a.t - b.t)
+  } catch {
+    return []
+  }
+}
+
+/** Live Bitget XAUUSDT USDT-M candles (third venue after Binance / OKX). */
+export async function fetchBitgetKline(
+  bar: KlineIntervalBar,
+  limit?: number,
+  signal?: AbortSignal,
+): Promise<HourlyKlineSeries> {
+  const meta = KLINE_INTERVALS.find((i) => i.bar === bar) || KLINE_INTERVALS[1]
+  const n = limit ?? meta.limit
+  const granularity = bitgetGranularity(bar)
+  const url = `https://api.bitget.com/api/v2/mix/market/candles?productType=USDT-FUTURES&symbol=XAUUSDT&granularity=${encodeURIComponent(granularity)}&limit=${n}`
+  const res = await fetch(url, {
+    signal,
+    cache: 'no-store',
+    mode: 'cors',
+    headers: { Accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`Bitget candles HTTP ${res.status}`)
+  const json = (await res.json()) as { code?: string; msg?: string; data?: string[][] }
+  if (json.code && json.code !== '00000') {
+    throw new Error(json.msg || `Bitget candles code ${json.code}`)
+  }
+  const bars = bitgetCandles(json)
+  if (bars.length === 0) throw new Error('Bitget candles empty')
+  return {
+    symbol: 'XAUUSDT',
+    interval: bar,
+    sourceId: 'bitget-candles',
+    bars,
+  }
+}
+
 /** Live Binance XAUUSDT USDT-M candles (geo-friendly host chain). */
 export async function fetchBinanceKline(
   bar: KlineIntervalBar,
@@ -2127,8 +2214,8 @@ export async function fetchBinanceKline(
 }
 
 /**
- * Market-report K-line: Binance primary, OKX backup.
- * Prefer this over fetchOkxKline for cards / TF switcher.
+ * Market-report K-line: Binance → OKX → Bitget.
+ * Prefer this over a single-venue fetch for cards / TF switcher.
  */
 export async function fetchMarketKline(
   bar: KlineIntervalBar,
@@ -2138,7 +2225,11 @@ export async function fetchMarketKline(
   try {
     return await fetchBinanceKline(bar, limit, signal)
   } catch {
-    return fetchOkxKline(bar, limit, signal)
+    try {
+      return await fetchOkxKline(bar, limit, signal)
+    } catch {
+      return fetchBitgetKline(bar, limit, signal)
+    }
   }
 }
 
@@ -2451,6 +2542,7 @@ export async function generateHourlyScan(args: {
 
   const binanceBars = binanceCandles(byId.get('binance-candles')?.json ?? null)
   const okxBars = okxCandles(byId.get('okx-candles')?.json ?? null)
+  const bitgetBars = bitgetCandles(byId.get('bitget-candles')?.json ?? null)
   let kline: HourlyKlineSeries | null = null
   if (binanceBars.length > 0) {
     const last = binanceBars[binanceBars.length - 1]
@@ -2477,6 +2569,19 @@ export async function generateHourlyScan(args: {
       interval: '1H',
       sourceId: 'okx-candles',
       bars: okxBars,
+    }
+  } else if (bitgetBars.length > 0) {
+    const last = bitgetBars[bitgetBars.length - 1]
+    bumpCaption(
+      'bitget-candles',
+      `Bitget XAUUSDT 1H K-line · ${bitgetBars.length} bars · last ${last.c.toFixed(2)} (3rd)`,
+      `Bitget XAUUSDT 1H K线 · ${bitgetBars.length} 根 · 最新 ${last.c.toFixed(2)}（第三）`,
+    )
+    kline = {
+      symbol: 'XAUUSDT',
+      interval: '1H',
+      sourceId: 'bitget-candles',
+      bars: bitgetBars,
     }
   }
 

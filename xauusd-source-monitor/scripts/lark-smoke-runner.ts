@@ -2195,9 +2195,12 @@ async function main() {
     groupMarketEventPoints,
     sameMarketEvent,
     fetchBinanceKline,
+    fetchBitgetKline,
+    fetchMarketKline,
     BINANCE_FAPI_BASES,
     BINANCE_KLINE_URL: binanceKlineUrl,
     OKX_KLINE_URL: okxKlineUrl,
+    BITGET_KLINE_URL: bitgetKlineUrl,
     KITCO_GOLD_URL: kitcoGoldUrl,
     resolveCiteUrlOrNull,
     probeCiteHttpStatus,
@@ -2386,6 +2389,42 @@ async function main() {
       !/okx\.com\/trade-swap/i.test(okxKlineUrl),
     okxKlineUrl,
   )
+  record(
+    'market.bitget_kline_third_human_url',
+    /bitget\.com\/futures\/usdt\/XAUUSDT/i.test(bitgetKlineUrl),
+    bitgetKlineUrl,
+  )
+  {
+    let bgBars = 0
+    let bgErr = ''
+    try {
+      const series = await fetchBitgetKline('1H', 6)
+      bgBars = series.bars.length
+    } catch (e) {
+      bgErr = e instanceof Error ? e.message.slice(0, 80) : 'fail'
+    }
+    record(
+      'market.bitget_kline_fetch_works',
+      bgBars >= 3,
+      bgBars ? `bars=${bgBars}` : bgErr || 'empty',
+    )
+  }
+  {
+    let src = ''
+    let n = 0
+    try {
+      const series = await fetchMarketKline('1H', 6)
+      src = series.sourceId
+      n = series.bars.length
+    } catch (e) {
+      src = e instanceof Error ? e.message.slice(0, 60) : 'fail'
+    }
+    record(
+      'market.kline_chain_binance_okx_bitget',
+      n >= 3 && /^(binance|okx|bitget)-candles$/.test(src),
+      `sourceId=${src} bars=${n}`,
+    )
+  }
   // No proven-404 cite URLs in live hourly sources (catalog preflight + rewrite)
   const liveCiteBad: string[] = []
   for (const s of (liveSnap.hourly?.sources || []).slice(0, 24)) {
