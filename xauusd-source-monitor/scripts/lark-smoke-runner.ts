@@ -1389,16 +1389,21 @@ async function main() {
     const opts = { inInvestigateSession: false, mentionedBot: true, chatType: 'p2p' as const }
     const pairs: Array<{ en: string; zh: string; hant?: string; intent: string }> = [
       { en: 'market', zh: '行情', hant: '市況', intent: 'market' },
+      { en: 'trends', zh: '趋势', hant: '趨勢', intent: 'market' },
       { en: 'investigate', zh: '排查', hant: '開始排查', intent: 'investigate' },
       { en: 'review', zh: '复盘', hant: '複盤', intent: 'review' },
       { en: 'dashboard', zh: '看板', hant: '儀表盤', intent: 'review' },
       { en: 'help', zh: '帮助', hant: '幫助', intent: 'help' },
+      { en: 'guide', zh: '说明', hant: '說明', intent: 'help' },
       { en: 'done', zh: '完成', hant: '結束排查', intent: 'archive' },
+      { en: 'finish', zh: '重置', hant: '結束排查', intent: 'archive' },
       { en: 'skills', zh: '技能', hant: '技能庫', intent: 'skills' },
       { en: 'knowledge', zh: '知识库', hant: '知識庫', intent: 'knowledge' },
       { en: 'weekly', zh: '周报', hant: '週報', intent: 'weekly' },
       { en: 'oscillation', zh: '震荡预警', hant: '震盪預警', intent: 'oscillation' },
+      { en: 'osc status', zh: '震荡行情', hant: '震盪行情', intent: 'oscillation' },
       { en: 'morning report', zh: '每日早报', hant: '每日早報', intent: 'daily_market' },
+      { en: 'daily', zh: '晨报', hant: '晨報', intent: 'daily_market' },
       { en: 'alert optimize', zh: '告警优化', hant: '告警優化', intent: 'alert_optimize' },
       { en: 'wiki', zh: '文档', hant: '文檔', intent: 'general_risk' },
     ]
