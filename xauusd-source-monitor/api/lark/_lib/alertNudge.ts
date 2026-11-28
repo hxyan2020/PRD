@@ -269,6 +269,43 @@ export async function ackAlertNudgeDurable(openId: string): Promise<AlertNudgeSt
   return next
 }
 
+/** Stuck loops older than this (or from a prior Shanghai day) auto-expire. */
+export const ALERT_NUDGE_STALE_MS = Math.max(
+  60 * 60_000,
+  Number(process.env.LARK_ALERT_NUDGE_STALE_MS || '') || 6 * 60 * 60_000,
+)
+
+/**
+ * Clear armed/active nudges that outlived the alert day or the 6h window.
+ * Prevents yesterday's group loop from red-flagging cron-health and re-spamming.
+ */
+export async function expireStaleNudgeDurable(
+  now = Date.now(),
+): Promise<{ state: AlertNudgeState | null; expired: boolean }> {
+  const cur = await loadNudgeState()
+  if (!cur || cur.acked || (!cur.active && !cur.armed)) {
+    return { state: cur, expired: false }
+  }
+  const today = shanghaiDayKey(now)
+  const staleByDay = Boolean(cur.dayKey && cur.dayKey !== today)
+  const staleByAge =
+    typeof cur.alertAt === 'number' &&
+    cur.alertAt > 0 &&
+    now - cur.alertAt >= ALERT_NUDGE_STALE_MS
+  if (!staleByDay && !staleByAge) return { state: cur, expired: false }
+  const next: AlertNudgeState = {
+    ...cur,
+    armed: false,
+    active: false,
+    acked: true,
+    ackedAt: now,
+    ackedBy: staleByDay ? 'system:stale_day' : 'system:stale_age',
+    ackLatencyMs: cur.alertAt ? Math.max(0, now - cur.alertAt) : undefined,
+  }
+  await saveNudgeState(next)
+  return { state: next, expired: true }
+}
+
 export function isNudgeActive(): boolean {
   const s = readNudgeState()
   return Boolean(s?.active && !s.acked)

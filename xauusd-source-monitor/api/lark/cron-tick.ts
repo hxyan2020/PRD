@@ -188,8 +188,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const q = req.query || {}
   const dry = String(q.dry || '') === '1'
 
-  if (cron && !dry) {
-    await touchCronHeartbeat('/api/lark/cron-tick', { outcome: 'ok', reason: 'tick_start' })
+  // Heartbeat on every real run (Vercel cron, desk token, Cursor timer backup).
+  if (!dry) {
+    await touchCronHeartbeat('/api/lark/cron-tick', {
+      outcome: 'ok',
+      reason: cron ? 'tick_start' : 'tick_start_manual',
+    })
   }
 
   if (dry) {

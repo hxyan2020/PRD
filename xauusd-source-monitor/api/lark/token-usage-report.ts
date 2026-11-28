@@ -14,6 +14,7 @@ import {
 } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
+import { claimPushOnce, releasePushClaim } from './_lib/dedupe.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { resolveDailyMarketLang } from './_lib/market.js'
 import type { Lang } from './_lib/types.js'
@@ -210,6 +211,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
+  // Claim before Lark send so cron-tick primary + watchdog cannot double-DM.
+  const pushKey = `push:token-usage:${dayKey}`
+  if (!force) {
+    const claimed = await claimPushOnce(pushKey, 20 * 60_000)
+    if (!claimed) {
+      await touchCronHeartbeat('/api/lark/token-usage-report', {
+        status: 200,
+        outcome: 'skipped',
+        reason: 'claim_held',
+      })
+      return res.status(200).json({
+        ok: true,
+        skipped: true,
+        reason: 'claim_held',
+        dayKey,
+        via: cron ? 'cron' : 'manual',
+      })
+    }
+  }
+
   const admin =
     adminEarly.openId
       ? adminEarly
@@ -268,6 +289,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       recipientSource: chat.source,
     })
   } catch (chatErr) {
+    if (!force) await releasePushClaim(pushKey)
     await touchCronHeartbeat('/api/lark/token-usage-report', {
       status: 502,
       outcome: 'error',

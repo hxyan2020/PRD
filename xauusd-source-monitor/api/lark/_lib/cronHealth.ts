@@ -2,7 +2,7 @@
  * Half-hourly cron / bot health snapshot for Yan Haixiang.
  * Flags jobs that should have fired but have no proof of delivery.
  */
-import { loadNudgeState } from './alertNudge.js'
+import { expireStaleNudgeDurable, loadNudgeState } from './alertNudge.js'
 import { atOpenIdMarkdown } from './client.js'
 import { simpleCard } from './cards.js'
 import { readCronBeatStore, type CronBeatStore } from './cronHeartbeat.js'
@@ -103,6 +103,8 @@ export async function buildCronHealthReport(args?: {
       demoSentDay?: string
       lastAlertKey?: string
     }>('oscillation-alert-state.json')) || {}
+  // Expire stuck nudge loops before scoring so health is not permanently red.
+  await expireStaleNudgeDurable(now)
   const nudge = await loadNudgeState()
 
   const jobs: CronJobHealth[] = []
@@ -317,7 +319,10 @@ export async function buildCronHealthReport(args?: {
     const armed = Boolean(nudge?.armed && !acked)
     const active = Boolean(nudge?.active && !acked)
     const b = beats['/api/lark/alert-nudge']
-    const last = nudge?.lastCronAt || nudge?.lastSentAt || b?.at
+    // Prefer the freshest of cron/send/beat — OR-chain used to hide fresh sends
+    // behind a stale lastCronAt and falsely report「循环中断」.
+    const last =
+      Math.max(nudge?.lastCronAt || 0, nudge?.lastSentAt || 0, b?.at || 0) || undefined
     const expected = armed || active
     const loopOk = !active || Boolean(last && now - last <= 3 * 60_000)
     const ok = !expected || acked || loopOk || armed
@@ -332,7 +337,7 @@ export async function buildCronHealthReport(args?: {
             nudge?.ackLatencyMs != null
               ? ` · 用时 ${Math.round((nudge.ackLatencyMs || 0) / 1000)}s`
               : ''
-          }）`
+          }${nudge?.ackedBy?.startsWith('system:') ? ` · ${nudge.ackedBy}` : ''}）`
         : active
           ? loopOk
             ? `提醒中 · 第 ${nudge?.sendCount ?? 0} 次 · 最近 ${ageMin(last, now)}`

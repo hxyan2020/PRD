@@ -23,6 +23,7 @@ import {
   buildAlertNudgeCard,
   claimNudgeSendSlot,
   commitNudgeSendSlot,
+  expireStaleNudgeDurable,
   loadNudgeState,
   releaseNudgeSendSlot,
   saveNudgeState,
@@ -115,6 +116,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (cron && !dry) {
     await touchCronHeartbeat('/api/lark/alert-nudge')
   }
+
+  // End yesterday / 6h+ stuck loops before they re-spam the group.
+  await expireStaleNudgeDurable(now)
 
   let state = await loadNudgeState()
 

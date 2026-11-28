@@ -89,7 +89,7 @@ Demo catch-up windows (idempotent via durable sent-day state):
 - Weekly DEMO: after `16:00` CST until `18:00` on campaign day
 - Daily morning: after `09:00` CST until end of day (dayKey sent-state)
 
-**cron-tick** (`*/5 * * * *`) is the permanent keep-alive for every Lark push
+**cron-tick** (`*/5 * * * *`, listed first in `vercel.json`) is the permanent keep-alive for every Lark push
 job on the public alias (`vex-llm-proxy.vercel.app`):
 1. Awaits **cron-health** first (cannot be starved by OKX / market).
 2. Fans out the other jobs in parallel (per-child timeout).

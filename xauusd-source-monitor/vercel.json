@@ -16,8 +16,24 @@
   ],
   "crons": [
     {
-      "path": "/api/lark/weekly-report",
-      "schedule": "0 8 * * 5"
+      "path": "/api/lark/cron-tick",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/lark/cron-health",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/lark/cron-health",
+      "schedule": "5,35 * * * *"
+    },
+    {
+      "path": "/api/lark/alert-nudge",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/lark/oscillation-alert",
+      "schedule": "*/10 * * * *"
     },
     {
       "path": "/api/lark/daily-market-report",
@@ -36,24 +52,8 @@
       "schedule": "0 10 * * *"
     },
     {
-      "path": "/api/lark/cron-health",
-      "schedule": "*/30 * * * *"
-    },
-    {
-      "path": "/api/lark/cron-health",
-      "schedule": "5,35 * * * *"
-    },
-    {
-      "path": "/api/lark/alert-nudge",
-      "schedule": "* * * * *"
-    },
-    {
-      "path": "/api/lark/cron-tick",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/lark/oscillation-alert",
-      "schedule": "*/10 * * * *"
+      "path": "/api/lark/weekly-report",
+      "schedule": "0 8 * * 5"
     },
     {
       "path": "/api/lark/weekly-demo",
