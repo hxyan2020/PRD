@@ -23,6 +23,7 @@ import {
 import { useLanguage } from '../i18n/LanguageContext'
 import type { UiKey } from '../i18n/ui'
 import { categoryColorStyle } from '../lib/categoryColors'
+import { copyNoteContent } from '../lib/copyNoteContent'
 import { htmlToPlainText, isBlankHtml, renderNoteHtml, sanitizeHtml } from '../lib/sanitizeHtml'
 
 type NotebookSort = 'created' | 'edited' | 'alpha'
@@ -240,6 +241,8 @@ export function Notebook() {
   const [deletedForeverToast, setDeletedForeverToast] = useState(false)
   const [storageToast, setStorageToast] = useState<string | null>(null)
   const [openedNoteId, setOpenedNoteId] = useState<string | null>(null)
+  const [copyNoteId, setCopyNoteId] = useState<string | null>(null)
+  const [copyNoteStatus, setCopyNoteStatus] = useState<'ok' | 'fail' | 'empty' | null>(null)
   const [treeFocusId, setTreeFocusId] = useState<string | null>(null)
   const { available: authAvailable, username: authUser } = useAuth()
   const [cloudState, setCloudState] = useState<CloudRuntimeState>(() =>
@@ -486,6 +489,21 @@ export function Notebook() {
 
   function closeOpenedNote() {
     setOpenedNoteId(null)
+  }
+
+  async function copyOpenedNoteContent(entry: NotebookEntry) {
+    setCopyNoteId(entry.id)
+    setCopyNoteStatus(null)
+    try {
+      await copyNoteContent(entry)
+      setCopyNoteStatus('ok')
+    } catch (err) {
+      setCopyNoteStatus(err instanceof Error && err.message === 'empty' ? 'empty' : 'fail')
+    }
+    window.setTimeout(() => {
+      setCopyNoteId((cur) => (cur === entry.id ? null : cur))
+      setCopyNoteStatus(null)
+    }, 1600)
   }
 
   function moveToDustbin(id: string) {
@@ -784,7 +802,16 @@ export function Notebook() {
                   ) : null}
                 </div>
                 <div className="notebook-actions note-fullscreen-actions">
-                  <button type="button" className="btn primary" onClick={closeOpenedNote}>
+                  <button
+                    type="button"
+                    className="btn primary"
+                    onClick={() => void copyOpenedNoteContent(openedNote)}
+                  >
+                    {copyNoteId === openedNote.id && copyNoteStatus === 'ok'
+                      ? t('copyNoteContentDone')
+                      : t('copyNoteContent')}
+                  </button>
+                  <button type="button" className="btn ghost" onClick={closeOpenedNote}>
                     {t('closeNote')}
                   </button>
                   <button
@@ -802,6 +829,14 @@ export function Notebook() {
                     {t('moveToDustbin')}
                   </button>
                 </div>
+                {copyNoteId === openedNote.id &&
+                (copyNoteStatus === 'fail' || copyNoteStatus === 'empty') ? (
+                  <p className="notebook-toast" role="status">
+                    {copyNoteStatus === 'empty'
+                      ? t('copyNoteContentEmpty')
+                      : t('copyNoteContentFail')}
+                  </p>
+                ) : null}
               </div>
             </div>,
             document.body,
@@ -1281,6 +1316,15 @@ export function Notebook() {
                         onClick={() => openNoteFullScreen(entry)}
                       >
                         {t('openNoteFull')}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn ghost"
+                        onClick={() => void copyOpenedNoteContent(entry)}
+                      >
+                        {copyNoteId === entry.id && copyNoteStatus === 'ok'
+                          ? t('copyNoteContentDone')
+                          : t('copyNoteContent')}
                       </button>
                       <button type="button" className="btn ghost" onClick={() => startEdit(entry)}>
                         {t('edit')}
