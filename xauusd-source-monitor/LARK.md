@@ -147,7 +147,7 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 
 ## Daily 24h market morning report (group)
 
-- **Schedule:** every day **09:00 Asia/Shanghai** (Vercel cron `0 1 * * *` UTC)
+- **Schedule:** every day **including weekends** **09:00 Asia/Shanghai** (Vercel cron `0 1 * * *` UTC; catch-up `5 1 * * *` / `15 1 * * *`)
 - **Content:** past-24h Binance XAUUSDT 1H range (OKX backup) + TL;DR / Opportunity / Risk; language follows chat (简体 ≠ 繁體 ≠ en)
 - **Sources:** favicon **logo buttons** (`multi_url`) after TL;DR / Opp / Risk points — open exchange K-line / news / social UIs (Binance/OKX/Bitget, Kitco, Yahoo, Fed, X). JSON APIs are probe-only and never shown as report links.
 - **Catch-up:** cron-tick after 09:00 CST if the :00 UTC fire was missed (idempotent dayKey)

@@ -1,6 +1,8 @@
 /**
  * GET/POST /api/lark/daily-market-report
- * - Vercel Cron every day 09:00 Asia/Shanghai (01:00 UTC) → group 24h market digest.
+ * - Vercel Cron every day **including Sat/Sun** 09:00 Asia/Shanghai (01:00 UTC)
+ *   → group 24h market digest. Catch-up crons at 09:05 / 09:15 CST + cron-tick.
+ * - No weekday gate — weekends use the same slot and the same handler.
  * - Manual: GET ?dry=1 preview; POST { force: true } re-send (desk token when set).
  * - Idempotent: without force, already-sent dayKey is skipped (cron AND manual) so
  *   verify/retry curls cannot double-push the morning card.
@@ -25,12 +27,16 @@ import { shanghaiHm } from './_lib/oscillationAlert.js'
 /** Target Feishu group for morning 24h digest — override with LARK_DAILY_MARKET_CHAT_ID. */
 export const DEFAULT_DAILY_MARKET_CHAT_ID = 'oc_eb8eba24ff99a2c3ea3c9439750d65cd'
 
-/** Morning push window (Asia/Shanghai): from 09:00, catch-up until end of day. */
+/** Morning push window (Asia/Shanghai): from 09:00 every day incl. weekends. */
 export const DAILY_MARKET_START_HM =
   (process.env.LARK_DAILY_MARKET_START || '').trim() || '09:00'
 
-/** True once the 09:00 CST slot has opened (idempotent via dayKey sent-state). */
+/** Primary Vercel cron (UTC) — day-of-week `*` = Mon–Sun, same 09:00 CST. */
+export const DAILY_MARKET_CRON_UTC = '0 1 * * *'
+
+/** True once the 09:00 CST slot has opened (any weekday; idempotent via dayKey). */
 export function isDailyMarketSlot(ts: number = Date.now()): boolean {
+  // Intentionally no Sat/Sun skip — 早报 fires weekends at the same local time.
   return shanghaiHm(ts) >= DAILY_MARKET_START_HM
 }
 
@@ -190,7 +196,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       langSource,
       markdown,
       card,
-      schedule: 'Daily 09:00 Asia/Shanghai (cron: 0 1 * * * UTC; cron-tick catch-up after 09:00)',
+      schedule:
+        'Daily 09:00 Asia/Shanghai incl. weekends (cron: 0 1 * * * UTC + 09:05/09:15 catch-up; cron-tick)',
       chatId: chat.chatId,
       chatSource: chat.source,
       adminOpenId: adminOpenId ? adminOpenId.slice(0, 8) + '…' : null,

@@ -211,12 +211,12 @@ export function dailyMarketTitle(lang: Lang): string {
 
 export function dailyMarketIntro(lang: Lang, dayKey: string, atMarkdown: string): string {
   if (lang === 'zh-Hant') {
-    return `🌅 **每日早報 · 過去 24 小時行情**（東八區每天 **09:00** 自動推送 · **${dayKey}**）\n\n${atMarkdown} 早報來了\n`
+    return `🌅 **每日早報 · 過去 24 小時行情**（東八區每天含週末 **09:00** 自動推送 · **${dayKey}**）\n\n${atMarkdown} 早報來了\n`
   }
   if (lang === 'en') {
-    return `🌅 **Daily brief · past 24h** (auto-push **09:00** Asia/Shanghai · **${dayKey}**)\n\n${atMarkdown} morning brief is here\n`
+    return `🌅 **Daily brief · past 24h** (auto-push **09:00** Asia/Shanghai daily incl. weekends · **${dayKey}**)\n\n${atMarkdown} morning brief is here\n`
   }
-  return `🌅 **每日早报 · 过去 24 小时行情**（东八区每天 **09:00** 自动推送 · **${dayKey}**）\n\n${atMarkdown} 早报来了\n`
+  return `🌅 **每日早报 · 过去 24 小时行情**（东八区每天含周末 **09:00** 自动推送 · **${dayKey}**）\n\n${atMarkdown} 早报来了\n`
 }
 
 export function hourlyMarketTitle(lang: Lang): string {
