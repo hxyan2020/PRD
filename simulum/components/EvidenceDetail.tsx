@@ -82,7 +82,7 @@ export function EvidenceDetail({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={img.url}
-                  alt={img.alt}
+                  alt={presented.caption}
                   className="h-auto w-full object-cover"
                   loading="lazy"
                 />
@@ -140,7 +140,9 @@ export function EvidenceDetail({
               </a>
               <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-mist">
                 {source.publisher || "web"} · {source.language}
-                {source.title ? ` · ${source.title}` : ""}
+                {source.language === locale && source.title
+                  ? ` · ${source.title}`
+                  : ""}
               </p>
             </li>
           ))}

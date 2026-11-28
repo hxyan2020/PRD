@@ -266,11 +266,10 @@ export async function listEvidence(options?: {
   return all.filter((e) => evidenceAvailableInLocale(e, options.locale!));
 }
 
-export function evidenceAvailableInLocale(evidence: Evidence, locale: string): boolean {
-  if (locale === "en") return true;
-  if (evidence.language === locale) return true;
-  if (evidence.translations[locale]?.caption) return true;
-  return evidence.languages.includes(locale);
+/** Every published entry can be presented in any UI locale (native, stored, or synthesized). */
+export function evidenceAvailableInLocale(evidence: Evidence, _locale: string): boolean {
+  void _locale;
+  return evidence.status === "published";
 }
 
 export async function getEvidenceBySlug(slug: string): Promise<Evidence | null> {
