@@ -31,4 +31,16 @@ Local runs use in-memory PGlite (`DATABASE_URL` is unset). Production Cursor app
 
 ## Scan API
 
-`POST /api/scan` with header `x-scan-secret: $SCAN_SECRET` when the secret is configured. Without a secret, the published app refuses public write triggers; pages still refresh the catalogue on a cooldown.
+`POST /api/scan` with header `x-scan-secret: $SCAN_SECRET` when the secret is configured. Without a secret, the published app refuses public write triggers.
+
+Daily scan: Vercel Cron hits `GET /api/cron/daily-scan` at `0 23 * * *` UTC (07:00 Asia/Singapore). Authorize with `CRON_SECRET` or `SCAN_SECRET`. Results appear on `/scan-log`.
+
+## Deploy (Vercel)
+
+```bash
+cd simulum
+npx vercel login
+npx vercel deploy --prod --yes
+```
+
+Set `SCAN_SECRET` / `CRON_SECRET` in the Vercel project. Anonymous temporary deploys cannot register cron jobs — claim or log in first.

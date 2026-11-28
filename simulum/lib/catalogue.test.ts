@@ -53,7 +53,7 @@ describe("catalogue ingest", () => {
   });
 
   it("seeds unique count and multi-category catalogue", async () => {
-    await ingestCandidates(
+    const result = await ingestCandidates(
       [
         {
           title: "Seed A holographic bound surface area",
@@ -76,6 +76,8 @@ describe("catalogue ingest", () => {
       ],
       "test-seed",
     );
+    expect(result.sourcesScanned).toBeGreaterThan(0);
+    expect(result.relevantSourced).toBe(result.inserted + result.merged);
 
     const total = await countUniqueEvidence();
     expect(total).toBeGreaterThan(0);

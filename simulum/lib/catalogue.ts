@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import {
   MERGE_THRESHOLD,
   fingerprintOf,
@@ -12,8 +13,14 @@ import {
   mergeIntoEvidence,
   recordScanRun,
 } from "@/lib/db";
-import type { EvidenceCandidate, ScanResult } from "@/lib/types";
-import { randomUUID } from "node:crypto";
+import { filterHdRelevantImages } from "@/lib/images";
+import { rateEvidence } from "@/lib/ratings";
+import { buildBody, buildCaption } from "@/lib/summarize";
+import type {
+  EvidenceCandidate,
+  EvidenceLocalePack,
+  ScanResult,
+} from "@/lib/types";
 
 export type IngestOutcome =
   | { action: "inserted"; evidenceId: string; slug: string }
@@ -54,6 +61,44 @@ function findBestMatch(
   return best;
 }
 
+function englishFallbackPack(
+  candidate: EvidenceCandidate,
+  language: string,
+): EvidenceLocalePack {
+  const title = candidate.title.replace(/\s+[—–|-]\s+Wiki\S*$/i, "").trim();
+  const caption = `Documented claim about simulated reality: ${title} (originally discussed in ${language}).`;
+  return {
+    caption,
+    body: {
+      what: `A publicly discussed claim connected to the simulation hypothesis, originally written in ${language}: ${title}.`,
+      where: `Sourced from ${candidate.source.publisher || "the open web"} (${language}).`,
+      when: "Indexed from the source publication and later public discussion tracked by SIMULUM timestamps.",
+      how:
+        candidate.summary.slice(0, 280) ||
+        "The source argues or retells the claim through theory, analogy, or cultural narrative.",
+      why: "People posted or catalogued it as evidence that reality could be simulated.",
+    },
+  };
+}
+
+function localePack(
+  candidate: EvidenceCandidate,
+  caption: string,
+  body: ReturnType<typeof buildBody>,
+  language: string,
+): Record<string, EvidenceLocalePack> {
+  const pack: EvidenceLocalePack = { caption, body };
+  const translations: Record<string, EvidenceLocalePack> = {
+    ...(candidate.translations ?? {}),
+    [language]: candidate.translations?.[language] ?? pack,
+  };
+  if (!translations.en) {
+    translations.en =
+      language === "en" ? pack : englishFallbackPack(candidate, language);
+  }
+  return translations;
+}
+
 /** Compare a candidate against the catalogue; merge if similar, else insert as new unique evidence. */
 export async function ingestCandidate(
   candidate: EvidenceCandidate,
@@ -70,12 +115,16 @@ export async function ingestCandidate(
   const match = findBestMatch(candidate, live);
   const categoryIds = await categoryIdsBySlugs(candidate.categorySlugs);
   const language = candidate.language ?? candidate.source.language ?? "en";
+  const caption = buildCaption(candidate);
+  const body = buildBody(candidate);
+  const images = filterHdRelevantImages(candidate.images ?? []);
   const source = {
     url: candidate.source.url,
     title: candidate.source.title ?? candidate.title,
     snippet: candidate.source.snippet ?? candidate.summary.slice(0, 280),
     language: candidate.source.language ?? language,
     publisher: candidate.source.publisher ?? "",
+    imageUrl: images[0]?.url ?? candidate.source.imageUrl ?? "",
   };
 
   if (!candidate.source.url?.startsWith("http")) {
@@ -89,6 +138,11 @@ export async function ingestCandidate(
       categoryIds,
       source,
       detailAppend: candidate.detail,
+      images,
+      translation: {
+        locale: language,
+        pack: { caption, body },
+      },
     });
     if (!merged) return { action: "skipped", reason: "merge-failed" };
     return {
@@ -99,10 +153,33 @@ export async function ingestCandidate(
     };
   }
 
+  const ratings = rateEvidence({
+    sourceCount: 1,
+    languages: [language],
+    sources: [
+      {
+        publisher: source.publisher,
+        url: source.url,
+        language: source.language,
+      },
+    ],
+    categorySlugs: candidate.categorySlugs,
+    lastSeenAt: new Date().toISOString(),
+    firstSeenAt: new Date().toISOString(),
+    hasArxiv: source.url.includes("arxiv.org"),
+    hasWikipedia: source.url.includes("wikipedia.org"),
+    imageCount: images.length,
+  });
+
   const created = await insertEvidence({
     title: candidate.title,
     summary: candidate.summary,
     detail: candidate.detail ?? "",
+    caption,
+    body,
+    images,
+    ratings,
+    translations: localePack(candidate, caption, body, language),
     fingerprint: fingerprintOf(candidate.title, candidate.summary),
     language,
     languages: [language],
@@ -110,7 +187,6 @@ export async function ingestCandidate(
     source,
   });
 
-  // Keep in-memory catalogue warm for batch ingest
   live.push({
     id: created.id,
     title: created.title,
@@ -125,6 +201,7 @@ export async function ingestCandidate(
 export async function ingestCandidates(
   candidates: EvidenceCandidate[],
   source = "batch-ingest",
+  options?: { sourcesScanned?: number; scheduleLabel?: string },
 ): Promise<ScanResult> {
   const startedAt = new Date().toISOString();
   const catalogue = await listPublishedLite();
@@ -142,6 +219,8 @@ export async function ingestCandidates(
   const finishedAt = new Date().toISOString();
   const runId = randomUUID();
   const uniqueTotal = await countUniqueEvidence();
+  const sourcesScanned = options?.sourcesScanned ?? candidates.length;
+  const relevantSourced = inserted + merged;
   const result: ScanResult = {
     runId,
     startedAt,
@@ -150,8 +229,11 @@ export async function ingestCandidates(
     merged,
     inserted,
     uniqueTotal,
+    sourcesScanned,
+    relevantSourced,
     source,
     notes: notes.slice(0, 12).join("; "),
+    scheduleLabel: options?.scheduleLabel ?? "",
   };
   await recordScanRun(result);
   return result;

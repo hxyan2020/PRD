@@ -56,6 +56,14 @@ body {
   mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
 }
 
+.sci-fi-grid {
+  background-image:
+    linear-gradient(rgba(13, 148, 136, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 148, 136, 0.08) 1px, transparent 1px),
+    radial-gradient(ellipse at 70% 20%, rgba(13, 148, 136, 0.18), transparent 55%);
+  background-size: 56px 56px, 56px 56px, auto;
+}
+
 .touch-target {
   min-height: 44px;
   min-width: 44px;

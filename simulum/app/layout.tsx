@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, JetBrains_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
+import { I18nProvider } from "@/lib/i18n/context";
+import { FooterNote } from "@/components/FooterNote";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -40,15 +42,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
-        <div className="pointer-events-none fixed inset-0 starfield" aria-hidden />
-        <div className="pointer-events-none fixed inset-0 grid-veil opacity-70" aria-hidden />
-        <SiteHeader />
-        <main className="relative mx-auto min-h-[70vh] max-w-6xl px-4 pb-24 pt-4 sm:px-6 sm:pt-6">
-          {children}
-        </main>
-        <footer className="relative border-t border-line/70 px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-center text-xs text-mist sm:px-6">
-          SIMULUM catalogues publicly discussed claims. Inclusion is not endorsement of truth.
-        </footer>
+        <I18nProvider>
+          <div className="pointer-events-none fixed inset-0 starfield" aria-hidden />
+          <div className="pointer-events-none fixed inset-0 grid-veil opacity-70" aria-hidden />
+          <SiteHeader />
+          <main className="relative mx-auto min-h-[70vh] max-w-6xl px-4 pb-24 pt-4 sm:px-6 sm:pt-6">
+            {children}
+          </main>
+          <FooterNote />
+        </I18nProvider>
       </body>
     </html>
   );
