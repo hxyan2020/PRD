@@ -13,13 +13,19 @@ export const OSC_DEMO_DAY =
 export const OSC_DEMO_START_HM =
   (process.env.LARK_OSC_DEMO_START || '').trim() || '10:00'
 
+// Prefer www.binance.com — fapi.binance.com returns HTTP 451 in many regions.
 const BINANCE_CANDLES =
-  'https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=1h&limit=48'
-const BINANCE_TICKER = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=XAUUSDT'
-const BINANCE_FUNDING = 'https://fapi.binance.com/fapi/v1/premiumIndex?symbol=XAUUSDT'
+  'https://www.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=1h&limit=48'
+const BINANCE_TICKER = 'https://www.binance.com/fapi/v1/ticker/price?symbol=XAUUSDT'
+const BINANCE_FUNDING = 'https://www.binance.com/fapi/v1/premiumIndex?symbol=XAUUSDT'
 const BINANCE_FUNDING_HIST =
-  'https://fapi.binance.com/fapi/v1/fundingRate?symbol=XAUUSDT&limit=48'
-const BINANCE_OI = 'https://fapi.binance.com/fapi/v1/openInterest?symbol=XAUUSDT'
+  'https://www.binance.com/fapi/v1/fundingRate?symbol=XAUUSDT&limit=48'
+const BINANCE_OI = 'https://www.binance.com/fapi/v1/openInterest?symbol=XAUUSDT'
+const BINANCE_FAPI_FALLBACK_HOSTS = [
+  'https://www.binance.com',
+  'https://www.binance.info',
+  'https://fapi.binance.com',
+] as const
 const BINANCE_TRADE =
   'https://www.tradingview.com/chart/?symbol=BINANCE%3AXAUUSDT.P'
 
@@ -78,16 +84,32 @@ const FETCH_TIMEOUT_MS = 4_000
 export const OSC_EVAL_BUDGET_MS = 12_000
 
 async function fetchJson(url: string): Promise<unknown | null> {
-  try {
-    const r = await fetch(url, {
-      headers: { 'User-Agent': 'VE-Risk-Copilot/1.0 (+oscillation)' },
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-    })
-    if (!r.ok) return null
-    return await r.json()
-  } catch {
+  const headers = { 'User-Agent': 'VE-Risk-Copilot/1.0 (+oscillation)' }
+  const tryOne = async (target: string): Promise<unknown | null> => {
+    try {
+      const r = await fetch(target, {
+        headers,
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      })
+      if (r.status === 451 || r.status === 403) return null
+      if (!r.ok) return null
+      return await r.json()
+    } catch {
+      return null
+    }
+  }
+
+  // Binance futures: rotate geo-friendly hosts when the primary 451s.
+  const m = url.match(/^https:\/\/(?:www\.)?(?:binance\.com|binance\.info|fapi\.binance\.com)(\/fapi\/v1\/\S+)$/i)
+  if (m) {
+    const path = m[1]!
+    for (const host of BINANCE_FAPI_FALLBACK_HOSTS) {
+      const hit = await tryOne(`${host}${path}`)
+      if (hit != null) return hit
+    }
     return null
   }
+  return tryOne(url)
 }
 
 function emptySnap(demo: boolean, news?: { title: string; url: string } | null): OscillationSnapshot {

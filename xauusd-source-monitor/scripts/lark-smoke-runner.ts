@@ -2194,6 +2194,8 @@ async function main() {
     clampSummary,
     groupMarketEventPoints,
     sameMarketEvent,
+    fetchBinanceKline,
+    BINANCE_FAPI_BASES,
     BINANCE_KLINE_URL: binanceKlineUrl,
     OKX_KLINE_URL: okxKlineUrl,
     KITCO_GOLD_URL: kitcoGoldUrl,
@@ -2357,6 +2359,27 @@ async function main() {
     /tradingview\.com\/chart\/\?symbol=BINANCE%3AXAUUSDT\.P/i.test(binanceKlineUrl),
     binanceKlineUrl,
   )
+  record(
+    'market.binance_fapi_prefers_www_host',
+    BINANCE_FAPI_BASES[0] === 'https://www.binance.com' &&
+      BINANCE_FAPI_BASES.includes('https://fapi.binance.com'),
+    BINANCE_FAPI_BASES.join(' → '),
+  )
+  {
+    let barsN = 0
+    let err = ''
+    try {
+      const series = await fetchBinanceKline('1H', 6)
+      barsN = series.bars.length
+    } catch (e) {
+      err = e instanceof Error ? e.message.slice(0, 80) : 'fail'
+    }
+    record(
+      'market.binance_kline_fetch_works_geo',
+      barsN >= 3,
+      barsN ? `bars=${barsN}` : err || 'empty',
+    )
+  }
   record(
     'market.okx_kline_geosafe_tradingview_backup',
     /tradingview\.com\/chart\/\?symbol=OKX%3AXAUUSDT\.P/i.test(okxKlineUrl) &&

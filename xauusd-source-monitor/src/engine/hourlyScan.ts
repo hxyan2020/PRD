@@ -113,11 +113,62 @@ const YAHOO_GC =
   'https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1m&range=1d'
 const FED_PRESS = 'https://www.federalreserve.gov/json/ne-press.json'
 const GOLD_API = 'https://api.gold-api.com/price/XAU'
+/**
+ * Binance USDT-M REST bases.
+ * `fapi.binance.com` returns HTTP 451 from many regions (SG / cloud / Vercel);
+ * `www.binance.com` / `www.binance.info` expose the same `/fapi/v1/*` paths and work.
+ */
+export const BINANCE_FAPI_BASES = [
+  'https://www.binance.com',
+  'https://www.binance.info',
+  'https://fapi.binance.com',
+] as const
+
+/** Build a Binance futures REST URL (default = geo-friendly www host). */
+export function binanceFapiUrl(
+  path: string,
+  base: string = BINANCE_FAPI_BASES[0]!,
+): string {
+  const p = path.startsWith('/') ? path : `/${path}`
+  return `${base}${p}`
+}
+
+/**
+ * Fetch Binance USDT-M JSON, trying geo-friendly hosts first.
+ * Skips HTTP 451/403 hosts and continues the fallback chain.
+ */
+export async function fetchBinanceFapi(
+  path: string,
+  init?: RequestInit,
+): Promise<Response> {
+  const p = path.startsWith('/') ? path : `/${path}`
+  let lastStatus: number | null = null
+  let lastErr: Error | null = null
+  for (const base of BINANCE_FAPI_BASES) {
+    try {
+      const res = await fetch(`${base}${p}`, {
+        ...init,
+        cache: 'no-store',
+        mode: init?.mode ?? 'cors',
+        headers: { Accept: 'application/json', ...(init?.headers || {}) },
+      })
+      if (res.status === 451 || res.status === 403) {
+        lastStatus = res.status
+        continue
+      }
+      return res
+    } catch (e) {
+      lastErr = e instanceof Error ? e : new Error(String(e))
+    }
+  }
+  if (lastErr) throw lastErr
+  throw new Error(`Binance fapi unreachable (last HTTP ${lastStatus ?? 'n/a'})`)
+}
+
 /** Primary venue for market reports — Binance USDT-M XAUUSDT perp. */
-const BINANCE_TICKER = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=XAUUSDT'
-const BINANCE_FUNDING = 'https://fapi.binance.com/fapi/v1/premiumIndex?symbol=XAUUSDT'
-const BINANCE_CANDLES =
-  'https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=1h&limit=36'
+const BINANCE_TICKER = binanceFapiUrl('/fapi/v1/ticker/price?symbol=XAUUSDT')
+const BINANCE_FUNDING = binanceFapiUrl('/fapi/v1/premiumIndex?symbol=XAUUSDT')
+const BINANCE_CANDLES = binanceFapiUrl('/fapi/v1/klines?symbol=XAUUSDT&interval=1h&limit=36')
 const OKX_TICKER = 'https://www.okx.com/api/v5/market/ticker?instId=XAU-USDT-SWAP'
 const OKX_FUNDING = 'https://www.okx.com/api/v5/public/funding-rate?instId=XAU-USDT-SWAP'
 const OKX_CANDLES =
@@ -1054,11 +1105,16 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
     try {
       const ctrl = new AbortController()
       const timer = setTimeout(() => ctrl.abort(), 8000)
-      const res = await fetch(entry.url, {
-        signal: ctrl.signal,
-        cache: 'no-store',
-        mode: 'cors',
-      })
+      const binancePath = entry.url.match(
+        /^https:\/\/(?:www\.)?(?:binance\.com|binance\.info|fapi\.binance\.com)(\/fapi\/v1\/\S+)$/i,
+      )?.[1]
+      const res = binancePath
+        ? await fetchBinanceFapi(binancePath, { signal: ctrl.signal })
+        : await fetch(entry.url, {
+            signal: ctrl.signal,
+            cache: 'no-store',
+            mode: 'cors',
+          })
       clearTimeout(timer)
       const latencyMs = Math.round(performance.now() - started)
       if (!res.ok) {
@@ -1070,7 +1126,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
             entry.captionEn,
             entry.captionZh,
             entry.kind,
-            res.status >= 500 ? 'down' : 'degraded',
+            res.status >= 500 || res.status === 451 ? 'down' : 'degraded',
             checkedAt,
             { latencyMs, detail: `HTTP ${res.status}` },
           ),
@@ -1088,7 +1144,7 @@ async function probeCatalogEntry(entry: CatalogEntry): Promise<{
           entry.kind,
           'ok',
           checkedAt,
-          { latencyMs, detail: 'JSON OK' },
+          { latencyMs, detail: binancePath ? 'JSON OK (Binance geo host)' : 'JSON OK' },
         ),
         json,
       )
@@ -2037,7 +2093,7 @@ export async function fetchOkxKline(
   }
 }
 
-/** Live Binance XAUUSDT USDT-M candles. */
+/** Live Binance XAUUSDT USDT-M candles (geo-friendly host chain). */
 export async function fetchBinanceKline(
   bar: KlineIntervalBar,
   limit?: number,
@@ -2046,17 +2102,16 @@ export async function fetchBinanceKline(
   const meta = KLINE_INTERVALS.find((i) => i.bar === bar) || KLINE_INTERVALS[1]
   const n = limit ?? meta.limit
   const interval = binanceInterval(bar)
-  const url = `https://fapi.binance.com/fapi/v1/klines?symbol=XAUUSDT&interval=${encodeURIComponent(interval)}&limit=${n}`
-  const res = await fetch(url, {
-    signal,
-    cache: 'no-store',
-    mode: 'cors',
-    headers: { Accept: 'application/json' },
-  })
+  const path = `/fapi/v1/klines?symbol=XAUUSDT&interval=${encodeURIComponent(interval)}&limit=${n}`
+  const res = await fetchBinanceFapi(path, { signal })
   if (!res.ok) throw new Error(`Binance candles HTTP ${res.status}`)
   const json = (await res.json()) as unknown
   if (json && typeof json === 'object' && !Array.isArray(json) && 'code' in json) {
     const err = json as { code?: number; msg?: string }
+    // Binance geo-block payload uses code:0 + msg; treat non-array body as error
+    if (err.msg && /restricted location|eligibility/i.test(err.msg)) {
+      throw new Error(err.msg)
+    }
     if (err.code && err.code !== 200) {
       throw new Error(err.msg || `Binance candles code ${err.code}`)
     }
