@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Chakra_Petch, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { I18nProvider } from "@/lib/i18n/context";
+import { isLocale } from "@/lib/i18n/locales";
 import { FooterNote } from "@/components/FooterNote";
+import type { LocaleCode } from "@/lib/types";
 
 const display = Chakra_Petch({
   subsets: ["latin"],
@@ -48,11 +51,23 @@ export const viewport: Viewport = {
   themeColor: "#0a0e13",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const jar = await cookies();
+  const raw = jar.get("simulum-locale")?.value;
+  const initialLocale: LocaleCode | undefined =
+    raw && isLocale(raw) ? raw : undefined;
+
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html
+      lang={initialLocale || "en"}
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+    >
       <body className="font-sans antialiased">
-        <I18nProvider>
+        <I18nProvider initialLocale={initialLocale}>
           <div className="pointer-events-none fixed inset-0 starfield" aria-hidden />
           <div className="pointer-events-none fixed inset-0 grid-veil" aria-hidden />
           <div

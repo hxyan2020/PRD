@@ -54,6 +54,18 @@ export type MessageKey =
   | "scanLog.empty"
   | "footer.note"
   | "lang.label"
+  | "categories.back"
+  | "categories.uniqueEvidence"
+  | "categories.empty"
+  | "detail.overall"
+  | "detail.factBacked"
+  | "detail.noBacking"
+  | "rating.credibility"
+  | "rating.recency"
+  | "rating.multiSources"
+  | "rating.crossReferenced"
+  | "rating.multiWitness"
+  | "rating.scientificallySupported"
 
 type Dict = Record<MessageKey, string>;
 
@@ -111,6 +123,18 @@ const en: Dict = {
   "scanLog.empty": "No scan runs recorded yet.",
   "footer.note": "Are We Simulated? catalogues publicly discussed claims. Inclusion is not endorsement of truth.",
   "lang.label": "Language",
+  "categories.back": "Categories",
+  "categories.uniqueEvidence": "unique evidence",
+  "categories.empty": "No evidence tagged in this category yet.",
+  "detail.overall": "overall",
+  "detail.factBacked": "fact-backed",
+  "detail.noBacking": "No backing facts linked yet.",
+  "rating.credibility": "Credibility",
+  "rating.recency": "Recency",
+  "rating.multiSources": "Multiple sources",
+  "rating.crossReferenced": "Cross-referenced",
+  "rating.multiWitness": "Multiple witnesses / retellings",
+  "rating.scientificallySupported": "Scientifically partially proved",
 };
 
 const zh: Dict = {
@@ -167,6 +191,18 @@ const zh: Dict = {
   "scanLog.empty": "尚无扫描记录。",
   "footer.note": "「我们是模拟的吗？」收录公开讨论中的主张，收录不等于认同其真实性。",
   "lang.label": "语言",
+  "categories.back": "分类",
+  "categories.uniqueEvidence": "条独特主张",
+  "categories.empty": "该分类下尚无证据。",
+  "detail.overall": "综合",
+  "detail.factBacked": "有事实依据",
+  "detail.noBacking": "尚无关联事实。",
+  "rating.credibility": "可信度",
+  "rating.recency": "时效性",
+  "rating.multiSources": "多来源",
+  "rating.crossReferenced": "交叉印证",
+  "rating.multiWitness": "多证人 / 复述",
+  "rating.scientificallySupported": "科学部分支持",
 };
 
 const hi: Dict = {
@@ -223,6 +259,18 @@ const hi: Dict = {
   "scanLog.empty": "अभी कोई स्कैन रिकॉर्ड नहीं।",
   "footer.note": "「क्या हम सिमुलेटेड हैं?」सार्वजनिक रूप से चर्चित दावों को सूचीबद्ध करता है। शामिल करना सत्य का समर्थन नहीं है।",
   "lang.label": "भाषा",
+  "categories.back": "श्रेणियाँ",
+  "categories.uniqueEvidence": "अद्वितीय साक्ष्य",
+  "categories.empty": "इस श्रेणी में अभी साक्ष्य नहीं।",
+  "detail.overall": "कुल",
+  "detail.factBacked": "तथ्य-आधारित",
+  "detail.noBacking": "अभी कोई सहायक तथ्य नहीं।",
+  "rating.credibility": "विश्वसनीयता",
+  "rating.recency": "ताज़गी",
+  "rating.multiSources": "कई स्रोत",
+  "rating.crossReferenced": "क्रॉस-रेफ़रेंस",
+  "rating.multiWitness": "कई गवाह / पुनर्कथन",
+  "rating.scientificallySupported": "वैज्ञानिक रूप से आंशिक प्रमाण",
 };
 
 const es: Dict = {
@@ -279,6 +327,18 @@ const es: Dict = {
   "scanLog.empty": "Aún no hay escaneos registrados.",
   "footer.note": "¿Estamos simulados? cataloga afirmaciones discutidas en público. Incluirlas no implica respaldar su verdad.",
   "lang.label": "Idioma",
+  "categories.back": "Categorías",
+  "categories.uniqueEvidence": "evidencias únicas",
+  "categories.empty": "Aún no hay evidencia en esta categoría.",
+  "detail.overall": "global",
+  "detail.factBacked": "basado en hechos",
+  "detail.noBacking": "Aún no hay hechos vinculados.",
+  "rating.credibility": "Credibilidad",
+  "rating.recency": "Recencia",
+  "rating.multiSources": "Varias fuentes",
+  "rating.crossReferenced": "Referencias cruzadas",
+  "rating.multiWitness": "Varios testigos / relatos",
+  "rating.scientificallySupported": "Parcialmente respaldado científicamente",
 };
 
 const fr: Dict = {
@@ -335,6 +395,18 @@ const fr: Dict = {
   "scanLog.empty": "Aucun scan enregistré pour l'instant.",
   "footer.note": "Sommes-nous simulés ? catalogue des affirmations discutées publiquement. Les inclure n'est pas une validation de leur vérité.",
   "lang.label": "Langue",
+  "categories.back": "Catégories",
+  "categories.uniqueEvidence": "preuves uniques",
+  "categories.empty": "Aucune preuve dans cette catégorie pour l'instant.",
+  "detail.overall": "global",
+  "detail.factBacked": "fondé sur des faits",
+  "detail.noBacking": "Aucun fait associé pour l'instant.",
+  "rating.credibility": "Crédibilité",
+  "rating.recency": "Récence",
+  "rating.multiSources": "Sources multiples",
+  "rating.crossReferenced": "Recoupé",
+  "rating.multiWitness": "Témoins / récits multiples",
+  "rating.scientificallySupported": "Partiellement prouvé scientifiquement",
 };
 
 const ar: Dict = {
@@ -391,6 +463,18 @@ const ar: Dict = {
   "scanLog.empty": "لا سجلات فحص بعد.",
   "footer.note": "يفهرس «هل نحن محاكاة؟» مزاعم نوقشت علناً. الإدراج ليس تصديقاً لصحتها.",
   "lang.label": "اللغة",
+  "categories.back": "التصنيفات",
+  "categories.uniqueEvidence": "أدلة فريدة",
+  "categories.empty": "لا أدلة في هذا التصنيف بعد.",
+  "detail.overall": "الإجمالي",
+  "detail.factBacked": "مدعوم بوقائع",
+  "detail.noBacking": "لا وقائع مرتبطة بعد.",
+  "rating.credibility": "المصداقية",
+  "rating.recency": "الحداثة",
+  "rating.multiSources": "مصادر متعددة",
+  "rating.crossReferenced": "مرجعيات متقاطعة",
+  "rating.multiWitness": "شهود / روايات متعددة",
+  "rating.scientificallySupported": "مدعوم علمياً جزئياً",
 };
 
 const bn: Dict = {
@@ -447,6 +531,18 @@ const bn: Dict = {
   "scanLog.empty": "এখনও কোনো স্ক্যান রেকর্ড নেই।",
   "footer.note": "「আমরা কি সিমুলেটেড?」 প্রকাশ্যে আলোচিত দাবি তালিকাভুক্ত করে। অন্তর্ভুক্তি সত্যের সমর্থন নয়।",
   "lang.label": "ভাষা",
+  "categories.back": "বিভাগ",
+  "categories.uniqueEvidence": "অনন্য প্রমাণ",
+  "categories.empty": "এই বিভাগে এখনও প্রমাণ নেই।",
+  "detail.overall": "সামগ্রিক",
+  "detail.factBacked": "তথ্যভিত্তিক",
+  "detail.noBacking": "এখনও কোনো সহায়ক তথ্য নেই।",
+  "rating.credibility": "বিশ্বাসযোগ্যতা",
+  "rating.recency": "সাম্প্রতিকতা",
+  "rating.multiSources": "একাধিক উৎস",
+  "rating.crossReferenced": "ক্রস-রেফারেন্স",
+  "rating.multiWitness": "একাধিক সাক্ষী / পুনকথন",
+  "rating.scientificallySupported": "বৈজ্ঞানিকভাবে আংশিক প্রমাণিত",
 };
 
 const pt: Dict = {
@@ -503,6 +599,18 @@ const pt: Dict = {
   "scanLog.empty": "Ainda não há scans registados.",
   "footer.note": "Estamos simulados? cataloga afirmações discutidas publicamente. Incluí-las não é endosso da sua verdade.",
   "lang.label": "Idioma",
+  "categories.back": "Categorias",
+  "categories.uniqueEvidence": "evidências únicas",
+  "categories.empty": "Ainda não há evidência nesta categoria.",
+  "detail.overall": "geral",
+  "detail.factBacked": "baseado em factos",
+  "detail.noBacking": "Ainda sem factos associados.",
+  "rating.credibility": "Credibilidade",
+  "rating.recency": "Atualidade",
+  "rating.multiSources": "Várias fontes",
+  "rating.crossReferenced": "Referências cruzadas",
+  "rating.multiWitness": "Várias testemunhas / relatos",
+  "rating.scientificallySupported": "Parcialmente comprovado cientificamente",
 };
 
 const ru: Dict = {
@@ -559,6 +667,18 @@ const ru: Dict = {
   "scanLog.empty": "Пока нет записей сканирования.",
   "footer.note": "«Мы симулированы?» каталогизирует публично обсуждаемые утверждения. Включение не означает признания их истинности.",
   "lang.label": "Язык",
+  "categories.back": "Категории",
+  "categories.uniqueEvidence": "уникальных доказательств",
+  "categories.empty": "В этой категории пока нет доказательств.",
+  "detail.overall": "итого",
+  "detail.factBacked": "на фактах",
+  "detail.noBacking": "Пока нет связанных фактов.",
+  "rating.credibility": "Достоверность",
+  "rating.recency": "Свежесть",
+  "rating.multiSources": "Несколько источников",
+  "rating.crossReferenced": "Перекрёстные ссылки",
+  "rating.multiWitness": "Несколько свидетелей / пересказов",
+  "rating.scientificallySupported": "Частично научно подтверждено",
 };
 
 const id: Dict = {
@@ -615,6 +735,18 @@ const id: Dict = {
   "scanLog.empty": "Belum ada catatan pemindaian.",
   "footer.note": "Apakah kita disimulasikan? mengkatalogkan klaim yang dibahas secara publik. Menyertakan bukan berarti mendukung kebenarannya.",
   "lang.label": "Bahasa",
+  "categories.back": "Kategori",
+  "categories.uniqueEvidence": "bukti unik",
+  "categories.empty": "Belum ada bukti di kategori ini.",
+  "detail.overall": "keseluruhan",
+  "detail.factBacked": "berdasarkan fakta",
+  "detail.noBacking": "Belum ada fakta terkait.",
+  "rating.credibility": "Kredibilitas",
+  "rating.recency": "Kebaruan",
+  "rating.multiSources": "Banyak sumber",
+  "rating.crossReferenced": "Rujukan silang",
+  "rating.multiWitness": "Banyak saksi / penuturan",
+  "rating.scientificallySupported": "Sebagian terbukti secara ilmiah",
 };
 
 const de: Dict = {
@@ -671,6 +803,18 @@ const de: Dict = {
   "scanLog.empty": "Noch keine Scan-Läufe erfasst.",
   "footer.note": "Sind wir simuliert? katalogisiert öffentlich diskutierte Behauptungen. Aufnahme ist keine Wahrheitsbestätigung.",
   "lang.label": "Sprache",
+  "categories.back": "Kategorien",
+  "categories.uniqueEvidence": "einzigartige Evidenzen",
+  "categories.empty": "In dieser Kategorie noch keine Evidenz.",
+  "detail.overall": "gesamt",
+  "detail.factBacked": "faktenbasiert",
+  "detail.noBacking": "Noch keine verknüpften Fakten.",
+  "rating.credibility": "Glaubwürdigkeit",
+  "rating.recency": "Aktualität",
+  "rating.multiSources": "Mehrere Quellen",
+  "rating.crossReferenced": "Querverweise",
+  "rating.multiWitness": "Mehrere Zeugen / Nacherzählungen",
+  "rating.scientificallySupported": "Wissenschaftlich teilweise belegt",
 };
 
 const ja: Dict = {
@@ -727,6 +871,18 @@ const ja: Dict = {
   "scanLog.empty": "スキャン記録はまだありません。",
   "footer.note": "「私たちはシミュレートされているのか？」は公開で議論された主張を目録化します。収録は真偽の支持ではありません。",
   "lang.label": "言語",
+  "categories.back": "カテゴリ",
+  "categories.uniqueEvidence": "件のユニークな証拠",
+  "categories.empty": "このカテゴリにはまだ証拠がありません。",
+  "detail.overall": "総合",
+  "detail.factBacked": "事実に基づく",
+  "detail.noBacking": "裏付け事実はまだありません。",
+  "rating.credibility": "信頼性",
+  "rating.recency": "新しさ",
+  "rating.multiSources": "複数ソース",
+  "rating.crossReferenced": "相互参照",
+  "rating.multiWitness": "複数の証言・再話",
+  "rating.scientificallySupported": "科学的に部分支持",
 };
 
 const tr: Dict = {
@@ -783,6 +939,18 @@ const tr: Dict = {
   "scanLog.empty": "Henüz tarama kaydı yok.",
   "footer.note": "Simüle miyiz? kamuya açık tartışılan iddiaları kataloglar. Dahil etmek doğruyu onaylamak değildir.",
   "lang.label": "Dil",
+  "categories.back": "Kategoriler",
+  "categories.uniqueEvidence": "benzersiz kanıt",
+  "categories.empty": "Bu kategoride henüz kanıt yok.",
+  "detail.overall": "genel",
+  "detail.factBacked": "kanıta dayalı",
+  "detail.noBacking": "Henüz bağlı olgu yok.",
+  "rating.credibility": "Güvenilirlik",
+  "rating.recency": "Güncellik",
+  "rating.multiSources": "Birden fazla kaynak",
+  "rating.crossReferenced": "Çapraz referans",
+  "rating.multiWitness": "Birden fazla tanık / anlatım",
+  "rating.scientificallySupported": "Bilimsel olarak kısmen kanıtlanmış",
 };
 
 const vi: Dict = {
@@ -839,6 +1007,18 @@ const vi: Dict = {
   "scanLog.empty": "Chưa có nhật ký quét.",
   "footer.note": "Chúng ta có đang được mô phỏng? lập danh mục các tuyên bố thảo luận công khai. Đưa vào không phải xác nhận sự thật.",
   "lang.label": "Ngôn ngữ",
+  "categories.back": "Thể loại",
+  "categories.uniqueEvidence": "bằng chứng duy nhất",
+  "categories.empty": "Thể loại này chưa có bằng chứng.",
+  "detail.overall": "tổng",
+  "detail.factBacked": "có căn cứ",
+  "detail.noBacking": "Chưa có sự kiện liên kết.",
+  "rating.credibility": "Độ tin cậy",
+  "rating.recency": "Độ mới",
+  "rating.multiSources": "Nhiều nguồn",
+  "rating.crossReferenced": "Đối chiếu chéo",
+  "rating.multiWitness": "Nhiều nhân chứng / thuật lại",
+  "rating.scientificallySupported": "Được khoa học hỗ trợ một phần",
 };
 
 const ko: Dict = {
@@ -895,6 +1075,18 @@ const ko: Dict = {
   "scanLog.empty": "아직 스캔 기록이 없습니다.",
   "footer.note": "「우리는 시뮬레이션인가?」는 공개 논의된 주장을 목록화합니다. 수록은 진리 인정이 아닙니다.",
   "lang.label": "언어",
+  "categories.back": "분류",
+  "categories.uniqueEvidence": "고유 증거",
+  "categories.empty": "이 분류에 아직 증거가 없습니다.",
+  "detail.overall": "종합",
+  "detail.factBacked": "사실 기반",
+  "detail.noBacking": "연결된 사실이 아직 없습니다.",
+  "rating.credibility": "신뢰도",
+  "rating.recency": "최신성",
+  "rating.multiSources": "다중 출처",
+  "rating.crossReferenced": "교차 참조",
+  "rating.multiWitness": "다중 증언 / 재서술",
+  "rating.scientificallySupported": "과학적으로 부분 입증",
 };
 
 const it: Dict = {
@@ -951,6 +1143,18 @@ const it: Dict = {
   "scanLog.empty": "Nessuna scansione registrata ancora.",
   "footer.note": "Siamo simulati? cataloga affermazioni discusse pubblicamente. L'inclusione non è un'approvazione della loro verità.",
   "lang.label": "Lingua",
+  "categories.back": "Categorie",
+  "categories.uniqueEvidence": "prove uniche",
+  "categories.empty": "Nessuna prova in questa categoria ancora.",
+  "detail.overall": "complessivo",
+  "detail.factBacked": "basato su fatti",
+  "detail.noBacking": "Nessun fatto collegato ancora.",
+  "rating.credibility": "Credibilità",
+  "rating.recency": "Recenza",
+  "rating.multiSources": "Più fonti",
+  "rating.crossReferenced": "Riferimenti incrociati",
+  "rating.multiWitness": "Più testimoni / racconti",
+  "rating.scientificallySupported": "Parzialmente provato scientificamente",
 };
 
 const th: Dict = {
@@ -1007,6 +1211,18 @@ const th: Dict = {
   "scanLog.empty": "ยังไม่มีบันทึกการสแกน",
   "footer.note": "「เราถูกจำลองอยู่หรือไม่?」 จัดรายการข้ออ้างที่อภิปรายสาธารณะ การรวมไม่ได้หมายถึงรับรองความจริง",
   "lang.label": "ภาษา",
+  "categories.back": "หมวดหมู่",
+  "categories.uniqueEvidence": "หลักฐานเฉพาะ",
+  "categories.empty": "ยังไม่มีหลักฐานในหมวดนี้",
+  "detail.overall": "ภาพรวม",
+  "detail.factBacked": "อิงข้อเท็จจริง",
+  "detail.noBacking": "ยังไม่มีข้อเท็จจริงเชื่อมโยง",
+  "rating.credibility": "ความน่าเชื่อถือ",
+  "rating.recency": "ความใหม่",
+  "rating.multiSources": "หลายแหล่ง",
+  "rating.crossReferenced": "อ้างอิงข้าม",
+  "rating.multiWitness": "พยาน / การเล่าซ้ำหลายราย",
+  "rating.scientificallySupported": "พิสูจน์ทางวิทยาศาสตร์บางส่วน",
 };
 
 const pl: Dict = {
@@ -1063,6 +1279,18 @@ const pl: Dict = {
   "scanLog.empty": "Brak jeszcze zapisów skanów.",
   "footer.note": "Czy jesteśmy symulacją? kataloguje publicznie dyskutowane twierdzenia. Włączenie nie jest potwierdzeniem ich prawdziwości.",
   "lang.label": "Język",
+  "categories.back": "Kategorie",
+  "categories.uniqueEvidence": "unikalnych dowodów",
+  "categories.empty": "Brak dowodów w tej kategorii.",
+  "detail.overall": "ogółem",
+  "detail.factBacked": "oparte na faktach",
+  "detail.noBacking": "Brak powiązanych faktów.",
+  "rating.credibility": "Wiarygodność",
+  "rating.recency": "Aktualność",
+  "rating.multiSources": "Wiele źródeł",
+  "rating.crossReferenced": "Odniesienia krzyżowe",
+  "rating.multiWitness": "Wielu świadków / przekazów",
+  "rating.scientificallySupported": "Częściowo potwierdzone naukowo",
 };
 
 const nl: Dict = {
@@ -1119,6 +1347,18 @@ const nl: Dict = {
   "scanLog.empty": "Nog geen scanruns vastgelegd.",
   "footer.note": "Zijn wij gesimuleerd? catalogueert openbaar besproken claims. Opname is geen goedkeuring van hun waarheid.",
   "lang.label": "Taal",
+  "categories.back": "Categorieën",
+  "categories.uniqueEvidence": "unieke bewijzen",
+  "categories.empty": "Nog geen bewijs in deze categorie.",
+  "detail.overall": "totaal",
+  "detail.factBacked": "feitenonderbouwd",
+  "detail.noBacking": "Nog geen gekoppelde feiten.",
+  "rating.credibility": "Geloofwaardigheid",
+  "rating.recency": "Actualiteit",
+  "rating.multiSources": "Meerdere bronnen",
+  "rating.crossReferenced": "Kruisverwijzingen",
+  "rating.multiWitness": "Meerdere getuigen / hervertellingen",
+  "rating.scientificallySupported": "Wetenschappelijk deels bewezen",
 };
 
 const uk: Dict = {
@@ -1175,6 +1415,18 @@ const uk: Dict = {
   "scanLog.empty": "Ще немає записів сканувань.",
   "footer.note": "«Чи ми симульовані?» каталогізує публічно обговорювані твердження. Включення не означає визнання їхньої істинності.",
   "lang.label": "Мова",
+  "categories.back": "Категорії",
+  "categories.uniqueEvidence": "унікальних доказів",
+  "categories.empty": "У цій категорії ще немає доказів.",
+  "detail.overall": "загалом",
+  "detail.factBacked": "на фактах",
+  "detail.noBacking": "Поки немає пов’язаних фактів.",
+  "rating.credibility": "Достовірність",
+  "rating.recency": "Актуальність",
+  "rating.multiSources": "Кілька джерел",
+  "rating.crossReferenced": "Перехресні посилання",
+  "rating.multiWitness": "Кілька свідків / переказів",
+  "rating.scientificallySupported": "Частково науково підтверджено",
 };
 
 const TABLES: Record<LocaleCode, Dict> = {

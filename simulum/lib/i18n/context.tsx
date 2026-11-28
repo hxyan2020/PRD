@@ -13,6 +13,7 @@ import { t as translate, type MessageKey } from "@/lib/i18n/messages";
 import type { LocaleCode } from "@/lib/types";
 
 const STORAGE_KEY = "simulum-locale";
+const COOKIE_KEY = "simulum-locale";
 
 type I18nValue = {
   locale: LocaleCode;
@@ -24,24 +25,51 @@ type I18nValue = {
 
 const Ctx = createContext<I18nValue | null>(null);
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<LocaleCode>(DEFAULT_LOCALE);
+function writeLocaleCookie(locale: LocaleCode) {
+  try {
+    document.cookie = `${COOKIE_KEY}=${encodeURIComponent(locale)};path=/;max-age=31536000;samesite=lax`;
+  } catch {
+    // ignore
+  }
+}
+
+export function I18nProvider({
+  children,
+  initialLocale,
+}: {
+  children: React.ReactNode;
+  /** From server cookie so SSR matches the viewer's language. */
+  initialLocale?: LocaleCode;
+}) {
+  const [locale, setLocaleState] = useState<LocaleCode>(
+    initialLocale && isLocale(initialLocale) ? initialLocale : DEFAULT_LOCALE,
+  );
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored && isLocale(stored)) {
         setLocaleState(stored);
+        writeLocaleCookie(stored);
+        return;
+      }
+      if (initialLocale && isLocale(initialLocale)) {
+        localStorage.setItem(STORAGE_KEY, initialLocale);
         return;
       }
       const nav = navigator.language.toLowerCase();
       const hit = LOCALES.find(
         (l) => nav === l.code || nav.startsWith(`${l.code}-`),
       );
-      if (hit) setLocaleState(hit.code);
+      if (hit) {
+        setLocaleState(hit.code);
+        writeLocaleCookie(hit.code);
+      }
     } catch {
       // ignore
     }
+    // Only on mount — initialLocale is the SSR seed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -53,9 +81,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     }
+    writeLocaleCookie(locale);
   }, [locale]);
 
-  const setLocale = useCallback((l: LocaleCode) => setLocaleState(l), []);
+  const setLocale = useCallback((l: LocaleCode) => {
+    setLocaleState(l);
+    writeLocaleCookie(l);
+  }, []);
   const t = useCallback((key: MessageKey) => translate(locale, key), [locale]);
   const dir = LOCALES.find((l) => l.code === locale)?.dir ?? "ltr";
   const value = useMemo(
