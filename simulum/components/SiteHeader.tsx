@@ -36,11 +36,11 @@ export function SiteHeader() {
     <header className="safe-top sticky top-0 z-30 border-b border-line/80 bg-paper/90 backdrop-blur-md">
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-signal/40 to-transparent" />
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 sm:py-3">
-        <Link href="/" className="group flex min-w-0 items-baseline gap-2.5">
-          <span className="font-display text-xl font-semibold tracking-[0.06em] text-ink sm:text-2xl">
-            SIMULUM
+        <Link href="/" className="group flex min-w-0 items-baseline gap-2 sm:gap-2.5">
+          <span className="truncate font-display text-[0.95rem] font-semibold leading-tight tracking-[0.02em] text-ink sm:text-lg md:text-xl">
+            {t("brand.name")}
           </span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.22em] text-mist sm:inline">
+          <span className="hidden shrink-0 font-mono text-[10px] uppercase tracking-[0.22em] text-mist lg:inline">
             {t("brand.tag")}
           </span>
         </Link>

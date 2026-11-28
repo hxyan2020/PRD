@@ -24,6 +24,12 @@ describe("i18n messages", () => {
     expect(LOCALES.length).toBeGreaterThanOrEqual(20);
   });
 
+  it("uses Are We Simulated? as the English brand name", () => {
+    expect(t("en", "brand.name")).toBe("Are We Simulated?");
+    expect(t("zh", "brand.name")).not.toBe(t("en", "brand.name"));
+    expect(t("zh", "brand.name").length).toBeGreaterThan(3);
+  });
+
   it("localizes scan log title across all locales", () => {
     const en = t("en", "scanLog.title");
     for (const loc of LOCALES) {

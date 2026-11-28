@@ -12,13 +12,13 @@ type PresentTemplates = {
 
 /**
  * Localized presentation copy. Captions stay unique via `topic`.
- * Visible text stays in one language — no "Japanese intro" / "(zh)" labels.
+ * Visible text stays in one language — no source-language labels in UI copy.
  */
 const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   en: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM shows this summary in your selected language only.`,
+      `${topic}. This catalogue shows this summary in your selected language only.`,
     where: (p) => `Sourced from ${p}. Open the original links for the source page.`,
     when:
       "Timing follows the source publication and catalogue first-seen / last-seen timestamps.",
@@ -29,7 +29,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   },
   zh: {
     caption: (topic) => topic,
-    what: (topic) => `「${topic}」。SIMULUM 仅以您选择的语言呈现摘要。`,
+    what: (topic) => `「${topic}」。本目录仅以您选择的语言呈现摘要。`,
     where: (p) => `来源：${p}。请打开原始链接查看原文页面。`,
     when: "时间依据来源发布与目录首次/最近收录时间戳。",
     how: (topic) => `「${topic}」通过理论、类比、实验设想或文化叙事提出。`,
@@ -38,7 +38,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   es: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM muestra este resumen solo en tu idioma seleccionado.`,
+      `${topic}. Este catálogo muestra este resumen solo en tu idioma seleccionado.`,
     where: (p) => `Obtenido de ${p}. Abre los enlaces originales para la página fuente.`,
     when: "El tiempo sigue la publicación de la fuente y las marcas de primera/última indexación.",
     how: (topic) =>
@@ -49,7 +49,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   fr: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM n'affiche ce résumé que dans votre langue sélectionnée.`,
+      `${topic}. Ce catalogue n'affiche ce résumé que dans votre langue sélectionnée.`,
     where: (p) => `Issu de ${p}. Ouvrez les liens d'origine pour la page source.`,
     when: "Le calendrier suit la publication source et les horodatages de première/dernière indexation.",
     how: (topic) =>
@@ -60,7 +60,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   de: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM zeigt diese Zusammenfassung nur in Ihrer gewählten Sprache.`,
+      `${topic}. Dieser Katalog zeigt diese Zusammenfassung nur in Ihrer gewählten Sprache.`,
     where: (p) => `Quelle: ${p}. Original-Links öffnen die Quellseite.`,
     when: "Der Zeitverlauf folgt der Quellenveröffentlichung und den First-/Last-Seen-Zeitstempeln.",
     how: (topic) =>
@@ -71,7 +71,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   ja: {
     caption: (topic) => topic,
     what: (topic) =>
-      `「${topic}」。SIMULUMは選択した言語のみで要約を表示します。`,
+      `「${topic}」。このカタログは選択した言語のみで要約を表示します。`,
     where: (p) => `出典：${p}。原文ページはオリジナルリンクから。`,
     when: "時期は出典の公開と初回／最終インデックス日時に従います。",
     how: (topic) => `「${topic}」は理論・類推・実験提案・文化的語りとして示されます。`,
@@ -81,7 +81,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   ru: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM показывает это резюме только на выбранном языке.`,
+      `${topic}. Этот каталог показывает это резюме только на выбранном языке.`,
     where: (p) => `Источник: ${p}. Откройте исходные ссылки для страницы источника.`,
     when: "Время следует публикации источника и меткам первой/последней индексации.",
     how: (topic) =>
@@ -92,7 +92,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   pt: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. O SIMULUM mostra este resumo apenas no idioma selecionado.`,
+      `${topic}. Este catálogo mostra este resumo apenas no idioma selecionado.`,
     where: (p) => `Obtido de ${p}. Abra as ligações originais para a página de origem.`,
     when: "O tempo segue a publicação da fonte e os carimbos de primeira/última indexação.",
     how: (topic) =>
@@ -102,7 +102,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   },
   ar: {
     caption: (topic) => topic,
-    what: (topic) => `${topic}. يعرض SIMULUM هذا الملخص بلغة اختيارك فقط.`,
+    what: (topic) => `${topic}. يعرض هذا الفهرس هذا الملخص بلغة اختيارك فقط.`,
     where: (p) => `المصدر: ${p}. افتح الروابط الأصلية لصفحة المصدر.`,
     when: "التوقيت يتبع نشر المصدر وختمَي أول/آخر فهرسة.",
     how: (topic) => `${topic} يُطرح عبر نظرية أو تشبيه أو اقتراح تجريبي أو سرد ثقافي.`,
@@ -110,7 +110,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   },
   ko: {
     caption: (topic) => topic,
-    what: (topic) => `${topic}. SIMULUM은 선택한 언어로만 요약을 보여 줍니다.`,
+    what: (topic) => `${topic}. 이 목록은 선택한 언어로만 요약을 보여 줍니다.`,
     where: (p) => `출처: ${p}. 원문 페이지는 원본 링크에서 확인하세요.`,
     when: "시점은 출처 게시와 최초/최근 색인 시각을 따릅니다.",
     how: (topic) => `${topic}은(는) 이론·비유·실험 제안·문화 서사로 제시됩니다.`,
@@ -120,7 +120,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   hi: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM यह सारांश केवल आपकी चुनी भाषा में दिखाता है।`,
+      `${topic}. यह सूची यह सारांश केवल आपकी चुनी भाषा में दिखाता है।`,
     where: (p) => `स्रोत: ${p}। मूल लिंक से स्रोत पृष्ठ खोलें।`,
     when: "समय स्रोत प्रकाशन और पहली/अंतिम अनुक्रमणिका टाइमस्टैम्प का अनुसरण करता है।",
     how: (topic) =>
@@ -131,7 +131,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   it: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM mostra questo riepilogo solo nella lingua selezionata.`,
+      `${topic}. Questo catalogo mostra questo riepilogo solo nella lingua selezionata.`,
     where: (p) => `Da ${p}. Apri i link originali per la pagina sorgente.`,
     when: "I tempi seguono la pubblicazione della fonte e i timestamp di prima/ultima indicizzazione.",
     how: (topic) =>
@@ -142,7 +142,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   bn: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM শুধু আপনার নির্বাচিত ভাষায় সারাংশ দেখায়।`,
+      `${topic}. এই তালিকা শুধু আপনার নির্বাচিত ভাষায় সারাংশ দেখায়।`,
     where: (p) => `উৎস: ${p}। মূল লিঙ্ক থেকে উৎস পাতা খুলুন।`,
     when: "সময় উৎস প্রকাশ ও প্রথম/শেষ সূচিকরণ টাইমস্ট্যাম্প অনুসরণ করে।",
     how: (topic) =>
@@ -153,7 +153,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   id: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM menampilkan ringkasan ini hanya dalam bahasa yang Anda pilih.`,
+      `${topic}. Katalog ini menampilkan ringkasan ini hanya dalam bahasa yang Anda pilih.`,
     where: (p) => `Bersumber dari ${p}. Buka tautan asli untuk halaman sumber.`,
     when: "Waktu mengikuti publikasi sumber dan stempel pertama/terakhir diindeks.",
     how: (topic) =>
@@ -164,7 +164,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   tr: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM bu özeti yalnızca seçtiğiniz dilde gösterir.`,
+      `${topic}. Bu katalog bu özeti yalnızca seçtiğiniz dilde gösterir.`,
     where: (p) => `Kaynak: ${p}. Kaynak sayfası için orijinal bağlantıları açın.`,
     when: "Zaman, kaynak yayını ile ilk/son dizin damgalarını izler.",
     how: (topic) =>
@@ -175,7 +175,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   vi: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM chỉ hiện tóm tắt bằng ngôn ngữ bạn chọn.`,
+      `${topic}. Danh mục này chỉ hiện tóm tắt bằng ngôn ngữ bạn chọn.`,
     where: (p) => `Nguồn: ${p}. Mở liên kết gốc để xem trang nguồn.`,
     when: "Thời điểm theo xuất bản nguồn và dấu lần đầu/cuối được lập chỉ mục.",
     how: (topic) =>
@@ -185,7 +185,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   },
   th: {
     caption: (topic) => topic,
-    what: (topic) => `${topic}. SIMULUM แสดงสรุปนี้เฉพาะภาษาที่คุณเลือก`,
+    what: (topic) => `${topic}. แคตตาล็อกนี้แสดงสรุปนี้เฉพาะภาษาที่คุณเลือก`,
     where: (p) => `แหล่งที่มา: ${p} เปิดลิงก์ต้นฉบับเพื่อดูหน้าต้นทาง`,
     when: "เวลาอิงการเผยแพร่แหล่งที่มาและตราประทับครั้งแรก/ล่าสุดที่จัดทำดัชนี",
     how: (topic) =>
@@ -196,7 +196,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   pl: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM pokazuje to streszczenie tylko w wybranym języku.`,
+      `${topic}. Ten katalog pokazuje to streszczenie tylko w wybranym języku.`,
     where: (p) => `Źródło: ${p}. Otwórz oryginalne linki, by zobaczyć stronę źródłową.`,
     when: "Czas wynika z publikacji źródła oraz znaczników pierwszej/ostatniej indeksacji.",
     how: (topic) =>
@@ -207,7 +207,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   nl: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM toont deze samenvatting alleen in uw geselecteerde taal.`,
+      `${topic}. Deze catalogus toont deze samenvatting alleen in uw geselecteerde taal.`,
     where: (p) => `Afkomstig van ${p}. Open de originele links voor de bronpagina.`,
     when: "De timing volgt de bronpublicatie en first-/last-seen-tijdstempels.",
     how: (topic) =>
@@ -218,7 +218,7 @@ const TEMPLATES: Record<LocaleCode, PresentTemplates> = {
   uk: {
     caption: (topic) => topic,
     what: (topic) =>
-      `${topic}. SIMULUM показує цей підсумок лише вибраною мовою.`,
+      `${topic}. Цей каталог показує цей підсумок лише вибраною мовою.`,
     where: (p) => `Джерело: ${p}. Відкрийте оригінальні посилання для сторінки джерела.`,
     when: "Час відповідає публікації джерела та міткам першої/останньої індексації.",
     how: (topic) =>

@@ -26,9 +26,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SIMULUM — Worldwide simulation evidence catalogue",
+  title: "Are We Simulated? — Worldwide simulation evidence catalogue",
   description:
-    "A living catalogue of unique evidence people have posted worldwide that our universe is simulated — scanned, deduplicated, and sorted by category.",
+    "Are We Simulated? catalogues unique evidence people have posted worldwide that our universe is simulated — scanned, deduplicated, and sorted by category.",
 };
 
 export const viewport: Viewport = {

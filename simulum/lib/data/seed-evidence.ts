@@ -238,7 +238,7 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
         body: {
           what: "The Daoist parable of Zhuangzi dreaming he was a butterfly asks which layer of experience is 'real'.",
           where: "Sourced from Wikipedia.",
-          when: "A classical parable; catalogue timestamps track when SIMULUM indexed modern discussions of it.",
+          when: "A classical parable; catalogue timestamps track when this catalogue indexed modern discussions of it.",
           how: "The story uses a dream/awakening reversal to unsettle confidence in ordinary waking reality.",
           why: "Posted as a cultural ancestor of simulation-style skepticism about which world is base reality.",
         },

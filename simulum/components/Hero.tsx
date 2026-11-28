@@ -41,8 +41,8 @@ export function Hero({
         {t("hero.kicker")}
       </p>
 
-      <h1 className="animate-rise relative mt-5 font-display text-[clamp(3.2rem,16vw,7.5rem)] font-semibold leading-[0.88] tracking-[0.02em] text-ink sm:mt-6 [animation-delay:70ms]">
-        SIMULUM
+      <h1 className="animate-rise relative mt-5 max-w-[16ch] font-display text-[clamp(2.35rem,10.5vw,5.25rem)] font-semibold leading-[0.95] tracking-[0.01em] text-ink sm:mt-6 sm:max-w-none [animation-delay:70ms]">
+        {t("brand.name")}
       </h1>
 
       <p className="animate-rise relative mt-5 max-w-md text-[0.95rem] leading-relaxed text-ink-soft sm:mt-6 sm:max-w-lg sm:text-lg [animation-delay:130ms]">

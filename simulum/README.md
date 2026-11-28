@@ -1,4 +1,4 @@
-# SIMULUM
+# Are We Simulated?
 
 Worldwide catalogue of unique evidence people have posted that our universe is simulated.
 

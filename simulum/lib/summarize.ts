@@ -48,7 +48,7 @@ export function buildBody(candidate: EvidenceCandidate): EvidenceBody {
       trimSentence(`Sourced from ${publisher || "the open web"}.`, 220),
     when:
       existing.when?.trim() ||
-      "Timing follows the source publication; catalogue timestamps track when SIMULUM first and last indexed it.",
+      "Timing follows the source publication; catalogue timestamps track when this catalogue first and last indexed it.",
     how:
       existing.how?.trim() ||
       trimSentence(
@@ -105,7 +105,7 @@ export function englishFacingPack(candidate: EvidenceCandidate): {
       what: stripLanguageLabel(what),
       where: trimSentence(`Sourced from ${publisher}.`, 220),
       when:
-        "Timing follows the source publication; catalogue timestamps track when SIMULUM first and last indexed it.",
+        "Timing follows the source publication; catalogue timestamps track when this catalogue first and last indexed it.",
       how: "The claim is argued through theory, analogy, experiment proposal, or cultural narrative.",
       why: "Catalogued as a distinct claim people have posted in the simulated-reality discussion.",
     },

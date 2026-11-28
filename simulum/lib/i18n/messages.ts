@@ -7,6 +7,7 @@ export type MessageKey =
   | "nav.scanLog"
   | "nav.menu"
   | "nav.close"
+  | "brand.name"
   | "brand.tag"
   | "hero.kicker"
   | "hero.blurb"
@@ -63,6 +64,7 @@ const en: Dict = {
   "nav.scanLog": "Scan log",
   "nav.menu": "Menu",
   "nav.close": "Close menu",
+  "brand.name": "Are We Simulated?",
   "brand.tag": "evidence index",
   "hero.kicker": "Worldwide · multilingual · deduplicated",
   "hero.blurb": "Unique evidence people have posted that our universe is simulated — scanned across languages, merged when it is the same claim, counted when it is new.",
@@ -107,7 +109,7 @@ const en: Dict = {
   "scanLog.inserted": "New unique",
   "scanLog.merged": "Merged",
   "scanLog.empty": "No scan runs recorded yet.",
-  "footer.note": "SIMULUM catalogues publicly discussed claims. Inclusion is not endorsement of truth.",
+  "footer.note": "Are We Simulated? catalogues publicly discussed claims. Inclusion is not endorsement of truth.",
   "lang.label": "Language",
 };
 
@@ -118,6 +120,7 @@ const zh: Dict = {
   "nav.scanLog": "扫描日志",
   "nav.menu": "菜单",
   "nav.close": "关闭菜单",
+  "brand.name": "我们是模拟的吗？",
   "brand.tag": "证据索引",
   "hero.kicker": "全球 · 多语言 · 去重合并",
   "hero.blurb": "人们发布的、认为宇宙是模拟的独特证据——跨语言扫描，相同主张合并，新主张才计入。",
@@ -162,7 +165,7 @@ const zh: Dict = {
   "scanLog.inserted": "新增独特",
   "scanLog.merged": "已合并",
   "scanLog.empty": "尚无扫描记录。",
-  "footer.note": "SIMULUM 收录公开讨论中的主张，收录不等于认同其真实性。",
+  "footer.note": "「我们是模拟的吗？」收录公开讨论中的主张，收录不等于认同其真实性。",
   "lang.label": "语言",
 };
 
@@ -173,6 +176,7 @@ const hi: Dict = {
   "nav.scanLog": "स्कैन लॉग",
   "nav.menu": "मेनू",
   "nav.close": "मेनू बंद करें",
+  "brand.name": "क्या हम सिमुलेटेड हैं?",
   "brand.tag": "साक्ष्य सूचकांक",
   "hero.kicker": "विश्वव्यापी · बहुभाषी · बिना दोहराव",
   "hero.blurb": "अद्वितीय साक्ष्य कि हमारा ब्रह्मांड सिमुलेटेड है — भाषाओं में स्कैन, समान दावे मिलाए जाते हैं, नए होने पर ही गिने जाते हैं।",
@@ -217,7 +221,7 @@ const hi: Dict = {
   "scanLog.inserted": "नए अद्वितीय",
   "scanLog.merged": "मर्ज किए",
   "scanLog.empty": "अभी कोई स्कैन रिकॉर्ड नहीं।",
-  "footer.note": "SIMULUM सार्वजनिक रूप से चर्चित दावों को सूचीबद्ध करता है। शामिल करना सत्य का समर्थन नहीं है।",
+  "footer.note": "「क्या हम सिमुलेटेड हैं?」सार्वजनिक रूप से चर्चित दावों को सूचीबद्ध करता है। शामिल करना सत्य का समर्थन नहीं है।",
   "lang.label": "भाषा",
 };
 
@@ -228,6 +232,7 @@ const es: Dict = {
   "nav.scanLog": "Registro",
   "nav.menu": "Menú",
   "nav.close": "Cerrar menú",
+  "brand.name": "¿Estamos simulados?",
   "brand.tag": "índice de evidencia",
   "hero.kicker": "Mundial · multilingüe · sin duplicados",
   "hero.blurb": "Evidencia única publicada de que nuestro universo es simulado: se escanea en muchos idiomas, se fusiona si es la misma afirmación y se cuenta solo cuando es nueva.",
@@ -272,7 +277,7 @@ const es: Dict = {
   "scanLog.inserted": "Nuevas únicas",
   "scanLog.merged": "Fusionadas",
   "scanLog.empty": "Aún no hay escaneos registrados.",
-  "footer.note": "SIMULUM cataloga afirmaciones discutidas en público. Incluirlas no implica respaldar su verdad.",
+  "footer.note": "¿Estamos simulados? cataloga afirmaciones discutidas en público. Incluirlas no implica respaldar su verdad.",
   "lang.label": "Idioma",
 };
 
@@ -283,6 +288,7 @@ const fr: Dict = {
   "nav.scanLog": "Journal",
   "nav.menu": "Ouvrir le menu",
   "nav.close": "Fermer le menu",
+  "brand.name": "Sommes-nous simulés ?",
   "brand.tag": "index des preuves",
   "hero.kicker": "Mondial · multilingue · dédoublonné",
   "hero.blurb": "Preuves uniques publiées selon lesquelles notre univers est simulé — scannées dans plusieurs langues, fusionnées si c'est la même affirmation, comptées seulement si elles sont nouvelles.",
@@ -327,7 +333,7 @@ const fr: Dict = {
   "scanLog.inserted": "Nouvelles uniques",
   "scanLog.merged": "Fusionnées",
   "scanLog.empty": "Aucun scan enregistré pour l'instant.",
-  "footer.note": "SIMULUM catalogue des affirmations discutées publiquement. Les inclure n'est pas une validation de leur vérité.",
+  "footer.note": "Sommes-nous simulés ? catalogue des affirmations discutées publiquement. Les inclure n'est pas une validation de leur vérité.",
   "lang.label": "Langue",
 };
 
@@ -338,6 +344,7 @@ const ar: Dict = {
   "nav.scanLog": "سجل الفحص",
   "nav.menu": "القائمة",
   "nav.close": "إغلاق القائمة",
+  "brand.name": "هل نحن محاكاة؟",
   "brand.tag": "فهرس الأدلة",
   "hero.kicker": "عالمي · متعدد اللغات · بلا تكرار",
   "hero.blurb": "أدلة فريدة نُشرت بأن كوننا محاكاة — تُمسح عبر اللغات، وتُدمج إن كانت نفس الزعم، وتُحسب فقط إن كانت جديدة.",
@@ -382,7 +389,7 @@ const ar: Dict = {
   "scanLog.inserted": "فريدة جديدة",
   "scanLog.merged": "مدمجة",
   "scanLog.empty": "لا سجلات فحص بعد.",
-  "footer.note": "يفهرس SIMULUM مزاعم نوقشت علناً. الإدراج ليس تصديقاً لصحتها.",
+  "footer.note": "يفهرس «هل نحن محاكاة؟» مزاعم نوقشت علناً. الإدراج ليس تصديقاً لصحتها.",
   "lang.label": "اللغة",
 };
 
@@ -393,6 +400,7 @@ const bn: Dict = {
   "nav.scanLog": "স্ক্যান লগ",
   "nav.menu": "মেনু",
   "nav.close": "মেনু বন্ধ করুন",
+  "brand.name": "আমরা কি সিমুলেটেড?",
   "brand.tag": "প্রমাণ সূচক",
   "hero.kicker": "বিশ্বব্যাপী · বহুভাষিক · ডুপ্লিকেটমুক্ত",
   "hero.blurb": "আমাদের মহাবিশ্ব সিমুলেটেড—এমন অনন্য প্রমাণ ভাষাজুড়ে স্ক্যান হয়, একই দাবি মিললে একত্র হয়, নতুন হলেই গোনা হয়।",
@@ -437,7 +445,7 @@ const bn: Dict = {
   "scanLog.inserted": "নতুন অনন্য",
   "scanLog.merged": "একত্রিত",
   "scanLog.empty": "এখনও কোনো স্ক্যান রেকর্ড নেই।",
-  "footer.note": "SIMULUM প্রকাশ্যে আলোচিত দাবি তালিকাভুক্ত করে। অন্তর্ভুক্তি সত্যের সমর্থন নয়।",
+  "footer.note": "「আমরা কি সিমুলেটেড?」 প্রকাশ্যে আলোচিত দাবি তালিকাভুক্ত করে। অন্তর্ভুক্তি সত্যের সমর্থন নয়।",
   "lang.label": "ভাষা",
 };
 
@@ -448,6 +456,7 @@ const pt: Dict = {
   "nav.scanLog": "Registo",
   "nav.menu": "Abrir menu",
   "nav.close": "Fechar menu",
+  "brand.name": "Estamos simulados?",
   "brand.tag": "índice de evidência",
   "hero.kicker": "Mundial · multilingue · sem duplicados",
   "hero.blurb": "Evidência única publicada de que o nosso universo é simulado — analisada em várias línguas, fundida quando é a mesma afirmação e contada só quando é nova.",
@@ -492,7 +501,7 @@ const pt: Dict = {
   "scanLog.inserted": "Novas únicas",
   "scanLog.merged": "Fundidas",
   "scanLog.empty": "Ainda não há scans registados.",
-  "footer.note": "O SIMULUM cataloga afirmações discutidas publicamente. Incluí-las não é endosso da sua verdade.",
+  "footer.note": "Estamos simulados? cataloga afirmações discutidas publicamente. Incluí-las não é endosso da sua verdade.",
   "lang.label": "Idioma",
 };
 
@@ -503,6 +512,7 @@ const ru: Dict = {
   "nav.scanLog": "Журнал сканирования",
   "nav.menu": "Меню",
   "nav.close": "Закрыть меню",
+  "brand.name": "Мы симулированы?",
   "brand.tag": "индекс доказательств",
   "hero.kicker": "По всему миру · многоязычно · без дублей",
   "hero.blurb": "Уникальные доказательства того, что наша вселенная симулирована — сканируются на многих языках, сливаются при том же утверждении и считаются только если они новые.",
@@ -547,7 +557,7 @@ const ru: Dict = {
   "scanLog.inserted": "Новых уникальных",
   "scanLog.merged": "Объединённых",
   "scanLog.empty": "Пока нет записей сканирования.",
-  "footer.note": "SIMULUM каталогизирует публично обсуждаемые утверждения. Включение не означает признания их истинности.",
+  "footer.note": "«Мы симулированы?» каталогизирует публично обсуждаемые утверждения. Включение не означает признания их истинности.",
   "lang.label": "Язык",
 };
 
@@ -558,6 +568,7 @@ const id: Dict = {
   "nav.scanLog": "Log pemindaian",
   "nav.menu": "Buka menu",
   "nav.close": "Tutup menu",
+  "brand.name": "Apakah kita disimulasikan?",
   "brand.tag": "indeks bukti",
   "hero.kicker": "Seluruh dunia · multibahasa · tanpa duplikat",
   "hero.blurb": "Bukti unik bahwa alam semesta kita tersimulasi — dipindai lintas bahasa, digabung jika klaim sama, dihitung hanya jika baru.",
@@ -602,7 +613,7 @@ const id: Dict = {
   "scanLog.inserted": "Unik baru",
   "scanLog.merged": "Digabung",
   "scanLog.empty": "Belum ada catatan pemindaian.",
-  "footer.note": "SIMULUM mengkatalogkan klaim yang dibahas secara publik. Menyertakan bukan berarti mendukung kebenarannya.",
+  "footer.note": "Apakah kita disimulasikan? mengkatalogkan klaim yang dibahas secara publik. Menyertakan bukan berarti mendukung kebenarannya.",
   "lang.label": "Bahasa",
 };
 
@@ -613,6 +624,7 @@ const de: Dict = {
   "nav.scanLog": "Scan-Protokoll",
   "nav.menu": "Menü",
   "nav.close": "Menü schließen",
+  "brand.name": "Sind wir simuliert?",
   "brand.tag": "Evidenzindex",
   "hero.kicker": "Weltweit · mehrsprachig · dedupliziert",
   "hero.blurb": "Einzigartige Evidenz, dass unser Universum simuliert ist — über Sprachen hinweg gescannt, bei gleichem Anspruch zusammengeführt, nur bei Neuheit gezählt.",
@@ -657,7 +669,7 @@ const de: Dict = {
   "scanLog.inserted": "Neu einzigartig",
   "scanLog.merged": "Zusammengeführt",
   "scanLog.empty": "Noch keine Scan-Läufe erfasst.",
-  "footer.note": "SIMULUM katalogisiert öffentlich diskutierte Behauptungen. Aufnahme ist keine Wahrheitsbestätigung.",
+  "footer.note": "Sind wir simuliert? katalogisiert öffentlich diskutierte Behauptungen. Aufnahme ist keine Wahrheitsbestätigung.",
   "lang.label": "Sprache",
 };
 
@@ -668,6 +680,7 @@ const ja: Dict = {
   "nav.scanLog": "スキャンログ",
   "nav.menu": "メニュー",
   "nav.close": "メニューを閉じる",
+  "brand.name": "私たちはシミュレートされているのか？",
   "brand.tag": "証拠インデックス",
   "hero.kicker": "世界規模 · 多言語 · 重複排除",
   "hero.blurb": "宇宙がシミュレーションだという独自の証拠——言語を横断して収集し、同一主張は統合し、新しいものだけを数えます。",
@@ -712,7 +725,7 @@ const ja: Dict = {
   "scanLog.inserted": "新規ユニーク",
   "scanLog.merged": "マージ",
   "scanLog.empty": "スキャン記録はまだありません。",
-  "footer.note": "SIMULUMは公開で議論された主張を目録化します。収録は真偽の支持ではありません。",
+  "footer.note": "「私たちはシミュレートされているのか？」は公開で議論された主張を目録化します。収録は真偽の支持ではありません。",
   "lang.label": "言語",
 };
 
@@ -723,6 +736,7 @@ const tr: Dict = {
   "nav.scanLog": "Tarama günlüğü",
   "nav.menu": "Menü",
   "nav.close": "Menüyü kapat",
+  "brand.name": "Simüle miyiz?",
   "brand.tag": "kanıt dizini",
   "hero.kicker": "Dünya çapında · çok dilli · tekilleştirilmiş",
   "hero.blurb": "Evrenimizin simüle olduğuna dair benzersiz kanıtlar — diller arasında taranır, aynı iddia birleşir, yalnızca yeniyse sayılır.",
@@ -767,7 +781,7 @@ const tr: Dict = {
   "scanLog.inserted": "Yeni benzersiz",
   "scanLog.merged": "Birleştirilen",
   "scanLog.empty": "Henüz tarama kaydı yok.",
-  "footer.note": "SIMULUM kamuya açık tartışılan iddiaları kataloglar. Dahil etmek doğruyu onaylamak değildir.",
+  "footer.note": "Simüle miyiz? kamuya açık tartışılan iddiaları kataloglar. Dahil etmek doğruyu onaylamak değildir.",
   "lang.label": "Dil",
 };
 
@@ -778,6 +792,7 @@ const vi: Dict = {
   "nav.scanLog": "Nhật ký quét",
   "nav.menu": "Mở menu",
   "nav.close": "Đóng menu",
+  "brand.name": "Chúng ta có đang được mô phỏng?",
   "brand.tag": "mục lục bằng chứng",
   "hero.kicker": "Toàn cầu · đa ngôn ngữ · không trùng",
   "hero.blurb": "Bằng chứng độc nhất rằng vũ trụ của chúng ta là mô phỏng — quét nhiều ngôn ngữ, gộp khi cùng tuyên bố, chỉ đếm khi mới.",
@@ -822,7 +837,7 @@ const vi: Dict = {
   "scanLog.inserted": "Mới độc nhất",
   "scanLog.merged": "Đã gộp",
   "scanLog.empty": "Chưa có nhật ký quét.",
-  "footer.note": "SIMULUM lập danh mục các tuyên bố thảo luận công khai. Đưa vào không phải xác nhận sự thật.",
+  "footer.note": "Chúng ta có đang được mô phỏng? lập danh mục các tuyên bố thảo luận công khai. Đưa vào không phải xác nhận sự thật.",
   "lang.label": "Ngôn ngữ",
 };
 
@@ -833,6 +848,7 @@ const ko: Dict = {
   "nav.scanLog": "스캔 로그",
   "nav.menu": "메뉴",
   "nav.close": "메뉴 닫기",
+  "brand.name": "우리는 시뮬레이션인가?",
   "brand.tag": "증거 색인",
   "hero.kicker": "전 세계 · 다국어 · 중복 제거",
   "hero.blurb": "우리 우주가 시뮬레이션이라는 고유 증거—여러 언어로 스캔하고, 같은 주장은 병합하며, 새로울 때만 집계합니다.",
@@ -877,7 +893,7 @@ const ko: Dict = {
   "scanLog.inserted": "새 고유",
   "scanLog.merged": "병합",
   "scanLog.empty": "아직 스캔 기록이 없습니다.",
-  "footer.note": "SIMULUM은 공개 논의된 주장을 목록화합니다. 수록은 진리 인정이 아닙니다.",
+  "footer.note": "「우리는 시뮬레이션인가?」는 공개 논의된 주장을 목록화합니다. 수록은 진리 인정이 아닙니다.",
   "lang.label": "언어",
 };
 
@@ -888,6 +904,7 @@ const it: Dict = {
   "nav.scanLog": "Registro scansioni",
   "nav.menu": "Apri menu",
   "nav.close": "Chiudi menu",
+  "brand.name": "Siamo simulati?",
   "brand.tag": "indice delle prove",
   "hero.kicker": "Mondiale · multilingue · senza duplicati",
   "hero.blurb": "Prove uniche pubblicate sul fatto che il nostro universo è simulato — scansionate in più lingue, unite se è la stessa affermazione, contate solo se nuove.",
@@ -932,7 +949,7 @@ const it: Dict = {
   "scanLog.inserted": "Nuove uniche",
   "scanLog.merged": "Unite",
   "scanLog.empty": "Nessuna scansione registrata ancora.",
-  "footer.note": "SIMULUM cataloga affermazioni discusse pubblicamente. L'inclusione non è un'approvazione della loro verità.",
+  "footer.note": "Siamo simulati? cataloga affermazioni discusse pubblicamente. L'inclusione non è un'approvazione della loro verità.",
   "lang.label": "Lingua",
 };
 
@@ -943,6 +960,7 @@ const th: Dict = {
   "nav.scanLog": "บันทึกการสแกน",
   "nav.menu": "เมนู",
   "nav.close": "ปิดเมนู",
+  "brand.name": "เราถูกจำลองอยู่หรือไม่?",
   "brand.tag": "ดัชนีหลักฐาน",
   "hero.kicker": "ทั่วโลก · หลายภาษา · ไม่ซ้ำ",
   "hero.blurb": "หลักฐานเฉพาะที่ระบุว่าจักรวาลของเราเป็นการจำลอง — สแกนข้ามภาษา รวมเมื่อเป็นข้ออ้างเดียวกัน นับเมื่อใหม่เท่านั้น",
@@ -987,7 +1005,7 @@ const th: Dict = {
   "scanLog.inserted": "ใหม่ไม่ซ้ำ",
   "scanLog.merged": "รวมแล้ว",
   "scanLog.empty": "ยังไม่มีบันทึกการสแกน",
-  "footer.note": "SIMULUM จัดรายการข้ออ้างที่อภิปรายสาธารณะ การรวมไม่ได้หมายถึงรับรองความจริง",
+  "footer.note": "「เราถูกจำลองอยู่หรือไม่?」 จัดรายการข้ออ้างที่อภิปรายสาธารณะ การรวมไม่ได้หมายถึงรับรองความจริง",
   "lang.label": "ภาษา",
 };
 
@@ -998,6 +1016,7 @@ const pl: Dict = {
   "nav.scanLog": "Dziennik skanów",
   "nav.menu": "Otwórz menu",
   "nav.close": "Zamknij menu",
+  "brand.name": "Czy jesteśmy symulacją?",
   "brand.tag": "indeks dowodów",
   "hero.kicker": "Światowy · wielojęzyczny · bez duplikatów",
   "hero.blurb": "Unikalne dowody, że nasz wszechświat jest symulowany — skanowane w wielu językach, scalane przy tym samym twierdzeniu, liczone tylko gdy nowe.",
@@ -1042,7 +1061,7 @@ const pl: Dict = {
   "scanLog.inserted": "Nowe unikalne",
   "scanLog.merged": "Scalone",
   "scanLog.empty": "Brak jeszcze zapisów skanów.",
-  "footer.note": "SIMULUM kataloguje publicznie dyskutowane twierdzenia. Włączenie nie jest potwierdzeniem ich prawdziwości.",
+  "footer.note": "Czy jesteśmy symulacją? kataloguje publicznie dyskutowane twierdzenia. Włączenie nie jest potwierdzeniem ich prawdziwości.",
   "lang.label": "Język",
 };
 
@@ -1053,6 +1072,7 @@ const nl: Dict = {
   "nav.scanLog": "Scanlogboek",
   "nav.menu": "Menu openen",
   "nav.close": "Menu sluiten",
+  "brand.name": "Zijn wij gesimuleerd?",
   "brand.tag": "bewijsindex",
   "hero.kicker": "Wereldwijd · meertalig · gededupliceerd",
   "hero.blurb": "Uniek bewijs dat ons universum gesimuleerd is — gescand in meerdere talen, samengevoegd bij dezelfde claim, alleen geteld als het nieuw is.",
@@ -1097,7 +1117,7 @@ const nl: Dict = {
   "scanLog.inserted": "Nieuw uniek",
   "scanLog.merged": "Samengevoegd",
   "scanLog.empty": "Nog geen scanruns vastgelegd.",
-  "footer.note": "SIMULUM catalogueert openbaar besproken claims. Opname is geen goedkeuring van hun waarheid.",
+  "footer.note": "Zijn wij gesimuleerd? catalogueert openbaar besproken claims. Opname is geen goedkeuring van hun waarheid.",
   "lang.label": "Taal",
 };
 
@@ -1108,6 +1128,7 @@ const uk: Dict = {
   "nav.scanLog": "Журнал сканувань",
   "nav.menu": "Меню",
   "nav.close": "Закрити меню",
+  "brand.name": "Чи ми симульовані?",
   "brand.tag": "індекс доказів",
   "hero.kicker": "У всьому світі · багатомовний · без дублікатів",
   "hero.blurb": "Унікальні докази того, що наш всесвіт симульований — скануються різними мовами, об’єднуються за тим самим твердженням і рахуються лише якщо нові.",
@@ -1152,7 +1173,7 @@ const uk: Dict = {
   "scanLog.inserted": "Нових унікальних",
   "scanLog.merged": "Об’єднаних",
   "scanLog.empty": "Ще немає записів сканувань.",
-  "footer.note": "SIMULUM каталогізує публічно обговорювані твердження. Включення не означає визнання їхньої істинності.",
+  "footer.note": "«Чи ми симульовані?» каталогізує публічно обговорювані твердження. Включення не означає визнання їхньої істинності.",
   "lang.label": "Мова",
 };
 
