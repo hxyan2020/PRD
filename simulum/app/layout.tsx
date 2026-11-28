@@ -1,17 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, JetBrains_Mono, Outfit } from "next/font/google";
+import { Chakra_Petch, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { I18nProvider } from "@/lib/i18n/context";
 import { FooterNote } from "@/components/FooterNote";
 
-const display = Fraunces({
+const display = Chakra_Petch({
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
   variable: "--font-display",
   display: "swap",
 });
 
-const sans = Outfit({
+const sans = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
@@ -35,7 +36,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: "cover",
-  themeColor: "#0d9488",
+  themeColor: "#0a0e13",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -44,7 +45,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased">
         <I18nProvider>
           <div className="pointer-events-none fixed inset-0 starfield" aria-hidden />
-          <div className="pointer-events-none fixed inset-0 grid-veil opacity-70" aria-hidden />
+          <div className="pointer-events-none fixed inset-0 grid-veil" aria-hidden />
+          <div
+            className="pointer-events-none fixed inset-0 mech-hatch animate-hatch-drift opacity-60"
+            aria-hidden
+          />
           <SiteHeader />
           <main className="relative mx-auto min-h-[70vh] max-w-6xl px-4 pb-[max(5rem,calc(env(safe-area-inset-bottom)+3.5rem))] pt-3 sm:px-6 sm:pt-6">
             {children}

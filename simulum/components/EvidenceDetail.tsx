@@ -46,47 +46,46 @@ export function EvidenceDetail({
         ← {t("nav.evidence")}
       </Link>
 
-      <p className="mt-4 max-w-3xl font-display text-[1.65rem] leading-snug text-ink sm:mt-5 sm:text-4xl">
+      <p className="mt-4 max-w-3xl font-display text-[1.65rem] font-medium leading-snug text-ink sm:mt-5 sm:text-4xl">
         {presented.caption}
       </p>
 
-      <dl className="mt-5 grid grid-cols-2 gap-3 font-mono text-xs uppercase tracking-wider text-mist sm:mt-6 sm:grid-cols-3">
-        <div>
-          <dt>{t("detail.sources")}</dt>
-          <dd className="mt-1 text-sm normal-case tracking-normal text-ink">
-            {item.sourceCount}
-          </dd>
-        </div>
-        <div>
-          <dt>{t("detail.languages")}</dt>
-          <dd className="mt-1 break-words text-sm normal-case tracking-normal text-ink">
-            {item.languages.join(", ")}
-          </dd>
-        </div>
-        <div className="col-span-2 sm:col-span-1">
-          <dt>{t("detail.firstSeen")}</dt>
-          <dd className="mt-1 text-sm normal-case tracking-normal text-ink">
-            {new Date(item.firstSeenAt).toLocaleDateString(locale, {
+      <dl className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:grid-cols-3">
+        {[
+          { label: t("detail.sources"), value: String(item.sourceCount) },
+          { label: t("detail.languages"), value: item.languages.join(", ") },
+          {
+            label: t("detail.firstSeen"),
+            value: new Date(item.firstSeenAt).toLocaleDateString(locale, {
               timeZone: "Asia/Singapore",
-            })}
-          </dd>
-        </div>
+            }),
+          },
+        ].map((cell) => (
+          <div key={cell.label} className="mech-frame px-3 py-2.5">
+            <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
+              {cell.label}
+            </dt>
+            <dd className="mt-1 break-words font-mono text-sm text-signal">{cell.value}</dd>
+          </div>
+        ))}
       </dl>
 
       {item.images.length > 0 ? (
         <section className="mt-8">
-          <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.images")}</h2>
+          <h2 className="font-display text-xl font-medium text-ink sm:text-2xl">
+            {t("detail.images")}
+          </h2>
           <ul className="mt-4 grid gap-4 sm:grid-cols-2">
             {item.images.map((img) => (
-              <li key={img.url} className="overflow-hidden border border-line/70 bg-ink/5">
+              <li key={img.url} className="mech-frame overflow-hidden bg-panel/80">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={img.url}
                   alt={presented.caption}
-                  className="h-auto w-full object-cover"
+                  className="h-auto w-full object-cover opacity-90"
                   loading="lazy"
                 />
-                <p className="px-3 py-2 font-mono text-[10px] uppercase tracking-wider text-mist">
+                <p className="border-t border-line px-3 py-2 font-mono text-[10px] uppercase tracking-wider text-mist">
                   {img.credit}
                   {img.width && img.height ? ` · ${img.width}×${img.height}` : ""}
                 </p>
@@ -96,13 +95,11 @@ export function EvidenceDetail({
         </section>
       ) : null}
 
-      <section className="mt-8 space-y-5 border-t border-line/80 pt-5 sm:mt-10 sm:space-y-6 sm:pt-6">
+      <section className="mt-8 space-y-5 border-t border-line pt-5 sm:mt-10 sm:space-y-6 sm:pt-6">
         {bodyFields.map(({ key, label }) =>
           presented.body[key] ? (
             <div key={key}>
-              <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
-                {label}
-              </h2>
+              <h2 className="hud-label">{label}</h2>
               <p className="mt-2 max-w-3xl text-[0.95rem] leading-relaxed text-ink-soft sm:text-lg">
                 {presented.body[key]}
               </p>
@@ -116,7 +113,7 @@ export function EvidenceDetail({
           <Link
             key={cat.id}
             href={`/categories/${cat.slug}`}
-            className="touch-target inline-flex items-center border border-line px-3 py-2 text-sm text-ink transition hover:border-signal hover:text-signal"
+            className="touch-target inline-flex items-center border border-line bg-panel/60 px-3 py-2 font-mono text-[11px] uppercase tracking-wider text-ink transition hover:border-signal hover:text-signal"
           >
             {cat.name}
           </Link>
@@ -125,9 +122,11 @@ export function EvidenceDetail({
 
       <RatingsPanel ratings={item.ratings} />
 
-      <section className="mt-8 border-t border-line/80 pt-5 sm:mt-10 sm:pt-6">
-        <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.original")}</h2>
-        <ul className="mt-4 divide-y divide-line/70 border-y border-line/70">
+      <section className="mt-8 border-t border-line pt-5 sm:mt-10 sm:pt-6">
+        <h2 className="font-display text-xl font-medium text-ink sm:text-2xl">
+          {t("detail.original")}
+        </h2>
+        <ul className="mt-4 divide-y divide-line border-y border-line">
           {item.sources.map((source) => (
             <li key={source.id} className="py-4">
               <a
@@ -149,12 +148,14 @@ export function EvidenceDetail({
         </ul>
       </section>
 
-      <section className="mt-8 border-t border-line/80 pt-5 sm:mt-10 sm:pt-6">
-        <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.related")}</h2>
+      <section className="mt-8 border-t border-line pt-5 sm:mt-10 sm:pt-6">
+        <h2 className="font-display text-xl font-medium text-ink sm:text-2xl">
+          {t("detail.related")}
+        </h2>
         {related.length === 0 ? (
           <p className="mt-3 text-mist">—</p>
         ) : (
-          <ul className="mt-4 divide-y divide-line/70 border-y border-line/70">
+          <ul className="mt-4 divide-y divide-line border-y border-line">
             {related.map((row) => {
               const other = presentEvidence(row.evidence, locale);
               const reason =
@@ -172,7 +173,7 @@ export function EvidenceDetail({
                     >
                       {other.caption}
                     </Link>
-                    <span className="font-mono text-sm tabular-nums text-signal">
+                    <span className="font-mono text-sm tabular-nums text-ember">
                       {t("detail.similarity")} {similarityPercent(row.similarity)}
                     </span>
                   </div>

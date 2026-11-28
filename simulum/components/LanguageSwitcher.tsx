@@ -26,7 +26,7 @@ function FlagIcon({
       height={dims.height}
       loading="lazy"
       decoding="async"
-      className={`${dims.className} shrink-0 rounded-[2px] border border-line/70 object-cover shadow-sm`}
+      className={`${dims.className} shrink-0 border border-line object-cover`}
     />
   );
 }
@@ -87,7 +87,7 @@ export function LanguageMenu({ compact = false }: { compact?: boolean }) {
       {isNarrow ? (
         <button
           type="button"
-          className="fixed inset-0 z-[60] bg-ink/30"
+          className="fixed inset-0 z-[60] bg-paper/70"
           aria-label={t("nav.close")}
           onClick={() => setOpen(false)}
         />
@@ -96,20 +96,20 @@ export function LanguageMenu({ compact = false }: { compact?: boolean }) {
         id={listId}
         className={
           isNarrow
-            ? "fixed inset-x-0 bottom-0 z-[70] max-h-[min(70vh,28rem)] overflow-auto rounded-t-2xl border border-line bg-paper pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-2xl"
-            : "absolute end-0 z-[70] mt-1 max-h-[min(24rem,70vh)] w-64 overflow-auto rounded-md border border-line bg-paper py-1 shadow-lg"
+            ? "fixed inset-x-0 bottom-0 z-[70] max-h-[min(70vh,28rem)] overflow-auto border border-line bg-panel pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-panel"
+            : "absolute end-0 z-[70] mt-1 max-h-[min(24rem,70vh)] w-64 overflow-auto border border-line bg-panel py-1 shadow-panel"
         }
         role="listbox"
         aria-label={t("lang.label")}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line/70 bg-paper px-4 py-3 md:px-3 md:py-1.5">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-panel px-4 py-3 md:px-3 md:py-1.5">
           <p className="font-mono text-[10px] uppercase tracking-wider text-mist">
             {t("lang.label")} · {locales.length}
           </p>
           {isNarrow ? (
             <button
               type="button"
-              className="touch-target rounded-md px-2 text-sm text-mist"
+              className="touch-target px-2 font-mono text-[11px] uppercase tracking-wider text-mist hover:text-signal"
               onClick={() => setOpen(false)}
             >
               {t("nav.close")}
@@ -124,8 +124,8 @@ export function LanguageMenu({ compact = false }: { compact?: boolean }) {
               type="button"
               role="option"
               aria-selected={selected}
-              className={`flex w-full items-center gap-3 px-4 py-3.5 text-left text-base transition hover:bg-signal-soft/50 md:px-3 md:py-2.5 md:text-sm ${
-                selected ? "bg-signal-soft/40 text-ink" : "text-ink-soft"
+              className={`flex w-full items-center gap-3 px-4 py-3.5 text-left text-base transition hover:bg-signal-soft md:px-3 md:py-2.5 md:text-sm ${
+                selected ? "bg-signal-soft text-ink" : "text-ink-soft"
               }`}
               onClick={() => {
                 setLocale(l.code);
@@ -150,7 +150,7 @@ export function LanguageMenu({ compact = false }: { compact?: boolean }) {
     <div className="relative" ref={rootRef}>
       <button
         type="button"
-        className={`touch-target flex items-center gap-2 rounded-md border border-line/70 bg-paper/80 text-xs sm:text-sm ${
+        className={`touch-target flex items-center gap-2 border border-line bg-panel text-xs text-ink sm:text-sm ${
           compact ? "px-2 py-1.5" : "px-2.5 py-1.5 sm:px-3"
         }`}
         aria-expanded={open}
@@ -168,7 +168,7 @@ export function LanguageMenu({ compact = false }: { compact?: boolean }) {
         >
           {current.nativeName}
         </span>
-        <span className="text-mist" aria-hidden>
+        <span className="text-signal" aria-hidden>
           ▾
         </span>
       </button>

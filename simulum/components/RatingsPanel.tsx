@@ -30,9 +30,12 @@ function EvidenceFact({ value }: { value: string }) {
 function MetricDetails({ dim }: { dim: RatingDimension }) {
   const pct = Math.round((dim.score / dim.max) * 100);
   return (
-    <div className="mt-3 border-t border-line/50 pt-3">
-      <div className="h-1.5 overflow-hidden bg-line/50">
-        <div className="h-full bg-signal" style={{ width: `${pct}%` }} />
+    <div className="mt-3 border-t border-line pt-3">
+      <div className="h-1 overflow-hidden bg-line">
+        <div
+          className="h-full bg-gradient-to-r from-ember to-signal"
+          style={{ width: `${pct}%` }}
+        />
       </div>
       <p className="mt-3 text-sm leading-relaxed text-ink-soft">{dim.rationale}</p>
       {dim.evidence.length > 0 ? (
@@ -63,17 +66,19 @@ export function RatingsPanel({ ratings }: { ratings: EvidenceRatings }) {
   ];
 
   return (
-    <section className="mt-8 border-t border-line/80 pt-5 sm:mt-10 sm:pt-6">
+    <section className="mt-8 border-t border-line pt-5 sm:mt-10 sm:pt-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div>
-          <h2 className="font-display text-xl text-ink sm:text-2xl">{t("detail.ratings")}</h2>
+          <h2 className="font-display text-xl font-medium text-ink sm:text-2xl">
+            {t("detail.ratings")}
+          </h2>
           <p className="mt-1 font-mono text-sm tabular-nums text-mist">
-            overall {ratings.overall}/5 · fact-backed
+            overall <span className="text-ember">{ratings.overall}/5</span> · fact-backed
           </p>
         </div>
         <button
           type="button"
-          className="touch-target w-full border border-line px-3 py-2.5 text-sm text-ink transition hover:border-signal hover:text-signal sm:w-auto"
+          className="touch-target w-full border border-line bg-panel px-3 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-ink transition hover:border-signal hover:text-signal sm:w-auto"
           onClick={() => {
             setOpenAll((v) => !v);
             setOpenKey(null);
@@ -91,8 +96,8 @@ export function RatingsPanel({ ratings }: { ratings: EvidenceRatings }) {
             <button
               key={key}
               type="button"
-              className={`touch-target border border-line/80 p-3.5 text-left transition hover:border-signal sm:p-3 ${
-                expanded ? "border-signal bg-signal-soft/20" : "bg-transparent"
+              className={`touch-target mech-frame p-3.5 text-left transition hover:border-signal/60 sm:p-3 ${
+                expanded ? "border-signal/50 bg-signal-soft" : "bg-panel/50"
               }`}
               aria-expanded={expanded}
               onClick={() => {
@@ -103,7 +108,7 @@ export function RatingsPanel({ ratings }: { ratings: EvidenceRatings }) {
               <p className="font-mono text-[10px] uppercase tracking-wider text-mist">
                 {dim.label}
               </p>
-              <p className="mt-1 font-mono text-2xl tabular-nums text-ink">
+              <p className="mt-1 font-display text-2xl tabular-nums text-ink">
                 {dim.score}
                 <span className="text-sm text-mist">/{dim.max}</span>
               </p>

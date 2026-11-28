@@ -33,19 +33,20 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   return (
-    <header className="safe-top sticky top-0 z-30 border-b border-line/60 bg-paper/85 backdrop-blur-md">
+    <header className="safe-top sticky top-0 z-30 border-b border-line/80 bg-paper/90 backdrop-blur-md">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-signal/40 to-transparent" />
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 sm:py-3">
-        <Link href="/" className="group flex min-w-0 items-baseline gap-2">
-          <span className="font-display text-xl tracking-tight text-ink sm:text-2xl">
+        <Link href="/" className="group flex min-w-0 items-baseline gap-2.5">
+          <span className="font-display text-xl font-semibold tracking-[0.06em] text-ink sm:text-2xl">
             SIMULUM
           </span>
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-mist sm:inline">
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.22em] text-mist sm:inline">
             {t("brand.tag")}
           </span>
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-2.5">
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-0.5 md:flex" aria-label="Primary">
             {links.map((link) => {
               const active =
                 link.href === "/"
@@ -55,10 +56,10 @@ export function SiteHeader() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`touch-target inline-flex items-center rounded-md px-3 py-2 text-sm transition ${
+                  className={`touch-target inline-flex items-center border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition ${
                     active
-                      ? "bg-signal-soft/70 text-ink"
-                      : "text-ink-soft hover:bg-signal-soft/60 hover:text-ink"
+                      ? "border-signal/50 bg-signal-soft text-signal"
+                      : "border-transparent text-mist hover:border-line hover:text-ink"
                   }`}
                 >
                   {link.label}
@@ -71,7 +72,7 @@ export function SiteHeader() {
 
           <button
             type="button"
-            className="touch-target inline-flex items-center justify-center rounded-md border border-line/70 bg-paper/80 px-3.5 text-ink md:hidden"
+            className="touch-target inline-flex items-center justify-center border border-line bg-panel px-3.5 text-ink md:hidden"
             aria-expanded={menuOpen}
             aria-controls={menuId}
             aria-label={menuOpen ? t("nav.close") : t("nav.menu")}
@@ -79,17 +80,17 @@ export function SiteHeader() {
           >
             <span className="flex w-5 flex-col gap-1" aria-hidden>
               <span
-                className={`block h-0.5 w-full bg-ink transition ${
+                className={`block h-0.5 w-full bg-signal transition ${
                   menuOpen ? "translate-y-1.5 rotate-45" : ""
                 }`}
               />
               <span
-                className={`block h-0.5 w-full bg-ink transition ${
+                className={`block h-0.5 w-full bg-signal transition ${
                   menuOpen ? "opacity-0" : ""
                 }`}
               />
               <span
-                className={`block h-0.5 w-full bg-ink transition ${
+                className={`block h-0.5 w-full bg-signal transition ${
                   menuOpen ? "-translate-y-1.5 -rotate-45" : ""
                 }`}
               />
@@ -100,7 +101,7 @@ export function SiteHeader() {
 
       <div
         id={menuId}
-        className={`border-t border-line/60 bg-paper/95 md:hidden ${
+        className={`border-t border-line bg-panel/95 md:hidden ${
           menuOpen ? "block" : "hidden"
         }`}
       >
@@ -117,10 +118,10 @@ export function SiteHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`touch-target flex items-center rounded-md px-3 py-3 text-base transition ${
+                className={`touch-target flex items-center border px-3 py-3 font-mono text-sm uppercase tracking-[0.12em] transition ${
                   active
-                    ? "bg-signal-soft/70 text-ink"
-                    : "text-ink-soft hover:bg-signal-soft/50 hover:text-ink"
+                    ? "border-signal/40 bg-signal-soft text-signal"
+                    : "border-transparent text-ink-soft hover:border-line hover:text-ink"
                 }`}
                 onClick={() => setMenuOpen(false)}
               >

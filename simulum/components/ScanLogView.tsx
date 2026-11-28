@@ -32,10 +32,8 @@ export function ScanLogView({
 
   return (
     <section className="pt-2 sm:pt-8">
-      <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-signal">
-        {t("scanLog.schedule")}
-      </p>
-      <h1 className="mt-2 font-display text-[2rem] leading-tight text-ink sm:text-5xl">
+      <p className="hud-label">{t("scanLog.schedule")}</p>
+      <h1 className="mt-2 font-display text-[2rem] font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
         {t("scanLog.title")}
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft sm:text-base">
@@ -49,7 +47,7 @@ export function ScanLogView({
       {runs.length === 0 ? (
         <p className="mt-10 text-mist">{t("scanLog.empty")}</p>
       ) : (
-        <ul className="mt-6 divide-y divide-line/70 border-y border-line/70 sm:mt-8">
+        <ul className="mt-6 divide-y divide-line border-y border-line sm:mt-8">
           {runs.map((run) => (
             <li key={run.id} className="py-4 sm:py-5">
               <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-2">
@@ -65,24 +63,24 @@ export function ScanLogView({
                   {run.scheduleLabel || run.source}
                 </p>
               </div>
-              <dl className="mt-4 grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-4">
-                <div className="border border-signal/40 bg-signal-soft/15 p-3">
+              <dl className="mt-4 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-4">
+                <div className="mech-frame bg-signal-soft p-3">
                   <dt className="font-mono text-[10px] uppercase tracking-wider text-signal">
                     {t("scanLog.sourcesScanned")}
                   </dt>
-                  <dd className="mt-1 font-mono text-2xl tabular-nums text-ink sm:text-3xl">
+                  <dd className="mt-1 font-display text-2xl tabular-nums text-ink sm:text-3xl">
                     {run.sourcesScanned}
                   </dd>
                 </div>
-                <div className="border border-signal/40 bg-signal-soft/15 p-3">
-                  <dt className="font-mono text-[10px] uppercase tracking-wider text-signal">
+                <div className="mech-frame bg-ember-soft p-3">
+                  <dt className="font-mono text-[10px] uppercase tracking-wider text-ember">
                     {t("scanLog.relevant")}
                   </dt>
-                  <dd className="mt-1 font-mono text-2xl tabular-nums text-ink sm:text-3xl">
+                  <dd className="mt-1 font-display text-2xl tabular-nums text-ink sm:text-3xl">
                     {run.relevantSourced}
                   </dd>
                 </div>
-                <div className="p-3">
+                <div className="border border-line/80 bg-panel/40 p-3">
                   <dt className="font-mono text-[10px] uppercase tracking-wider text-mist">
                     {t("scanLog.inserted")}
                   </dt>
@@ -90,7 +88,7 @@ export function ScanLogView({
                     {run.inserted}
                   </dd>
                 </div>
-                <div className="p-3">
+                <div className="border border-line/80 bg-panel/40 p-3">
                   <dt className="font-mono text-[10px] uppercase tracking-wider text-mist">
                     {t("scanLog.merged")}
                   </dt>

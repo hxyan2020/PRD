@@ -25,12 +25,15 @@ export default async function CategoryDetailPage({
       >
         ← Categories
       </Link>
-      <h1 className="mt-4 font-display text-4xl text-ink sm:text-5xl">{category.name}</h1>
+      <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+        {category.name}
+      </h1>
       <p className="mt-3 max-w-2xl text-ink-soft">{category.description}</p>
       <p className="mt-2 font-mono text-xs uppercase tracking-wider text-mist">
         {category.evidenceCount ?? evidence.length} unique evidence
       </p>
-      <div className="mt-8">
+      <div className="mech-rule mt-8" />
+      <div className="mt-0">
         <EvidenceList
           evidence={evidence}
           emptyLabel="No evidence tagged in this category yet."
