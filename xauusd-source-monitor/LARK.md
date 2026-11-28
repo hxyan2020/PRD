@@ -198,7 +198,7 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 6. **Dashboard** — `review` / `dashboard` → KPI card + https://vex-llm-proxy.vercel.app/#/reports
 7. **Wiki / Docs (AIPO)** — read-only Lark Wiki search + Docx excerpt when scopes allow; otherwise show setup steps / @Yan.
 
-Commands: `help` · `market` · `investigate` · `review` · `dashboard` · `wiki` · `knowledge` / `kb` · `weekly` / `周报` · `done` / `archive`
+Commands: `help` · `market` · `investigate` · `review` · `dashboard` · `wiki` · `knowledge` / `kb` · `weekly` / `周报` · `done` / `archive` · `清空复盘` / `clear review` (**Yan Haixiang only** — wipes 复盘 history after confirm) · `清空复盘` / `clear review` (**Yan Haixiang only** — wipes 复盘 history after confirm)
 
 ### Wiki / Docs setup (bot = tenant_access_token)
 

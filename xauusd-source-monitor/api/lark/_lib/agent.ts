@@ -1,11 +1,13 @@
 import {
   downloadMessageImage,
   fetchUserDisplayName,
+  isLarkAdminUser,
   resolveAdminOpenId,
 } from './client.js'
 import {
   alertGatherCard,
   alertOptimizeCard,
+  clearReviewConfirmCard,
   greetingCard,
   helpCard,
   incidentDetailCard,
@@ -87,6 +89,7 @@ import {
   botRuntimeMetaReply,
   casualChatReply,
   chatbotFallbackReply,
+  clearReviewDeniedReply,
   isStubMenuReply,
   classifyIntent,
   commandConfirmPrompt,
@@ -95,6 +98,7 @@ import {
   helpReply,
   isCasualBanter,
   isCasualChat,
+  isClearReviewConfirmCommand,
   isLarkWikiQuestion,
   looksLikeCommandCancel,
   looksLikeCommandConfirm,
@@ -128,6 +132,7 @@ import {
 } from './webSearch.js'
 import { logInbound } from './inboundLog.js'
 import {
+  clearAllIncidentsDurable,
   clearSessionDurable,
   ensureSessionInteractions,
   findRecentGatherSession,
@@ -155,6 +160,65 @@ function titleFromFacts(facts: string[], lang: Lang): string {
   if (lang === 'zh-Hans') return '未命名事故'
   if (lang === 'zh-Hant') return '未命名事故'
   return 'Untitled incident'
+}
+
+/** Haixiang-only: prompt or execute wipe of all 复盘 historic cases. */
+async function handleClearReviewCommand(args: {
+  openId: string
+  chatId: string
+  lang: Lang
+  /** true when user already confirmed (text or button). */
+  confirmed: boolean
+}): Promise<BotReply> {
+  const gate = await isLarkAdminUser(args.openId, { preferChatId: args.chatId })
+  if (!gate.ok) {
+    const title =
+      args.lang === 'zh-Hans'
+        ? '清空复盘 · 权限不足'
+        : args.lang === 'zh-Hant'
+          ? '清空複盤 · 權限不足'
+          : 'Clear review · denied'
+    return { card: simpleCard(title, clearReviewDeniedReply(args.lang), 'orange') }
+  }
+  if (!args.confirmed) {
+    const all = await listIncidentsDurable({ status: 'all', limit: 500 })
+    return { card: clearReviewConfirmCard({ lang: args.lang, count: all.length }) }
+  }
+  const { cleared } = await clearAllIncidentsDurable()
+  const title =
+    args.lang === 'zh-Hans'
+      ? '复盘已清空'
+      : args.lang === 'zh-Hant'
+        ? '複盤已清空'
+        : 'Review cleared'
+  const body =
+    args.lang === 'zh-Hans'
+      ? [
+          '✅ **已清空复盘历史案件**（仅 Haixiang 可执行）',
+          '',
+          `• 删除条数：**${cleared}**`,
+          '• 发送 **复盘** 可查看空看板。',
+        ].join('\n')
+      : args.lang === 'zh-Hant'
+        ? [
+            '✅ **已清空複盤歷史案件**（僅 Haixiang 可執行）',
+            '',
+            `• 刪除條數：**${cleared}**`,
+            '• 發送 **複盤** 可查看空看板。',
+          ].join('\n')
+        : [
+            '✅ **Review history cleared** (Haixiang only)',
+            '',
+            `• Removed: **${cleared}**`,
+            '• Say **review** to open the empty board.',
+          ].join('\n')
+  return {
+    card: reviewCard({
+      lang: args.lang,
+      incidents: [],
+      doneBanner: body,
+    }),
+  }
 }
 
 /** User-pasted / OCR / forwarded alert bodies — exclude chat-history noise. */
@@ -2264,6 +2328,31 @@ async function handleCardActionCore(args: {
     return { card: reviewCard({ lang, incidents }) }
   }
 
+  if (action === 'clear_review_confirm') {
+    return handleClearReviewCommand({
+      openId: args.openId,
+      chatId,
+      lang,
+      confirmed: true,
+    })
+  }
+
+  if (action === 'clear_review_cancel') {
+    const title =
+      lang === 'zh-Hans'
+        ? '已取消清空'
+        : lang === 'zh-Hant'
+          ? '已取消清空'
+          : 'Clear cancelled'
+    const body =
+      lang === 'zh-Hans'
+        ? '已取消。复盘历史未改动。发送 **复盘** 可继续查看。'
+        : lang === 'zh-Hant'
+          ? '已取消。複盤歷史未改動。發送 **複盤** 可繼續查看。'
+          : 'Cancelled. Review history unchanged. Say **review** to browse.'
+    return { card: simpleCard(title, body, 'turquoise') }
+  }
+
   if (action === 'open_incident') {
     const id = incidentId || String(args.value.incidentId || '')
     const inc = id ? await getIncidentDurable(id) : undefined
@@ -3405,6 +3494,15 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
   if (intent === 'review') {
     const incidents = await listIncidentsDurable({ limit: 50 })
     return { card: reviewCard({ lang, incidents }) }
+  }
+
+  if (intent === 'clear_review') {
+    return handleClearReviewCommand({
+      openId: realOpenId,
+      chatId: msg.chatId,
+      lang,
+      confirmed: isClearReviewConfirmCommand(workingText),
+    })
   }
 
   if (intent === 'skills') {

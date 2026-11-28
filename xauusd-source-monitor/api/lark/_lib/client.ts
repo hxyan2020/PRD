@@ -398,6 +398,22 @@ export function looksLikeAdminName(name: string | null | undefined): boolean {
   return Boolean(name && ADMIN_NAME_RE.test(name))
 }
 
+/**
+ * True when this Feishu user is Yan Haixiang (configured admin open_id).
+ * Used for destructive Lark commands (e.g. clear 复盘 history).
+ */
+export async function isLarkAdminUser(
+  openId: string,
+  opts?: { preferChatId?: string },
+): Promise<{ ok: boolean; adminOpenId: string; source: string }> {
+  const id = (openId || '').trim()
+  const admin = await resolveAdminOpenId(opts)
+  if (!id || !admin.openId) {
+    return { ok: false, adminOpenId: admin.openId || '', source: admin.source }
+  }
+  return { ok: id === admin.openId, adminOpenId: admin.openId, source: admin.source }
+}
+
 async function resolveAdminFromChatMembers(chatId: string): Promise<string | null> {
   const id = (chatId || '').trim()
   if (!id) return null

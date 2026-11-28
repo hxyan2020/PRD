@@ -1387,6 +1387,25 @@ async function main() {
   record('cmd.zh_weekly', classifyIntent('周报', {}) === 'weekly', '')
   record('cmd.zh_review', classifyIntent('复盘', {}) === 'review', '')
   record(
+    'cmd.zh_clear_review',
+    classifyIntent('清空复盘', {
+      inInvestigateSession: false,
+      mentionedBot: true,
+      chatType: 'p2p',
+    }) === 'clear_review' &&
+      classifyIntent('确认清空复盘', {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      }) === 'clear_review' &&
+      classifyIntent('复盘', {
+        inInvestigateSession: false,
+        mentionedBot: true,
+        chatType: 'p2p',
+      }) === 'review',
+    '清空复盘 must not open the board',
+  )
+  record(
     'cmd.zh_oscillation_not_investigate',
     classifyIntent('震荡行情预警', {
       inInvestigateSession: false,
@@ -1413,6 +1432,18 @@ async function main() {
       { en: 'investigate', zh: '排查', hant: '開始排查', intent: 'investigate' },
       { en: 'review', zh: '复盘', hant: '複盤', intent: 'review' },
       { en: 'dashboard', zh: '看板', hant: '儀表盤', intent: 'review' },
+      {
+        en: 'clear review',
+        zh: '清空复盘',
+        hant: '清空複盤',
+        intent: 'clear_review',
+      },
+      {
+        en: 'confirm clear review',
+        zh: '确认清空复盘',
+        hant: '確認清空複盤',
+        intent: 'clear_review',
+      },
       { en: 'help', zh: '帮助', hant: '幫助', intent: 'help' },
       { en: 'guide', zh: '说明', hant: '說明', intent: 'help' },
       { en: 'done', zh: '完成', hant: '結束排查', intent: 'archive' },
@@ -4008,6 +4039,57 @@ async function main() {
         rev.blob.includes('[Open dashboard desk]')),
     `urls=${revUrlCount}`,
   )
+  // Haixiang-only clear 复盘 history
+  {
+    const prevAdmin = process.env.LARK_ADMIN_OPEN_ID
+    process.env.LARK_ADMIN_OPEN_ID = 'ou_smoke_haixiang_admin'
+    const deny = await turn('clear-review-deny', '清空复盘', 'ou_smoke_other_user')
+    record(
+      'turn.clear_review_denies_non_admin',
+      (deny.blob.includes('权限不足') ||
+        deny.blob.includes('權限不足') ||
+        deny.blob.includes('Permission denied')) &&
+        (deny.blob.includes('Yan Haixiang') || deny.blob.includes('仅')),
+      deny.blob.slice(0, 160),
+    )
+    const ask = await turn('clear-review-ask', '清空复盘', 'ou_smoke_haixiang_admin')
+    record(
+      'turn.clear_review_admin_confirm_card',
+      ask.blob.includes('clear_review_confirm') &&
+        (ask.blob.includes('确认清空') ||
+          ask.blob.includes('確認清空') ||
+          ask.blob.includes('Confirm clear')),
+      ask.blob.slice(0, 200),
+    )
+    const { clearAllIncidentsDurable, listIncidentsDurable, upsertIncidentDurable } =
+      await import('../api/lark/_lib/store')
+    await upsertIncidentDurable({
+      id: 'inc_smoke_clear_tmp',
+      chatId: 'smoke_chat',
+      openId: 'ou_smoke_haixiang_admin',
+      title: 'smoke clear tmp',
+      severity: 'P3',
+      status: 'archived',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      facts: ['smoke'],
+      skills: [],
+      knowledge: [],
+      summary: '',
+      recommendations: [],
+      lang: 'zh-Hans',
+    })
+    const before = (await listIncidentsDurable({ status: 'all', limit: 500 })).length
+    const wiped = await clearAllIncidentsDurable()
+    const after = (await listIncidentsDurable({ status: 'all', limit: 500 })).length
+    record(
+      'store.clear_all_incidents_durable',
+      before >= 1 && wiped.cleared >= 1 && after === 0,
+      `before=${before} cleared=${wiped.cleared} after=${after}`,
+    )
+    if (prevAdmin == null) delete process.env.LARK_ADMIN_OPEN_ID
+    else process.env.LARK_ADMIN_OPEN_ID = prevAdmin
+  }
   record(
     'turn.review_risk_verdict_stats',
     (rev.blob.includes('有风险') ||

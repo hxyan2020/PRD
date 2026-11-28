@@ -1960,6 +1960,78 @@ export function simpleCard(title: string, body: string, template = 'blue'): Reco
   }
 }
 
+/** Haixiang-only confirm before wiping all 复盘 case records. */
+export function clearReviewConfirmCard(args: {
+  lang: Lang
+  count: number
+}): Record<string, unknown> {
+  const hans = args.lang === 'zh-Hans'
+  const zh = isZh(args.lang)
+  const title = hans
+    ? '清空复盘 · 确认'
+    : zh
+      ? '清空複盤 · 確認'
+      : 'Clear review · confirm'
+  const body = hans
+    ? [
+        '⚠️ **将删除复盘看板中的全部历史案件**（进行中 + 已归档）。',
+        '',
+        `• 当前记录数：**${args.count}**`,
+        '• 此操作 **不可撤销**，仅 **Yan Haixiang** 可执行。',
+        '• 进行中的排查会话不受影响；桌面浏览器本地历史需自行清理。',
+        '',
+        '确认请点下方按钮，或回复 **确认清空复盘**。',
+      ].join('\n')
+    : zh
+      ? [
+          '⚠️ **將刪除複盤看板中的全部歷史案件**（進行中 + 已歸檔）。',
+          '',
+          `• 當前記錄數：**${args.count}**`,
+          '• 此操作 **不可撤銷**，僅 **Yan Haixiang** 可執行。',
+          '• 進行中的排查會話不受影響；桌面瀏覽器本地歷史需自行清理。',
+          '',
+          '確認請點下方按鈕，或回覆 **確認清空複盤**。',
+        ].join('\n')
+      : [
+          '⚠️ **This will delete all cases on the review board** (open + archived).',
+          '',
+          `• Current count: **${args.count}**`,
+          '• **Irreversible** — **Yan Haixiang** only.',
+          '• Active investigate sessions are kept; browser-local desk history is separate.',
+          '',
+          'Tap confirm below, or reply **confirm clear review**.',
+        ].join('\n')
+  const confirmLabel = hans ? '确认清空' : zh ? '確認清空' : 'Confirm clear'
+  const cancelLabel = hans ? '取消' : zh ? '取消' : 'Cancel'
+  return {
+    config: { wide_screen_mode: true },
+    header: {
+      template: 'red',
+      title: { tag: 'plain_text', content: title },
+    },
+    elements: [
+      { tag: 'div', text: { tag: 'lark_md', content: body } },
+      {
+        tag: 'action',
+        actions: [
+          {
+            tag: 'button',
+            type: 'danger',
+            text: { tag: 'plain_text', content: confirmLabel },
+            value: { action: 'clear_review_confirm', lang: args.lang },
+          },
+          {
+            tag: 'button',
+            type: 'default',
+            text: { tag: 'plain_text', content: cancelLabel },
+            value: { action: 'clear_review_cancel', lang: args.lang },
+          },
+        ],
+      },
+    ],
+  }
+}
+
 /** Clickable desk links (lark_md markdown links — note/plain_text is not tappable). */
 function deskFooterNote(lang: Lang): Record<string, unknown> {
   const hans = lang === 'zh-Hans'

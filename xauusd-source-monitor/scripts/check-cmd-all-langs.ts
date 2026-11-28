@@ -40,6 +40,12 @@ const ROWS: Row[] = [
     hans: ['复盘', '看板', '仪表盘', '归档'],
     hant: ['複盤', '儀表盤', '歸檔'],
   },
+  {
+    intent: 'clear_review',
+    en: ['clear review', 'clear review history', 'wipe review', 'confirm clear review'],
+    hans: ['清空复盘', '清空历史案件', '确认清空复盘'],
+    hant: ['清空複盤', '清空歷史案件', '確認清空複盤'],
+  },
   { intent: 'help', en: ['help', 'guide', 'commands'], hans: ['帮助', '说明'], hant: ['幫助', '說明'] },
   {
     intent: 'archive',

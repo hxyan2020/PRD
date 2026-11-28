@@ -109,6 +109,27 @@ const COMMAND_REVIEW = new RegExp(
   `^(?:review\\b|archive\\b|dashboard\\b|alerts\\b|alert\\s*board\\b|复盘|複盤|归档|歸檔|看板|仪表盘|儀表盤)${CMD_END}`,
   'i',
 )
+/**
+ * Haixiang-only: wipe all historic 复盘 case records.
+ * Matched before COMMAND_REVIEW so「清空复盘」does not open the board.
+ */
+const COMMAND_CLEAR_REVIEW = new RegExp(
+  `^(?:clear\\s*(?:all\\s*)?(?:review|archive|incidents?)(?:\\s*history)?|wipe\\s*review(?:\\s*history)?|purge\\s*review|清空复盘(?:记录|历史)?|清空複盤(?:記錄|歷史)?|清空历史案件|清空歷史案件|清除复盘(?:记录)?|清除複盤(?:記錄)?|删除复盘历史|刪除複盤歷史)${CMD_END}`,
+  'i',
+)
+/** Confirm step after clear-review prompt (Haixiang-only). */
+const COMMAND_CLEAR_REVIEW_CONFIRM = new RegExp(
+  `^(?:confirm\\s*clear\\s*review|yes\\s*clear\\s*review|确认清空复盘|確認清空複盤|确定清空|確定清空)${CMD_END}`,
+  'i',
+)
+
+export function isClearReviewCommand(text: string): boolean {
+  return COMMAND_CLEAR_REVIEW.test(text.trim())
+}
+
+export function isClearReviewConfirmCommand(text: string): boolean {
+  return COMMAND_CLEAR_REVIEW_CONFIRM.test(text.trim())
+}
 const COMMAND_HELP = new RegExp(
   `^(?:help\\b|guide\\b|commands?\\b|帮助|幫助|说明|說明)${CMD_END}`,
   'i',
@@ -412,6 +433,10 @@ export function classifyIntent(
   if (COMMAND_OSCILLATION.test(t)) return 'oscillation'
   if (COMMAND_DAILY_MARKET.test(t)) return 'daily_market'
   if (COMMAND_ALERT_OPTIMIZE.test(t)) return 'alert_optimize'
+  // Destructive clear before plain「复盘」so「清空复盘」does not open the board.
+  if (COMMAND_CLEAR_REVIEW.test(t) || COMMAND_CLEAR_REVIEW_CONFIRM.test(t)) {
+    return 'clear_review'
+  }
   if (COMMAND_REVIEW.test(t)) return 'review'
   if (COMMAND_DONE.test(t)) return 'archive'
   // Proceed-based report from recorded interactions (prefer during an open case)
@@ -467,6 +492,9 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   if (intent === 'oscillation') return COMMAND_OSCILLATION.test(t)
   if (intent === 'daily_market') return COMMAND_DAILY_MARKET.test(t)
   if (intent === 'alert_optimize') return COMMAND_ALERT_OPTIMIZE.test(t)
+  if (intent === 'clear_review') {
+    return COMMAND_CLEAR_REVIEW.test(t) || COMMAND_CLEAR_REVIEW_CONFIRM.test(t)
+  }
   if (intent === 'review') return COMMAND_REVIEW.test(t)
   if (intent === 'help') return COMMAND_HELP.test(t) || HELP_RE.test(t)
   if (intent === 'archive') return COMMAND_DONE.test(t)
@@ -480,6 +508,8 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
     COMMAND_OSCILLATION.test(t) ||
     COMMAND_DAILY_MARKET.test(t) ||
     COMMAND_ALERT_OPTIMIZE.test(t) ||
+    COMMAND_CLEAR_REVIEW.test(t) ||
+    COMMAND_CLEAR_REVIEW_CONFIRM.test(t) ||
     COMMAND_REVIEW.test(t) ||
     COMMAND_HELP.test(t) ||
     COMMAND_DONE.test(t) ||
@@ -557,6 +587,35 @@ export function needsCommandConfirm(text: string, intent: Intent): boolean {
   return false
 }
 
+/** Gentle deny when a non-Haixiang user tries to clear 复盘 history. */
+export function clearReviewDeniedReply(lang: Lang): string {
+  if (lang === 'zh-Hans') {
+    return [
+      '🔒 **权限不足**',
+      '',
+      '• 清空复盘历史案件 **仅 Yan Haixiang** 可操作。',
+      '• 你仍可发送 **复盘**／**看板** 查看现有记录。',
+      '• 如需清理，请联系 **@Yan Haixiang**。',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '🔒 **權限不足**',
+      '',
+      '• 清空複盤歷史案件 **僅 Yan Haixiang** 可操作。',
+      '• 你仍可發送 **複盤**／**看板** 查看現有記錄。',
+      '• 如需清理，請聯繫 **@Yan Haixiang**。',
+    ].join('\n')
+  }
+  return [
+    '🔒 **Permission denied**',
+    '',
+    '• Clearing 复盘 / review history is **Yan Haixiang only**.',
+    '• You can still say **review** / **dashboard** to browse cases.',
+    '• Ask **@Yan Haixiang** if history needs to be wiped.',
+  ].join('\n')
+}
+
 export function pendingCommandLabel(
   intent: Intent,
   lang: Lang,
@@ -564,6 +623,7 @@ export function pendingCommandLabel(
   const map: Record<string, { zh: string; en: string }> = {
     market: { zh: '查看行情', en: 'open a market scan' },
     investigate: { zh: '开始排查', en: 'start an investigation' },
+    clear_review: { zh: '清空复盘历史案件', en: 'clear review history' },
     review: { zh: '打开复盘／看板', en: 'open the review / dashboard' },
     skills: { zh: '打开 Skills 目录', en: 'open the Skills catalogue' },
     knowledge: { zh: '打开知识库目录', en: 'open the knowledge catalogue' },

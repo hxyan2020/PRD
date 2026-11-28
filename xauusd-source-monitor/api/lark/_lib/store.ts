@@ -294,6 +294,20 @@ export async function getIncidentDurable(id: string): Promise<IncidentRecord | u
   return memIncidents[id]
 }
 
+/**
+ * Wipe all Lark 复盘 case records (open + archived) from durable store.
+ * Admin-only caller must gate this — does not touch sessions or desk localStorage.
+ */
+export async function clearAllIncidentsDurable(): Promise<{ cleared: number }> {
+  await ensureIncidentsDurable()
+  const cleared = Object.keys(memIncidents).length
+  for (const id of Object.keys(memIncidents)) delete memIncidents[id]
+  persistIncidents()
+  // Write empty map directly — do not merge remote (would restore wiped rows).
+  await writeDurableJson(INCIDENTS_DURABLE, {})
+  return { cleared }
+}
+
 export function newIncidentId() {
   return `inc_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
 }
