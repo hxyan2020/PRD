@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import { useLocale } from '../i18n/locale'
+import { submitMemoryProposal } from '../copilot/memorySubmitClient'
 import { loadKnowledgeTree, saveKnowledgeTree } from '../copilot/storage'
 import type { KbNode } from '../copilot/types'
 
@@ -62,8 +63,8 @@ function TreeNodeView({
 }
 
 export function KnowledgePage() {
-  const { t } = useLocale()
-  const { isAdmin } = useAuth()
+  const { t, lang } = useLocale()
+  const { isAdmin, user } = useAuth()
   const canWrite = isAdmin
   const [nodes, setNodes] = useState<KbNode[]>(() => loadKnowledgeTree())
   const [selectedId, setSelectedId] = useState<string | null>(() => {
@@ -77,6 +78,8 @@ export function KnowledgePage() {
     return new Set(roots)
   })
   const [editing, setEditing] = useState(false)
+  const [proposing, setProposing] = useState(false)
+  const [proposeStatus, setProposeStatus] = useState('')
   const [draftTitle, setDraftTitle] = useState('')
   const [draftBody, setDraftBody] = useState('')
 
@@ -96,6 +99,7 @@ export function KnowledgePage() {
 
   const beginEdit = () => {
     if (!selected || !canWrite) return
+    setProposing(false)
     setDraftTitle(selected.title)
     setDraftBody(selected.body)
     setEditing(true)
@@ -103,13 +107,41 @@ export function KnowledgePage() {
 
   const cancelEdit = () => {
     setEditing(false)
+    setProposing(false)
     setDraftTitle('')
     setDraftBody('')
   }
 
-  const saveEdit = () => {
-    if (!selected || !canWrite) return
+  const beginPropose = () => {
+    if (!selected) return
+    setProposing(true)
+    setDraftTitle(selected.title)
+    setDraftBody(selected.body)
+    setEditing(true)
+    setProposeStatus('')
+  }
+
+  const saveEdit = async () => {
+    if (!selected) return
     const title = draftTitle.trim() || selected.title
+    if (!canWrite) {
+      const res = await submitMemoryProposal({
+        kind: 'knowledge',
+        op: 'update',
+        payload: { id: selected.id, title, body: draftBody },
+        note: `web propose ${selected.id}`,
+        submitterName: user?.name,
+        submitterEmail: user?.email,
+        lang,
+      })
+      setProposeStatus(
+        res.ok
+          ? `${t('proposeSubmitted')}${res.itemId ? ` · ${res.itemId}` : ''}`
+          : `${t('proposeFailed')}: ${res.error || ''}`,
+      )
+      if (res.ok) cancelEdit()
+      return
+    }
     persist(
       nodes.map((n) =>
         n.id === selected.id
@@ -223,6 +255,7 @@ export function KnowledgePage() {
       <h2>{t('kbTitle')}</h2>
       <p className="sub">{t('kbSub')}</p>
       {!canWrite ? <p className="banner-warn">{t('adminOnlyWrite')}</p> : null}
+      {proposeStatus ? <p className="banner-ok">{proposeStatus}</p> : null}
 
       <div className="kb-layout">
         <aside className="kb-tree-pane std-side">
@@ -253,7 +286,7 @@ export function KnowledgePage() {
 
         <section className="kb-editor-pane">
           {selected ? (
-            editing && canWrite ? (
+            editing && (canWrite || proposing) ? (
               <article className="std-card std-card-edit">
                 <header className="std-card-head">
                   <div className="std-card-title-block">
@@ -291,8 +324,12 @@ export function KnowledgePage() {
                   ) : null}
                 </div>
                 <div className="std-card-actions">
-                  <button type="button" className="archive-btn primary-archive" onClick={saveEdit}>
-                    {t('skillsSave')}
+                  <button
+                    type="button"
+                    className="archive-btn primary-archive"
+                    onClick={() => void saveEdit()}
+                  >
+                    {proposing && !canWrite ? t('proposeChange') : t('skillsSave')}
                   </button>
                   <button type="button" className="archive-btn" onClick={cancelEdit}>
                     {t('skillsCancel')}
@@ -333,6 +370,17 @@ export function KnowledgePage() {
                   </p>
                 </section>
 
+                {!canWrite ? (
+                  <div className="std-card-actions">
+                    <button
+                      type="button"
+                      className="archive-btn primary-archive"
+                      onClick={beginPropose}
+                    >
+                      {t('proposeChange')}
+                    </button>
+                  </div>
+                ) : null}
                 {canWrite ? (
                   <div className="std-card-actions">
                     <button
