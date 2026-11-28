@@ -1103,12 +1103,23 @@ async function main() {
       !g.includes('生产操作需人工审批') &&
       !g.includes('生產操作需人工審批') &&
       !g.includes('Production actions need human approval')
+    const uatAt =
+      (g.includes('UAT') || g.includes('**UAT**')) &&
+      (/<at id="ou_/.test(g) || g.includes('Yan Haixiang'))
+    // Haixiang @ only in UAT footer — not in docs/weekly/oscillation bullets.
+    const bodyBeforeUat = g.split(/UAT/)[0] || g
+    const noMidBodyHaixiang =
+      !bodyBeforeUat.includes('@Yan Haixiang') &&
+      !bodyBeforeUat.includes('<at id=') &&
+      !/报给 @Yan|報給 @Yan|to @Yan Haixiang|→ \*\*@Yan|联系 \*\*@Yan|聯繫 \*\*@Yan|→ \*\*group \+ @Yan/i.test(
+        bodyBeforeUat,
+      )
     record(
       `greeting.template_${lang}`,
       g.includes('Risk Copilot') &&
         (lang === 'en' ? enCmds : zhCmds) &&
-        g.includes('UAT') &&
-        g.includes('Yan Haixiang') &&
+        uatAt &&
+        noMidBodyHaixiang &&
         g.includes('\n\n') &&
         triggerHint &&
         noScreenshotPitch &&
@@ -1117,6 +1128,18 @@ async function main() {
       g.slice(0, 120),
     )
   }
+  record(
+    'greeting.uat_at_by_open_id',
+    (() => {
+      const g = greetingReply('zh-Hans', 'ou_smoke_admin_open_id')
+      return (
+        g.includes('<at id="ou_smoke_admin_open_id"></at>') &&
+        g.includes('UAT') &&
+        !(g.split(/UAT/)[0] || '').includes('<at id=')
+      )
+    })(),
+    'UAT footer uses unique open_id @; feature bullets do not',
+  )
   record('cmd.zh_market', classifyIntent('行情', {}) === 'market', '')
   record('cmd.zh_investigate', classifyIntent('排查', {}) === 'investigate', '')
   record('cmd.zh_alert_optimize', classifyIntent('告警优化', {}) === 'alert_optimize', '')
@@ -1352,7 +1375,7 @@ async function main() {
         greetBlob.includes('**skills**') &&
         greetBlob.includes('**knowledge**') &&
         greetBlob.includes('UAT') &&
-        greetBlob.includes('Yan Haixiang') &&
+        (/<at id="ou_/.test(greetBlob) || greetBlob.includes('Yan Haixiang')) &&
         greetBlob.includes('@me + keyword') &&
         (greetBlob.includes('Natural language') || greetBlob.includes('keywords not required')) &&
         greetBlob.includes('lark_md') &&
@@ -2671,7 +2694,7 @@ async function main() {
       ),
     'exactly one path heading; no legacy duplicate titles / 文末',
   )
-  const greetLater = greetingReply('zh-Hans')
+  const greetLater = greetingReply('zh-Hans', 'ou_later_admin')
   record(
     'later.greeting_keeps_weekly_and_uat',
     greetLater.includes('**周报**') &&
@@ -2681,8 +2704,9 @@ async function main() {
       greetLater.includes('震荡行情预警') &&
       !greetLater.includes('半小时行情') &&
       !greetLater.includes('每日 24h') &&
-      greetLater.includes('Yan Haixiang') &&
+      greetLater.includes('<at id="ou_later_admin"></at>') &&
       greetLater.includes('UAT') &&
+      !(greetLater.split(/UAT/)[0] || '').includes('@Yan Haixiang') &&
       !greetLater.includes('截图欢迎直接丢过来') &&
       !greetLater.includes('**market**') &&
       !greetLater.includes('**完成**'),
