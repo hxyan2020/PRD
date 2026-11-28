@@ -397,7 +397,7 @@ export function compute24hStats(snap: MarketSnapshot): Day24hStats | null {
 /**
  * Fixed 早报 skeleton (content changes daily; section order never does):
  * 1) Header + 24h range  2) K线 + prints  3) TL;DR (4 beats)
- * 4) Opportunity (≤3)  5) Risk (≤3)  6) Footer
+ * 4) Opportunity (≤3)  5) Risk (≤3)  6) Data sources  7) Footer
  */
 export const DAILY_REPORT_SECTIONS = [
   'header_24h',
@@ -405,15 +405,145 @@ export const DAILY_REPORT_SECTIONS = [
   'tldr',
   'opportunity',
   'risk',
+  'sources',
   'footer',
 ] as const
 
+/**
+ * Desk-curated human links shown on 每日早报 (TL;DR logos + 数据来源).
+ * Prefer authoritative venue / macro / news hubs already in SOURCE_CATALOG —
+ * never invent URLs. Proven 404/410 are dropped by resolveCiteUrlOrNull.
+ */
 const DAILY_FIXED_LINKS: { id: string; label: string; url: string; domain: string }[] = [
+  // Venues / prints
   { id: 'binance-kline', label: 'Binance K线', url: BINANCE_KLINE_URL, domain: 'binance.com' },
   { id: 'okx-kline', label: 'OKX K线', url: OKX_KLINE_URL, domain: 'okx.com' },
+  {
+    id: 'bitget-futures',
+    label: 'Bitget',
+    url: 'https://www.bitget.com/futures/usdt/XAUUSDT',
+    domain: 'bitget.com',
+  },
   { id: 'kitco', label: 'Kitco', url: KITCO_GOLD_URL, domain: 'kitco.com' },
-  { id: 'yahoo-tnx', label: 'Yahoo行情', url: 'https://finance.yahoo.com/quote/%5ETNX', domain: 'yahoo.com' },
+  {
+    id: 'kitco-news',
+    label: 'Kitco News',
+    url: 'https://www.kitco.com/news/category/metals',
+    domain: 'kitco.com',
+  },
+  // Macro / rates / dollar
+  {
+    id: 'yahoo-gc',
+    label: 'Yahoo GC',
+    url: 'https://finance.yahoo.com/quote/GC=F',
+    domain: 'yahoo.com',
+  },
+  {
+    id: 'yahoo-dxy',
+    label: 'Yahoo DXY',
+    url: 'https://finance.yahoo.com/quote/DX-Y.NYB',
+    domain: 'yahoo.com',
+  },
+  {
+    id: 'yahoo-tnx',
+    label: 'Yahoo 10Y',
+    url: 'https://finance.yahoo.com/quote/%5ETNX',
+    domain: 'yahoo.com',
+  },
+  {
+    id: 'fed-press',
+    label: 'Fed',
+    url: 'https://www.federalreserve.gov/newsevents/pressreleases.htm',
+    domain: 'federalreserve.gov',
+  },
+  {
+    id: 'fred',
+    label: 'FRED',
+    url: 'https://fred.stlouisfed.org/',
+    domain: 'stlouisfed.org',
+  },
+  // Authoritative news / commodities desks
+  {
+    id: 'reuters-gold',
+    label: 'Reuters',
+    url: 'https://www.reuters.com/markets/commodities/',
+    domain: 'reuters.com',
+  },
+  {
+    id: 'bloomberg-gold',
+    label: 'Bloomberg',
+    url: 'https://www.bloomberg.com/markets/commodities',
+    domain: 'bloomberg.com',
+  },
+  {
+    id: 'cnbc-gold',
+    label: 'CNBC Gold',
+    url: 'https://www.cnbc.com/gold/',
+    domain: 'cnbc.com',
+  },
+  {
+    id: 'marketwatch-gold',
+    label: 'MarketWatch',
+    url: 'https://www.marketwatch.com/investing/future/gc00',
+    domain: 'marketwatch.com',
+  },
+  {
+    id: 'investing-gold',
+    label: 'Investing',
+    url: 'https://www.investing.com/commodities/gold',
+    domain: 'investing.com',
+  },
+  {
+    id: 'ft-commodities',
+    label: 'FT',
+    url: 'https://www.ft.com/commodities',
+    domain: 'ft.com',
+  },
+  {
+    id: 'wsj-markets',
+    label: 'WSJ',
+    url: 'https://www.wsj.com/finance/markets',
+    domain: 'wsj.com',
+  },
+  // Physical / official gold
+  {
+    id: 'cme-comex',
+    label: 'COMEX',
+    url: 'https://www.cmegroup.com/markets/metals/precious/gold.html',
+    domain: 'cmegroup.com',
+  },
+  {
+    id: 'lbma',
+    label: 'LBMA',
+    url: 'https://www.lbma.org.uk/prices-and-data/precious-metal-prices',
+    domain: 'lbma.org.uk',
+  },
+  {
+    id: 'wgc',
+    label: 'WGC',
+    url: 'https://www.gold.org/goldhub/gold-focus',
+    domain: 'gold.org',
+  },
+  // Crypto-desk gold / macro overlap
+  {
+    id: 'coindesk-markets',
+    label: 'CoinDesk',
+    url: 'https://www.coindesk.com/markets/',
+    domain: 'coindesk.com',
+  },
+  // KOL pulse
+  {
+    id: 'kol-x-kitco',
+    label: 'Kitco X',
+    url: 'https://x.com/KitcoNewsNow',
+    domain: 'x.com',
+  },
 ]
+
+/** Max logo buttons per Lark action row (Lark UI limit). */
+const LOGO_ROW_SIZE = 5
+/** Cap logo rows so cold cron stays within maxDuration. */
+const LOGO_ROW_MAX = 4
 
 /** Drop sources whose cite URL is proven HTTP 404/410 (or marked down for missing page). */
 export function isCiteableSource(s: ReportSource | undefined | null): boolean {
@@ -428,15 +558,17 @@ export function isCiteableSource(s: ReportSource | undefined | null): boolean {
 /**
  * Fixed desk links for 早报 — skip any that currently 404/410.
  * Timeouts / bot-blocks are kept (not proven missing for end users).
+ * Resolved in parallel so a larger source set still fits cron maxDuration.
  */
 export async function dailySourceHyperlinksLive(): Promise<string> {
-  const parts: string[] = []
-  for (const l of DAILY_FIXED_LINKS) {
-    const resolved = await resolveCiteUrlOrNull(l.url, l.id)
-    if (!resolved) continue
-    parts.push(`[${l.label}](${resolved.url})`)
-  }
-  return parts.join(' · ')
+  const settled = await Promise.all(
+    DAILY_FIXED_LINKS.map(async (l) => {
+      const resolved = await resolveCiteUrlOrNull(l.url, l.id)
+      if (!resolved) return null
+      return `[${l.label}](${resolved.url})`
+    }),
+  )
+  return settled.filter(Boolean).join(' · ')
 }
 
 /** Always 4 TL;DR beats: 即时 / 走势 / 事件 / 关注 — pad missing with stable placeholders. */
@@ -514,25 +646,40 @@ export function dailySourceHyperlinks(): string {
 
 /** Fixed desk links as ReportSource rows for logo buttons (404-filtered). */
 export async function dailyFixedSourcesLive(): Promise<ReportSource[]> {
-  const out: ReportSource[] = []
   const now = Date.now()
-  for (const l of DAILY_FIXED_LINKS) {
-    const resolved = await resolveCiteUrlOrNull(l.url, l.id)
-    if (!resolved) continue
-    out.push({
-      id: l.id,
-      captionEn: l.label,
-      captionZh: l.label,
-      url: resolved.url,
-      domain: l.domain,
-      logoUrl: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(l.domain)}&sz=64`,
-      kind: 'venue',
-      health: 'up',
-      checkedAt: now,
-      detail: resolved.rewritten ? 'cite rewritten (primary 404)' : 'desk fixed link',
-    })
-  }
-  return out
+  const settled = await Promise.all(
+    DAILY_FIXED_LINKS.map(async (l) => {
+      const resolved = await resolveCiteUrlOrNull(l.url, l.id)
+      if (!resolved) return null
+      const kind: ReportSource['kind'] =
+        /x\.com|twitter/i.test(l.domain)
+          ? 'social'
+          : /reuters|bloomberg|cnbc|wsj|ft\.com|kitco|marketwatch|investing|coindesk/i.test(
+                l.domain,
+              )
+            ? 'news'
+            : /federalreserve|fred|stlouisfed/i.test(l.domain)
+              ? 'macro'
+              : /cmegroup|lbma|gold\.org/i.test(l.domain)
+                ? 'indicator'
+                : /yahoo\.com/i.test(l.domain)
+                  ? 'price'
+                  : 'exchange'
+      return {
+        id: l.id,
+        captionEn: l.label,
+        captionZh: l.label,
+        url: resolved.url,
+        domain: l.domain,
+        logoUrl: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(l.domain)}&sz=64`,
+        kind,
+        health: 'ok' as const,
+        checkedAt: now,
+        detail: resolved.rewritten ? 'cite rewritten (primary 404)' : 'desk fixed link',
+      } satisfies ReportSource
+    }),
+  )
+  return settled.filter((s): s is ReportSource => Boolean(s))
 }
 
 /**
@@ -573,13 +720,20 @@ function formatDaily24hMarketAnswerWithLinks(
     '',
     '**📋 TL;DR**',
     ...tldr.map((l) => (l.startsWith('•') ? l : `• ${l}`)),
-    ...(linkLine ? [linkLine] : []),
     '',
     '**✨ Opportunity**',
     ...normalizeDailyRanked(snap.hourly?.opportunity, lang, empty, 3, byId),
     '',
     '**⚠️ Risk**',
     ...normalizeDailyRanked(snap.hourly?.risk, lang, empty, 3, byId),
+    '',
+    dailySourcesSectionTitle(lang),
+    linkLine ||
+      (lang === 'en'
+        ? '• Source links unavailable this run.'
+        : lang === 'zh-Hant'
+          ? '• 本輪來源連結暫不可用。'
+          : '• 本轮来源链接暂不可用。'),
     '',
     marketFooterBlock(snap, lang, '', 'daily'),
   ].join('\n')
@@ -735,7 +889,7 @@ function mdDiv(content: string): Record<string, unknown> {
 /** Lark action row: each source is a button with site favicon as the clickable logo. */
 async function logoLinkActions(sources: ReportSource[]): Promise<Record<string, unknown> | null> {
   if (!sources.length) return null
-  const slice = sources.slice(0, 5)
+  const slice = sources.slice(0, LOGO_ROW_SIZE)
   const keys = await Promise.all(slice.map((s) => resolveFaviconImgKey(s.domain, s.logoUrl)))
   const actions: Record<string, unknown>[] = slice.map((s, i) => {
     const label = sourceChipLabel(s).slice(0, 24)
@@ -756,6 +910,67 @@ async function logoLinkActions(sources: ReportSource[]): Promise<Record<string, 
   })
   if (!actions.length) return null
   return { tag: 'action', actions }
+}
+
+/** Multiple action rows so 早报 can surface more than 5 desk sources. */
+async function logoLinkActionRows(
+  sources: ReportSource[],
+  maxRows = LOGO_ROW_MAX,
+): Promise<Record<string, unknown>[]> {
+  if (!sources.length) return []
+  const cap = Math.max(1, maxRows) * LOGO_ROW_SIZE
+  const list = sources.slice(0, cap)
+  const rows: Record<string, unknown>[] = []
+  for (let i = 0; i < list.length; i += LOGO_ROW_SIZE) {
+    const row = await logoLinkActions(list.slice(i, i + LOGO_ROW_SIZE))
+    if (row) rows.push(row)
+  }
+  return rows
+}
+
+/**
+ * Merge fixed desk links with healthy live hourly sources (news / macro / venues / social)
+ * so the morning report cites a broad set — not only the four legacy chips.
+ */
+export function dailyExpandedSources(
+  fixed: ReportSource[],
+  hourlySources: ReportSource[] | undefined,
+  max = 24,
+): ReportSource[] {
+  const out: ReportSource[] = []
+  const seen = new Set<string>()
+  const push = (s: ReportSource | undefined | null) => {
+    if (!s || !isCiteableSource(s) || out.length >= max) return
+    const key = `${(s.domain || '').toLowerCase()}|${(s.url || '').toLowerCase()}`
+    if (seen.has(key)) return
+    // Prefer human pages over raw JSON API endpoints
+    if (
+      /(?:^|\/\/)(?:api|fapi|dapi|eapi)\./i.test(s.url) ||
+      /okx\.com\/api|bitget\.com\/api|gold-api|query1\.finance/i.test(s.url)
+    ) {
+      return
+    }
+    seen.add(key)
+    out.push(s)
+  }
+  for (const s of fixed) push(s)
+  const live = (hourlySources || []).filter((s) =>
+    /^(news|macro|exchange|announcement|social|indicator|price)$/i.test(s.kind || ''),
+  )
+  // Prefer healthy / unchecked over down
+  live.sort((a, b) => {
+    const score = (s: ReportSource) =>
+      s.health === 'ok' ? 0 : s.health === 'unchecked' ? 1 : s.health === 'degraded' ? 2 : 3
+    return score(a) - score(b)
+  })
+  for (const s of live) push(s)
+  return out
+}
+
+function dailySourcesSectionTitle(lang: Lang): string {
+  if (lang === 'zh-Hant') return '**📚 數據來源**'
+  if (lang === 'en') return '**📚 Data sources**'
+  return '**📚 数据来源**'
 }
 
 function marketEmptyHint(mode: 'hourly' | 'daily', lang: Lang): string {
@@ -1031,15 +1246,20 @@ export async function buildMarketCard(opts: {
   if (klineChart) elements.push(klineChart)
   elements.push(klineIntervalActions(selectedBar, { mode, lang }))
 
-  // TL;DR text (beats only — logos on the next action row)
+  // TL;DR text (beats only — logos on the next action row(s))
+  let dailyExpanded: ReportSource[] = []
   if (mode === 'daily') {
     const tldr = normalizeDailyTldrBeats(snap, lang)
     elements.push(
       mdDiv(['**📋 TL;DR**', ...tldr.map((l) => (l.startsWith('•') ? l : `• ${l}`))].join('\n')),
     )
     const fixed = await dailyFixedSourcesLive()
-    const row = await logoLinkActions(fixed)
-    if (row) elements.push(row)
+    dailyExpanded = dailyExpandedSources(fixed, hourly?.sources, 24)
+    const rows = await logoLinkActionRows(
+      dailyExpanded.slice(0, LOGO_ROW_MAX * LOGO_ROW_SIZE),
+      LOGO_ROW_MAX,
+    )
+    for (const row of rows) elements.push(row)
   } else {
     const tldrLines = renderSection('📋 TL;DR', hourly?.tldr || [], empty, lang, true)
     elements.push(mdDiv(tldrLines.join('\n')))
@@ -1073,6 +1293,24 @@ export async function buildMarketCard(opts: {
       const row = await logoLinkActions(pointSources(p, byId))
       if (row) elements.push(row)
     }
+  }
+
+  if (mode === 'daily') {
+    const chips = sourceChipLine(dailyExpanded.slice(0, 20))
+    elements.push(
+      mdDiv(
+        [
+          dailySourcesSectionTitle(lang),
+          chips
+            ? `🔗 ${chips}`
+            : lang === 'en'
+              ? '• Source links unavailable this run.'
+              : lang === 'zh-Hant'
+                ? '• 本輪來源連結暫不可用。'
+                : '• 本轮来源链接暂不可用。',
+        ].join('\n'),
+      ),
+    )
   }
 
   elements.push(mdDiv(marketFooterBlock(snap, lang, question, mode)))
@@ -1356,7 +1594,7 @@ export async function fetchMarketSnapshot(): Promise<MarketSnapshot> {
     bitget: bitgetLast && Number.isFinite(bitgetLast) ? { last: bitgetLast } : undefined,
     spot: spotLast && Number.isFinite(spotLast) ? { last: spotLast } : undefined,
     notes,
-    sources: hourly.sources.slice(0, 12).map((s) => ({
+    sources: hourly.sources.slice(0, 36).map((s) => ({
       label: s.captionZh || s.captionEn,
       url: s.url,
     })),
