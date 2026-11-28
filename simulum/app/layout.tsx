@@ -29,6 +29,15 @@ export const metadata: Metadata = {
   title: "Are We Simulated? — Worldwide simulation evidence catalogue",
   description:
     "Are We Simulated? catalogues unique evidence people have posted worldwide that our universe is simulated — scanned, deduplicated, and sorted by category.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png" },
+      { url: "/logo.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: ["/favicon.ico"],
+  },
 };
 
 export const viewport: Viewport = {

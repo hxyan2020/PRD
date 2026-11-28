@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { EvidenceCounter } from "@/components/EvidenceCounter";
 import { useI18n } from "@/lib/i18n/context";
@@ -41,9 +42,19 @@ export function Hero({
         {t("hero.kicker")}
       </p>
 
-      <h1 className="animate-rise relative mt-5 max-w-[16ch] font-display text-[clamp(2.35rem,10.5vw,5.25rem)] font-semibold leading-[0.95] tracking-[0.01em] text-ink sm:mt-6 sm:max-w-none [animation-delay:70ms]">
-        {t("brand.name")}
-      </h1>
+      <div className="animate-rise relative mt-5 flex items-start gap-3 sm:mt-6 sm:gap-5 [animation-delay:70ms]">
+        <Image
+          src="/logo-mark.png"
+          alt=""
+          width={96}
+          height={96}
+          className="mt-1 h-14 w-14 shrink-0 object-contain sm:mt-2 sm:h-20 sm:w-20 md:h-24 md:w-24"
+          priority
+        />
+        <h1 className="max-w-[14ch] font-display text-[clamp(2.2rem,9.5vw,5rem)] font-semibold leading-[0.95] tracking-[0.01em] text-ink sm:max-w-none">
+          {t("brand.name")}
+        </h1>
+      </div>
 
       <p className="animate-rise relative mt-5 max-w-md text-[0.95rem] leading-relaxed text-ink-soft sm:mt-6 sm:max-w-lg sm:text-lg [animation-delay:130ms]">
         {t("hero.blurb")}
