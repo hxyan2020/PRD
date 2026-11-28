@@ -1123,7 +1123,13 @@ async function main() {
   })
   record('parse.enrich_passthrough_text', enrichedSame.text === 'hello world', enrichedSame.text)
 
-  const { claimOnce, releaseClaim, dedupeKey } = await import('../api/lark/_lib/dedupe')
+  const {
+    claimOnce,
+    claimPushOnce,
+    releaseClaim,
+    releasePushClaim,
+    dedupeKey,
+  } = await import('../api/lark/_lib/dedupe')
   const dk = `smoke_dedupe_${Date.now()}`
   record('dedupe.first_claim', claimOnce(dk) === true, '')
   record('dedupe.second_claim_blocked', claimOnce(dk) === false, '')
@@ -1135,6 +1141,20 @@ async function main() {
     '',
   )
   releaseClaim(dk)
+  {
+    const pk = `smoke_push_claim_${Date.now()}`
+    const first = await claimPushOnce(pk, 60_000)
+    const second = await claimPushOnce(pk, 60_000)
+    record(
+      'dedupe.push_claim_blocks_second',
+      first === true && second === false,
+      `first=${first} second=${second}`,
+    )
+    await releasePushClaim(pk)
+    const third = await claimPushOnce(pk, 60_000)
+    record('dedupe.push_claim_release_allows_retry', third === true, `third=${third}`)
+    await releasePushClaim(pk)
+  }
 
   // 6a) Greeting daypart uses 东八区; 17:00 is still afternoon
   record('greeting.east8_tz', east8Hour(new Date('2026-11-24T09:16:00Z')) === 17, `h=${east8Hour(new Date('2026-11-24T09:16:00Z'))}`)
@@ -3243,6 +3263,38 @@ async function main() {
       !/if\s*\(\s*!force\s*&&\s*sent\[dayKey\]\s*&&\s*cron\s*\)/.test(dailySrc),
     'skip already_sent for cron AND manual unless force',
   )
+  record(
+    'cron.daily_claim_before_send',
+    dailySrc.includes('claimPushOnce') &&
+      dailySrc.includes('push:daily-market:') &&
+      dailySrc.includes('claim_held') &&
+      dailySrc.includes('releasePushClaim'),
+    'cross-instance claim blocks concurrent daily pushes',
+  )
+  {
+    const weeklySrc = await readFile(
+      new URL('../api/lark/weekly-report.ts', import.meta.url),
+      'utf8',
+    )
+    record(
+      'cron.weekly_idempotent_without_force',
+      /if\s*\(\s*!force\s*&&\s*!demo\s*&&\s*sent\[report\.window\.weekKey\]\s*\)/.test(weeklySrc) &&
+        !/sent\[report\.window\.weekKey\]\s*&&\s*cron/.test(weeklySrc) &&
+        weeklySrc.includes('claimPushOnce'),
+      'weekly skip for cron AND manual + claim',
+    )
+    const oscSrc = await readFile(
+      new URL('../api/lark/oscillation-alert.ts', import.meta.url),
+      'utf8',
+    )
+    record(
+      'cron.osc_claim_before_send',
+      oscSrc.includes('claimPushOnce') &&
+        oscSrc.includes('push:osc:') &&
+        oscSrc.includes('claim_held'),
+      'oscillation alert claim before group push',
+    )
+  }
   const {
     formatDaily24hMarketAnswer: fmtDaily,
     formatDaily24hMarketAnswerAsync: fmtDailyAsync,

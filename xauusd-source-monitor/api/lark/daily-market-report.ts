@@ -9,6 +9,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { atOpenIdMarkdown, larkConfigured, resolveAdminOpenId, sendCardToChat } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
+import { claimPushOnce, releasePushClaim } from './_lib/dedupe.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   buildMarketCard,
@@ -96,6 +97,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const dayKey = shanghaiDayKey(now)
   const chat = resolveDailyChatId(body.chatId || String(q.chatId || ''))
   const langHint = body.lang || String(q.lang || '')
+  const pushClaimKey = `push:daily-market:${dayKey}`
+
+  // Fast idempotency — before snapshot work — so cron + cron-tick cannot both build+send.
+  if (!dry && !force) {
+    const sentEarly = await readSent()
+    if (sentEarly[dayKey]) {
+      await touchCronHeartbeat('/api/lark/daily-market-report', {
+        status: 200,
+        outcome: 'skipped',
+        reason: 'already_sent_today',
+      })
+      return res.status(200).json({
+        ok: true,
+        skipped: true,
+        reason: 'already_sent_today',
+        dayKey,
+        sentAt: sentEarly[dayKey],
+        via: cron ? 'cron' : 'manual',
+        stage: 'pre_fetch',
+      })
+    }
+  }
+
+  // Cron / cron-tick fan-out: do not fire before 09:00 Asia/Shanghai.
+  if (cron && !force && !dry && !isDailyMarketSlot(now)) {
+    await touchCronHeartbeat('/api/lark/daily-market-report', {
+      status: 200,
+      outcome: 'skipped',
+      reason: 'before_daily_slot',
+    })
+    return res.status(200).json({
+      ok: true,
+      skipped: true,
+      reason: 'before_daily_slot',
+      dayKey,
+      hm: shanghaiHm(now),
+      startHm: DAILY_MARKET_START_HM,
+      via: 'cron',
+    })
+  }
+
   let markdown = ''
   let card: Record<string, unknown>
   let adminOpenId = ''
@@ -166,25 +208,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
-  // Cron / cron-tick fan-out: do not fire before 09:00 Asia/Shanghai.
-  // Catch-up after 09:00 is OK (idempotent via dayKey).
-  if (cron && !force && !isDailyMarketSlot(now)) {
-    await touchCronHeartbeat('/api/lark/daily-market-report', {
-      status: 200,
-      outcome: 'skipped',
-      reason: 'before_daily_slot',
-    })
-    return res.status(200).json({
-      ok: true,
-      skipped: true,
-      reason: 'before_daily_slot',
-      dayKey,
-      hm: shanghaiHm(now),
-      startHm: DAILY_MARKET_START_HM,
-      via: 'cron',
-    })
-  }
-
   const sent = await readSent()
   // Skip for both cron and manual unless force=true — prevents double-push from
   // verify curls / accidental POST after a successful send the same day.
@@ -201,7 +224,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       dayKey,
       sentAt: sent[dayKey],
       via: cron ? 'cron' : 'manual',
+      stage: 'pre_send',
     })
+  }
+
+  // Cross-instance lock: Vercel cron + cron-tick + droplet can overlap after 09:00.
+  if (!force) {
+    const claimed = await claimPushOnce(pushClaimKey, 26 * 3600_000)
+    if (!claimed) {
+      await touchCronHeartbeat('/api/lark/daily-market-report', {
+        status: 200,
+        outcome: 'skipped',
+        reason: 'claim_held',
+      })
+      return res.status(200).json({
+        ok: true,
+        skipped: true,
+        reason: 'claim_held',
+        dayKey,
+        via: cron ? 'cron' : 'manual',
+        note: 'Another instance already claimed today’s daily push',
+      })
+    }
   }
 
   try {
@@ -229,6 +273,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       via: 'chat_id',
     })
   } catch (e) {
+    if (!force) await releasePushClaim(pushClaimKey)
     await touchCronHeartbeat('/api/lark/daily-market-report', {
       status: 502,
       outcome: 'error',

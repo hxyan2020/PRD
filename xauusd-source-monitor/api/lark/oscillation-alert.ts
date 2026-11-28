@@ -13,6 +13,7 @@ import {
 } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
+import { claimPushOnce, releasePushClaim } from './_lib/dedupe.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
   DEFAULT_OSC_GROUP_CHAT_ID,
@@ -192,15 +193,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Dedupe live alerts (not demo)
+  const alertKey = alertDedupeKey(snap)
   if (!wantDemo && !force) {
-    const key = alertDedupeKey(snap)
-    if (state.lastAlertKey === key && state.lastAlertAt && now - state.lastAlertAt < 50 * 60_000) {
+    if (state.lastAlertKey === alertKey && state.lastAlertAt && now - state.lastAlertAt < 50 * 60_000) {
       await beat({ status: 200, outcome: 'skipped', reason: 'deduped' })
       return res.status(200).json({
         ok: true,
         skipped: true,
         reason: 'deduped',
-        key,
+        key: alertKey,
         state,
       })
     }
@@ -221,16 +222,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(503).json({ ok: false, error: 'Lark not configured', snap })
   }
 
+  // Cross-instance lock so cron + cron-tick cannot both push the same alert key.
+  const pushClaimKey = wantDemo
+    ? `push:osc-demo:${OSC_DEMO_DAY}`
+    : `push:osc:${alertKey}`
+  if (!force) {
+    const claimed = await claimPushOnce(pushClaimKey, wantDemo ? 36 * 3600_000 : 55 * 60_000)
+    if (!claimed) {
+      await beat({ status: 200, outcome: 'skipped', reason: 'claim_held' })
+      return res.status(200).json({
+        ok: true,
+        skipped: true,
+        reason: 'claim_held',
+        key: alertKey,
+        via: cron ? 'cron' : 'manual',
+      })
+    }
+  }
+
   const results = await pushToGroup(card, groupId)
   const anyOk = results.some((r) => r.ok)
   if (anyOk) {
     const next: OscState = {
       ...state,
-      lastAlertKey: alertDedupeKey(snap),
+      lastAlertKey: alertKey,
       lastAlertAt: Date.now(),
     }
     if (wantDemo || snap.demo) next.demoSentDay = OSC_DEMO_DAY
     await writeState(next)
+  } else if (!force) {
+    await releasePushClaim(pushClaimKey)
   }
 
   await beat({

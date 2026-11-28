@@ -170,3 +170,84 @@ export function releaseClaim(key: string) {
     /* ignore */
   }
 }
+
+/**
+ * Strict claim for cron / fan-out pushes (daily / weekly / osc).
+ * Unlike `claimOnceDurable`, exclusive-create failure means **another
+ * instance already claimed** — we never overwrite-and-proceed, so two
+ * concurrent cron-tick / Vercel cron invocations cannot both send.
+ */
+export async function claimPushOnce(
+  key: string,
+  ttlMs = DEFAULT_TTL_MS,
+): Promise<boolean> {
+  if (!key) return true
+  if (!claimOnce(key, ttlMs)) return false
+
+  const token = (process.env.BLOB_READ_WRITE_TOKEN || '').trim()
+  if (!token) return true
+
+  const name = durableName(key)
+  const now = Date.now()
+  try {
+    const existing = await readDurableJson<{ at: number; key: string }>(name)
+    if (existing?.at && now - existing.at < ttlMs) {
+      mem.set(key, existing.at)
+      return false
+    }
+  } catch {
+    /* try exclusive put */
+  }
+
+  const body = JSON.stringify({ at: now, key })
+  try {
+    await put(`ve-lark-durable/${name}`, body, {
+      access: 'private',
+      addRandomSuffix: false,
+      allowOverwrite: false,
+      contentType: 'application/json',
+      token,
+    })
+    writeTmpJson(name, { at: now, key })
+    return true
+  } catch {
+    // Exclusive create failed: either another instance claimed, or Blob is down.
+    try {
+      const again = await readDurableJson<{ at: number; key: string }>(name)
+      if (again?.at && now - again.at < ttlMs) {
+        mem.set(key, again.at)
+        releaseClaim(key)
+        return false
+      }
+    } catch {
+      /* ignore */
+    }
+    // Blob auth/network flaky — keep the local claim so a single instance still
+    // sends once. Cross-instance safety needs a working Blob token.
+    writeTmpJson(name, { at: now, key })
+    return true
+  }
+}
+
+/** Release a push claim so a failed send can be retried by the next tick. */
+export async function releasePushClaim(key: string): Promise<void> {
+  releaseClaim(key)
+  const name = durableName(key)
+  // Always clear local tmp so the next claimOnce/claimPushOnce can proceed
+  // even when Blob put is denied / offline.
+  writeTmpJson(name, { at: 0, key, released: true })
+  const token = (process.env.BLOB_READ_WRITE_TOKEN || '').trim()
+  if (!token) return
+  const body = JSON.stringify({ at: 0, key, released: true })
+  try {
+    await put(`ve-lark-durable/${name}`, body, {
+      access: 'private',
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: 'application/json',
+      token,
+    })
+  } catch {
+    /* best-effort */
+  }
+}

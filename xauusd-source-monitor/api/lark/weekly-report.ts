@@ -13,6 +13,7 @@ import {
 } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
+import { claimPushOnce, releasePushClaim } from './_lib/dedupe.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import { shanghaiDayKey } from './_lib/market.js'
 import { listIncidentsDurable } from './_lib/store.js'
@@ -188,7 +189,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const sent = await readSent()
-  if (!force && !demo && sent[report.window.weekKey] && cron) {
+  // Cron AND manual (unless force/demo) — same as daily, so verify curls cannot double-push.
+  if (!force && !demo && sent[report.window.weekKey]) {
     await touchCronHeartbeat('/api/lark/weekly-report', {
       status: 200,
       outcome: 'skipped',
@@ -200,6 +202,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       reason: 'already_sent_this_week',
       weekKey: report.window.weekKey,
       sentAt: sent[report.window.weekKey],
+      via: cron ? 'cron' : 'manual',
     })
   }
 
@@ -214,10 +217,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     })
   }
 
+  const pushClaimKey = `push:weekly:${report.window.weekKey}${demo ? ':demo' : ''}`
+  if (!force) {
+    const claimed = await claimPushOnce(pushClaimKey, 8 * 24 * 3600_000)
+    if (!claimed) {
+      await touchCronHeartbeat('/api/lark/weekly-report', {
+        status: 200,
+        outcome: 'skipped',
+        reason: 'claim_held',
+      })
+      return res.status(200).json({
+        ok: true,
+        skipped: true,
+        reason: 'claim_held',
+        weekKey: report.window.weekKey,
+        via: cron ? 'cron' : 'manual',
+      })
+    }
+  }
+
   try {
     const results = await dualPush(card, groupId, resolved.openId)
     const anyOk = results.some((r) => r.ok)
     if (!anyOk) {
+      if (!force) await releasePushClaim(pushClaimKey)
       await touchCronHeartbeat('/api/lark/weekly-report', {
         status: 502,
         outcome: 'error',
@@ -268,6 +291,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       recipientSource: resolved.source,
     })
   } catch (e) {
+    if (!force) await releasePushClaim(pushClaimKey)
     await touchCronHeartbeat('/api/lark/weekly-report', {
       status: 502,
       outcome: 'error',
