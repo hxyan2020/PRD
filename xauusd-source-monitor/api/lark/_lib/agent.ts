@@ -2972,8 +2972,8 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
   let attachmentKind = 'share'
   const userCaption = (inbound.text || '').trim()
   const session = await getSessionDurable(inbound.chatId, inbound.openId)
-  // Prefer sticky Chinese: share-card English must not reset the session language
-  // Desk default ZH; detectLang switches to en when the user writes English.
+  // Desk default ZH. detectLang mirrors the user's latest message language:
+  // EN keyword commands → en; 简体/繁體 commands → matching ZH; share-meta / soft acks stay sticky.
   const langFallback = session.preferredLang || 'zh-Hans'
   let lang = detectLang(inbound.text || '', langFallback)
   if (

@@ -19,7 +19,6 @@ const PAIRS: [string, string][] = [
   ['異', '异'],
   ['態', '态'],
   ['檢', '检'],
-  ['查', '查'],
   ['據', '据'],
   ['記', '记'],
   ['錄', '录'],
@@ -50,7 +49,6 @@ const PAIRS: [string, string][] = [
   ['計', '计'],
   ['數', '数'],
   ['證', '证'],
-  ['據', '据'],
   ['驗', '验'],
   ['進', '进'],
   ['閉', '闭'],
@@ -66,20 +64,13 @@ const PAIRS: [string, string][] = [
   ['業', '业'],
   ['監', '监'],
   ['測', '测'],
-  ['幣', '币'],
   ['帳', '帐'],
   ['戶', '户'],
   ['強', '强'],
-  ['平', '平'],
   ['複', '复'],
-  ['盤', '盘'],
   ['歸', '归'],
   ['檔', '档'],
-  ['報', '报'],
-  ['告', '告'],
   ['調', '调'],
-  ['查', '查'],
-  ['排', '排'],
   ['趨', '趋'],
   ['勢', '势'],
   ['發', '发'],
@@ -91,8 +82,89 @@ const PAIRS: [string, string][] = [
   ['權', '权'],
   ['簽', '签'],
   ['審', '审'],
-  ['處', '处'],
-  ['理', '理'],
+  // Command / desk keywords (short EN/ZH triggers)
+  ['幫', '帮'],
+  ['況', '况'],
+  ['結', '结'],
+  ['庫', '库'],
+  ['場', '场'],
+  ['識', '识'],
+  ['盪', '荡'],
+  ['預', '预'],
+  ['優', '优'],
+  ['參', '参'],
+  ['週', '周'],
+  ['飛', '飞'],
+  ['書', '书'],
+  ['單', '单'],
+  ['無', '无'],
+  ['啟', '启'],
+  ['動', '动'],
+  ['該', '该'],
+  ['嗎', '吗'],
+  ['問', '问'],
+  ['題', '题'],
+  ['號', '号'],
+  ['長', '长'],
+  ['兒', '儿'],
+  ['裏', '里'],
+  ['邊', '边'],
+  ['點', '点'],
+  ['幾', '几'],
+  ['會', '会'],
+  ['見', '见'],
+  ['話', '话'],
+  ['經', '经'],
+  ['達', '达'],
+  ['遠', '远'],
+  ['選', '选'],
+  ['擇', '择'],
+  ['靜', '静'],
+  ['頻', '频'],
+  ['變', '变'],
+  ['換', '换'],
+  ['傳', '传'],
+  ['輸', '输'],
+  ['載', '载'],
+  ['頁', '页'],
+  ['覽', '览'],
+  ['讀', '读'],
+  ['寫', '写'],
+  ['刪', '删'],
+  ['線', '线'],
+  ['網', '网'],
+  ['電', '电'],
+  ['訊', '讯'],
+  ['費', '费'],
+  ['離', '离'],
+  ['備', '备'],
+  ['註', '注'],
+  ['釋', '释'],
+  ['義', '义'],
+  ['議', '议'],
+  ['論', '论'],
+  ['護', '护'],
+  ['維', '维'],
+  ['運', '运'],
+  ['營', '营'],
+  ['團', '团'],
+  ['隊', '队'],
+  ['員', '员'],
+  ['瀏', '浏'],
+  ['鍵', '键'],
+  ['詞', '词'],
+  ['細', '细'],
+  ['節', '节'],
+  ['導', '导'],
+  ['聯', '联'],
+  ['絡', '络'],
+  ['勁', '劲'],
+  ['張', '张'],
+  ['兩', '两'],
+  ['並', '并'],
+  ['從', '从'],
+  ['當', '当'],
+  ['麼', '么'],
 ]
 
 const HANT_ONLY = new Set(PAIRS.map(([t]) => t).join(''))
@@ -102,10 +174,18 @@ const HANS_ONLY = new Set(PAIRS.map(([, s]) => s).join(''))
 export function looksLikeShareOrFileMeta(text: string): boolean {
   const t = text.trim()
   if (!t) return false
+  // Bare archive commands are not share meta (otherwise "done" sticks on ZH forever).
+  if (/^(done|reset)\s*$/i.test(t)) return false
   if (/^\[(file|share|docx|wiki|image)/i.test(t)) return true
-  return /(share_chat|file attachment|Project Progress|Blockers|\bDONE\b|Weekly Meeting|周会|週會|WC &|Pricing:|can view)/i.test(
-    t,
-  )
+  if (
+    /(share_chat|file attachment|Project Progress|Blockers|Weekly Meeting|周会|週會|WC &|Pricing:|can view)/i.test(
+      t,
+    )
+  ) {
+    return true
+  }
+  // ALL-CAPS DONE as a section label only appears inside longer share cards
+  return t.length >= 16 && /\bDONE\b/.test(t)
 }
 
 function pickZhVariant(text: string, fallback: Lang): Lang {
@@ -146,21 +226,19 @@ export function detectLang(text: string, fallback: Lang = 'en'): Lang {
   // English-only (or latin-dominant with fewer than 2 Han)
   if (latin > 0) {
     const zhFallback = fallback === 'zh-Hans' || fallback === 'zh-Hant'
-    // Keep Chinese session across doc shares / short English acks / file hints
-    if (
-      zhFallback &&
-      (looksLikeShareOrFileMeta(t) ||
-        t.length <= 48 ||
-        /^(ok|okay|k|thanks?|thx|ty|got it|same|yes|no|yep|nope)[\s!.]*$/i.test(t))
-    ) {
+    const softAck =
+      /^(ok|okay|k|thanks?|thx|ty|got it|same|yes|no|yep|nope)[\s!.]*$/i.test(t)
+    // Keep Chinese only for share/file meta noise and soft acks — NOT for
+    // English keyword commands (market / help / investigate / …) which must
+    // switch reply language to match the trigger language.
+    if (zhFallback && (looksLikeShareOrFileMeta(t) || softAck)) {
       return fallback
     }
-    // Explicit English sentence while session was Chinese — switch only when clearly English prose
-    if (zhFallback && han === 0 && latin >= 24 && /\s/.test(t)) return 'en'
+    // Pure Latin (no Han) → English, including short commands under a ZH session
+    if (han === 0) return 'en'
     if (!zhFallback) return 'en'
-    // Short / ambiguous latin while Chinese preferred → keep Chinese
-    if (zhFallback) return fallback
-    return 'en'
+    // Mixed latin + sparse Han while Chinese preferred → keep Chinese
+    return fallback
   }
 
   return fallback

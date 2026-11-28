@@ -97,7 +97,7 @@ export function accessUnavailableReply(lang: Lang, detail?: string): string {
 const CMD_END = '(?:\\s|$|[：:：])'
 
 const COMMAND_INVESTIGATE = new RegExp(
-  `^(?:investigate\\b|排查|开始排查|開始排查)${CMD_END}`,
+  `^(?:investigate\\b|排查|开始排查|開始排查|调查|調查)${CMD_END}`,
   'i',
 )
 const COMMAND_MARKET = new RegExp(`^(?:market\\b|行情|市况|市況|趋势|趨勢)${CMD_END}`, 'i')
@@ -146,22 +146,22 @@ const COMMAND_KNOWLEDGE = new RegExp(
 )
 /** On-demand weekly digest (also cron-pushed Fridays 16:00 CST). */
 const COMMAND_WEEKLY =
-  /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
+  /^(?:weekly(?:\s*report|\s*digest)?|week\s*report|周报|周報|週報|本周总结|本週總結|本周汇总|本週匯總)\s*$/i
 
 /**
  * Oscillation / leverage / breaking-news alert status (cron every 10m).
  * Must beat INVESTIGATE_RE which also matches「预警」.
  */
 const COMMAND_OSCILLATION =
-  /^(?:oscillation(?:\s*alert)?|osc(?:illation)?\s*warn(?:ing)?|震荡行情预警|震盪行情預警|震荡预警|震盪預警|震荡预警状态|震盪預警狀態)\s*$/i
+  /^(?:oscillation(?:\s*alert)?|osc(?:illation)?\s*warn(?:ing)?|震荡行情预警|震盪行情預警|震荡预警|震盪預警|震荡预警状态|震盪預警狀態|震荡行情|震盪行情)\s*$/i
 
 /** Daily 24h morning market digest (cron 09:00 Asia/Shanghai → group). */
 const COMMAND_DAILY_MARKET =
-  /^(?:daily(?:\s*24h)?(?:\s*market)?(?:\s*report)?|morning(?:\s*report)?|每日\s*24h\s*早报|每日24h早报|每日\s*24\s*小时早报|每日24小時早報|每日早报|每日早報|24h\s*早报|24h早報|24小时早报|24小時早報)\s*$/i
+  /^(?:daily(?:\s*24h)?(?:\s*market)?(?:\s*report)?|morning(?:\s*report)?|每日\s*24h\s*早报|每日24h早报|每日\s*24\s*小时早报|每日24小時早報|每日早报|每日早報|24h\s*早报|24h早報|24小时早报|24小時早報|早报|早報)\s*$/i
 
 /** Alert optimize desk (CSV / API analysis) — web + Lark greeting entry. */
 const COMMAND_ALERT_OPTIMIZE =
-  /^(?:alert[\s_-]*optim(?:ize|ise)|alert[\s_-]*tuning|告警优化|告警優化|告警调参|告警調參)\s*$/i
+  /^(?:alert[\s_-]*optim(?:ize|ise)|alert[\s_-]*tuning|告警优化|告警優化|告警调参|告警調參|优化告警|優化告警)\s*$/i
 
 export function isOscillationCommand(text: string): boolean {
   return COMMAND_OSCILLATION.test(text.trim())
