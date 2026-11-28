@@ -2854,6 +2854,15 @@ async function main() {
     'oscillation beats on ping/no_trigger/dedupe; tick has ping fallback',
   )
   record(
+    'cron.oscillation_group_only',
+    oscHandlerSrc.includes('async function pushToGroup') &&
+      oscHandlerSrc.includes('group only (no Yan DM)') &&
+      !oscHandlerSrc.includes('async function dualPush') &&
+      !oscHandlerSrc.includes('sendCardToOpenId') &&
+      !oscHandlerSrc.includes('DEFAULT_OSC_DM_CHAT_ID'),
+    '震荡行情 pushes group only — no Yan / Haixiang DM',
+  )
+  record(
     'cron.oscillation_eval_budget',
     oscLibSrc.includes('OSC_EVAL_BUDGET_MS = 12_000') &&
       oscLibSrc.includes('FETCH_TIMEOUT_MS = 4_000') &&

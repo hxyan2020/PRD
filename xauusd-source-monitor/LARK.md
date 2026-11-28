@@ -59,7 +59,7 @@ If `eventsDelivered` stays `false` after messaging, the Request URL is still wro
 - The group shares one investigation session so later `@bot` replies continue the same case.
 | `LARK_ENCRYPT_KEY` | **Do not use** until decrypt is implemented — keep Encrypt Key off |
 | `DESK_GATEWAY_TOKEN` | Protects desk smoke `/api/lark/incidents` only; unrelated to Lark chat |
-| `LARK_ADMIN_OPEN_ID` | **Required for weekly + oscillation + token-usage DM fallback** — Yan Haixiang’s Feishu `open_id` |
+| `LARK_ADMIN_OPEN_ID` | **Required for weekly + token-usage DM / group @mention** — Yan Haixiang’s Feishu `open_id` |
 | `LARK_TOKEN_USAGE_CHAT_ID` | Optional Yan DM chat for daily Token report (falls back to `LARK_MARKET_CHAT_ID`) |
 | `LARK_TOKEN_USAGE_START` | Optional override for Token report start (default `18:00` SGT) |
 | `LARK_ADMIN_EMAIL` | Optional fallback to resolve open_id via Contact API |
@@ -116,7 +116,7 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 | GET/POST | `/api/lark/market-report` | Half-hourly Yan DM **disabled**; `?dry=1` / `force` only |
 | GET/POST | `/api/lark/daily-market-report` | Daily 09:00 CST 24h digest → group; `?dry=1` preview |
 | GET/POST | `/api/lark/token-usage-report` | Daily 18:00 SGT Token usage → Yan DM only; `?dry=1` preview |
-| GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → group + Yan DM |
+| GET/POST | `/api/lark/oscillation-alert` | Oscillation / funding / news alert → **group only** (no Yan DM) |
 | GET/POST | `/api/lark/cron-tick` | Every 5 min fan-out of all push jobs on public alias |
 | GET/POST | `/api/lark/cron-health` | Every 30m + :05/:35 health DM to Yan (open_id+chat_id); red @raise on miss |
 
@@ -166,7 +166,7 @@ at `*/30` and `5,35` so one missed fire cannot mute the slot.
 
 - **Cron:** every **10 min** (`*/10 * * * *`) → `/api/lark/oscillation-alert` (+ cron-tick ping keep-alive)
 - **Triggers:** Binance XAUUSDT (OKX backup) short-horizon amplitude ≫ dynamic mean, **or** |funding| ≫ historical mean (leverage crowding proxy), **or** breaking news keywords
-- **Delivery:** Feishu **group** + **Haixiang DM** (chat_id, open_id fallback); short 简体 card + sources + 连锁强平风险提示
+- **Delivery:** Feishu **group only** (no Haixiang / Yan DM); short 简体 card + sources + 连锁强平风险提示
 - **Demo:** **2026-11-25 10:00** Asia/Shanghai once (`LARK_OSC_DEMO_DAY` / `LARK_OSC_DEMO_START`); catch-up until 18:00 CST if the :00 cron is skipped
 - **Preview / force:** `GET ?dry=1` · `POST { "force": true, "demo": true }`
 

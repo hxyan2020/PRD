@@ -291,7 +291,7 @@ export async function buildCronHealthReport(args?: {
     jobs.push({
       id: 'oscillation-alert',
       label: '震荡预警',
-      schedule: '每 10 分钟探测（有触发才推卡）',
+      schedule: '每 10 分钟探测 → 仅推群（有触发才推卡）',
       expected: true,
       ok,
       detail: [

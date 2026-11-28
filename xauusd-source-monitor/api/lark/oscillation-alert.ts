@@ -1,7 +1,7 @@
 /**
  * GET/POST /api/lark/oscillation-alert
  * - Cron every 10 min (+ cron-tick / ping keep-alive): evaluate Binance (OKX backup) vol / funding / news;
- *   on trigger, push card to group + Yan DM.
+ *   on trigger, push card to risk **group only** (no Yan / Haixiang DM).
  * - Demo: 2026-11-25 10:00 Asia/Shanghai — force a DEMO card once.
  * - Manual: GET ?dry=1; POST { force: true, demo: true }.
  */
@@ -10,13 +10,11 @@ import {
   larkConfigured,
   resolveAdminOpenId,
   sendCardToChat,
-  sendCardToOpenId,
 } from './_lib/client.js'
 import { allowCronOrDesk, isVercelCron, setCronRouteHeaders } from './_lib/cronAuth.js'
 import { touchCronHeartbeat } from './_lib/cronHeartbeat.js'
 import { readDurableJson, writeDurableJson } from './_lib/durableJson.js'
 import {
-  DEFAULT_OSC_DM_CHAT_ID,
   DEFAULT_OSC_GROUP_CHAT_ID,
   OSC_DEMO_DAY,
   OSC_DEMO_START_HM,
@@ -58,15 +56,6 @@ function resolveGroupChatId(req?: string): string {
   )
 }
 
-function resolveDmChatId(req?: string): string {
-  return (
-    (req || '').trim() ||
-    (process.env.LARK_OSC_DM_CHAT_ID || '').trim() ||
-    (process.env.LARK_MARKET_CHAT_ID || '').trim() ||
-    DEFAULT_OSC_DM_CHAT_ID
-  )
-}
-
 function alertDedupeKey(snap: OscillationSnapshot): string {
   const day = shanghaiDayKey(snap.fetchedAt)
   const kinds = [...snap.triggers].filter((t) => t !== 'demo').sort().join('+') || 'demo'
@@ -75,7 +64,8 @@ function alertDedupeKey(snap: OscillationSnapshot): string {
   return `${day}T${hour}:${kinds}`
 }
 
-async function dualPush(card: Record<string, unknown>, groupId: string, dmChatId: string) {
+/** Group only — Yan / Haixiang DM explicitly disabled for 震荡行情. */
+async function pushToGroup(card: Record<string, unknown>, groupId: string) {
   const results: { channel: string; ok: boolean; error?: string }[] = []
   try {
     await sendCardToChat(groupId, card)
@@ -86,24 +76,6 @@ async function dualPush(card: Record<string, unknown>, groupId: string, dmChatId
       ok: false,
       error: e instanceof Error ? e.message : 'group send failed',
     })
-  }
-  try {
-    await sendCardToChat(dmChatId, card)
-    results.push({ channel: 'dm_chat', ok: true })
-  } catch (e) {
-    const err1 = e instanceof Error ? e.message : 'dm chat failed'
-    try {
-      const admin = await resolveAdminOpenId()
-      if (!admin.openId) throw new Error(err1)
-      await sendCardToOpenId(admin.openId, card)
-      results.push({ channel: 'dm_open_id', ok: true })
-    } catch (e2) {
-      results.push({
-        channel: 'dm',
-        ok: false,
-        error: e2 instanceof Error ? e2.message : err1,
-      })
-    }
   }
   return results
 }
@@ -125,7 +97,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     demo?: boolean
     ping?: boolean
     groupChatId?: string
-    dmChatId?: string
   }
   const dry =
     String(q.dry || '') === '1' ||
@@ -162,8 +133,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const day = shanghaiDayKey(now)
   const hm = shanghaiHm(now)
   const groupId = resolveGroupChatId(body.groupChatId || String(q.groupChatId || ''))
-  const dmChatId = resolveDmChatId(body.dmChatId || String(q.dmChatId || ''))
   const state = await readState()
+  // open_id used only for in-card @mention in the group — never for a separate DM.
   const admin = await resolveAdminOpenId({ preferChatId: groupId })
 
   const wantDemo =
@@ -200,11 +171,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       snap,
       card,
       groupId,
-      dmChatId,
+      recipient: 'group only (no Yan DM)',
       adminOpenId: admin.openId ? admin.openId.slice(0, 8) + '…' : null,
       adminSource: admin.source,
       hasRealAt: Boolean(admin.openId?.startsWith('ou_')),
-      schedule: 'Every 10 min + demo 10:00 CST on campaign day',
+      schedule: 'Every 10 min + demo 10:00 CST on campaign day → group only',
     })
   }
 
@@ -250,7 +221,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(503).json({ ok: false, error: 'Lark not configured', snap })
   }
 
-  const results = await dualPush(card, groupId, dmChatId)
+  const results = await pushToGroup(card, groupId)
   const anyOk = results.some((r) => r.ok)
   if (anyOk) {
     const next: OscState = {
