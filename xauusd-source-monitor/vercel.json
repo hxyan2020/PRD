@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/api/lark/(alert-nudge|oscillation-alert|market-report|daily-market-report|weekly-demo|weekly-report|token-usage-report|cron-tick|cron-health)",
+      "source": "/api/lark/(alert-nudge|oscillation-alert|market-report|daily-market-report|weekly-demo|weekly-report|token-usage-report|cron-tick|cron-health|admin-console)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, max-age=0, must-revalidate" },
         { "key": "CDN-Cache-Control", "value": "no-store" },

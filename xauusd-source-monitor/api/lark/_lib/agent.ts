@@ -100,6 +100,7 @@ import {
   botRuntimeMetaReply,
   casualChatReply,
   chatbotFallbackReply,
+  adminOnlyDeniedReply,
   clearReviewDeniedReply,
   isStubMenuReply,
   classifyIntent,
@@ -2288,6 +2289,43 @@ async function handleCardActionCore(args: {
     }
   }
 
+  if (
+    action === 'admin_console_refresh' ||
+    action === 'admin_console_cron' ||
+    action === 'admin_console_token' ||
+    action === 'admin_console_queue'
+  ) {
+    const gate = await isLarkAdminUser(args.openId, {
+      preferChatId: chatId || args.chatId,
+    })
+    if (!gate.ok) {
+      return {
+        card: simpleCard(
+          lang === 'en' ? 'Permission denied' : '权限不足',
+          adminOnlyDeniedReply(lang, '私有控制台'),
+          'orange',
+        ),
+      }
+    }
+    if (action === 'admin_console_refresh') {
+      const { buildAdminConsoleCard } = await import('./adminConsole.js')
+      return {
+        card: await buildAdminConsoleCard({ lang, openId: args.openId }),
+      }
+    }
+    if (action === 'admin_console_cron') {
+      const { buildCronHealthReport } = await import('./cronHealth.js')
+      const report = await buildCronHealthReport({ adminOpenId: args.openId })
+      return { card: report.card }
+    }
+    if (action === 'admin_console_token') {
+      const { buildTokenUsageCard } = await import('./tokenUsage.js')
+      return { card: await buildTokenUsageCard(lang) }
+    }
+    const { buildSubmissionQueueCard } = await import('./adminConsole.js')
+    return { card: await buildSubmissionQueueCard(lang) }
+  }
+
   if (action === 'start_analysis') {
     const stashedAlerts = (() => {
       const raw = args.value.alerts
@@ -3399,6 +3437,11 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       intent === 'market' ||
       intent === 'weekly' ||
       intent === 'weekly_opt_log' ||
+      intent === 'admin_console' ||
+      intent === 'cron_health' ||
+      intent === 'token_usage' ||
+      intent === 'memory_queue' ||
+      intent === 'memory_log' ||
       intent === 'oscillation' ||
       intent === 'daily_market' ||
       intent === 'skills' ||
@@ -3460,6 +3503,11 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
       intent === 'knowledge' ||
       intent === 'weekly' ||
       intent === 'weekly_opt_log' ||
+      intent === 'admin_console' ||
+      intent === 'cron_health' ||
+      intent === 'token_usage' ||
+      intent === 'memory_queue' ||
+      intent === 'memory_log' ||
       intent === 'oscillation' ||
       intent === 'daily_market' ||
       intent === 'alert_optimize')
@@ -3683,6 +3731,65 @@ async function handleMessageCore(msg: IncomingMessage): Promise<BotReply | null>
         entries.length > 0 ? weekKey : undefined,
       ),
     }
+  }
+
+  if (
+    intent === 'admin_console' ||
+    intent === 'cron_health' ||
+    intent === 'token_usage' ||
+    intent === 'memory_queue' ||
+    intent === 'memory_log'
+  ) {
+    const gate = await isLarkAdminUser(inbound.openId, {
+      preferChatId: inbound.chatId,
+    })
+    if (!gate.ok) {
+      const feat =
+        intent === 'admin_console'
+          ? lang === 'en'
+            ? 'private console'
+            : '私有控制台'
+          : intent === 'cron_health'
+            ? 'Cron健康'
+            : intent === 'token_usage'
+              ? 'Token用量'
+              : intent === 'memory_queue'
+                ? '待审批'
+                : '审批日志'
+      return {
+        card: simpleCard(
+          lang === 'en' ? 'Permission denied' : '权限不足',
+          adminOnlyDeniedReply(lang, feat),
+          'orange',
+        ),
+      }
+    }
+    if (intent === 'admin_console') {
+      const { buildAdminConsoleCard } = await import('./adminConsole.js')
+      return {
+        card: await buildAdminConsoleCard({
+          lang,
+          openId: inbound.openId,
+        }),
+      }
+    }
+    if (intent === 'cron_health') {
+      const { buildCronHealthReport } = await import('./cronHealth.js')
+      const report = await buildCronHealthReport({
+        adminOpenId: inbound.openId,
+      })
+      return { card: report.card }
+    }
+    if (intent === 'token_usage') {
+      const { buildTokenUsageCard } = await import('./tokenUsage.js')
+      return { card: await buildTokenUsageCard(lang) }
+    }
+    if (intent === 'memory_queue') {
+      const { buildSubmissionQueueCard } = await import('./adminConsole.js')
+      return { card: await buildSubmissionQueueCard(lang) }
+    }
+    const { buildSubmissionLogCard } = await import('./adminConsole.js')
+    return { card: await buildSubmissionLogCard(lang) }
   }
 
   if (intent === 'oscillation') {

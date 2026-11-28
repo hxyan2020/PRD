@@ -205,6 +205,26 @@ const COMMAND_WEEKLY =
 const COMMAND_WEEKLY_OPT_LOG =
   /^(?:accepted\s*opts?(?:\s*log)?|weekly\s*opt(?:s)?(?:\s*log|\s*accept(?:ed)?)?|采纳日志|採納日誌|已采纳|已採納|采纳优化|採納優化|周报采纳|週報採納)\s*$/i
 
+/** Haixiang private console (admin DM). */
+const COMMAND_ADMIN_CONSOLE =
+  /^(?:console|admin(?:\s*console)?|desk(?:\s*status|\s*console)?|private\s*console|控制台|管理台|私有台|私有控制台|私有控制臺|控制台狀態|管理狀態|haixiang\s*console)\s*$/i
+
+/** Cron health card on demand (admin). */
+const COMMAND_CRON_HEALTH =
+  /^(?:cron\s*health|health\s*check|health\s*report|cron健康|cron 健康|健康报告|健康報告|健康检查|健康檢查)\s*$/i
+
+/** Token usage card (admin). */
+const COMMAND_TOKEN_USAGE =
+  /^(?:token\s*usage|tokens?(?:\s*report)?|token用量|Token用量|消耗|用量|token消耗|token消耗量|Token用量報表|token用量報表)\s*$/i
+
+/** Skills/KB open submission queue (admin). */
+const COMMAND_MEMORY_QUEUE =
+  /^(?:submissions?(?:\s*queue)?|pending\s*skills?|approval\s*queue|待审批|待審批|提交队列|提交隊列|审批队列|審批隊列)\s*$/i
+
+/** Skills/KB approval log (admin). */
+const COMMAND_MEMORY_LOG =
+  /^(?:submission\s*log|approval\s*log|approvals?\s*log|审批日志|審批日誌|提交日志|提交日誌)\s*$/i
+
 /**
  * Oscillation / leverage / breaking-news alert status (cron every 10m).
  * Must beat INVESTIGATE_RE which also matches「预警」.
@@ -468,6 +488,11 @@ export function classifyIntent(
   if (COMMAND_SKILLS.test(t)) return 'skills'
   if (COMMAND_KNOWLEDGE.test(t)) return 'knowledge'
   if (COMMAND_WEEKLY_OPT_LOG.test(t)) return 'weekly_opt_log'
+  if (COMMAND_ADMIN_CONSOLE.test(t)) return 'admin_console'
+  if (COMMAND_CRON_HEALTH.test(t)) return 'cron_health'
+  if (COMMAND_TOKEN_USAGE.test(t)) return 'token_usage'
+  if (COMMAND_MEMORY_QUEUE.test(t)) return 'memory_queue'
+  if (COMMAND_MEMORY_LOG.test(t)) return 'memory_log'
   if (COMMAND_WEEKLY.test(t)) return 'weekly'
   if (COMMAND_OSCILLATION.test(t)) return 'oscillation'
   if (COMMAND_DAILY_MARKET.test(t)) return 'daily_market'
@@ -537,6 +562,11 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
   if (intent === 'knowledge') return COMMAND_KNOWLEDGE.test(t)
   if (intent === 'weekly') return COMMAND_WEEKLY.test(t)
   if (intent === 'weekly_opt_log') return COMMAND_WEEKLY_OPT_LOG.test(t)
+  if (intent === 'admin_console') return COMMAND_ADMIN_CONSOLE.test(t)
+  if (intent === 'cron_health') return COMMAND_CRON_HEALTH.test(t)
+  if (intent === 'token_usage') return COMMAND_TOKEN_USAGE.test(t)
+  if (intent === 'memory_queue') return COMMAND_MEMORY_QUEUE.test(t)
+  if (intent === 'memory_log') return COMMAND_MEMORY_LOG.test(t)
   if (intent === 'oscillation') return COMMAND_OSCILLATION.test(t)
   if (intent === 'daily_market') return COMMAND_DAILY_MARKET.test(t)
   if (intent === 'alert_optimize') return COMMAND_ALERT_OPTIMIZE.test(t)
@@ -556,6 +586,11 @@ export function isExplicitCommand(text: string, intent?: Intent): boolean {
     COMMAND_KNOWLEDGE.test(t) ||
     COMMAND_WEEKLY.test(t) ||
     COMMAND_WEEKLY_OPT_LOG.test(t) ||
+    COMMAND_ADMIN_CONSOLE.test(t) ||
+    COMMAND_CRON_HEALTH.test(t) ||
+    COMMAND_TOKEN_USAGE.test(t) ||
+    COMMAND_MEMORY_QUEUE.test(t) ||
+    COMMAND_MEMORY_LOG.test(t) ||
     COMMAND_OSCILLATION.test(t) ||
     COMMAND_DAILY_MARKET.test(t) ||
     COMMAND_ALERT_OPTIMIZE.test(t) ||
@@ -639,6 +674,41 @@ export function needsCommandConfirm(text: string, intent: Intent): boolean {
 }
 
 /** Gentle deny when a non-Haixiang user tries to clear 复盘 history. */
+export function adminOnlyDeniedReply(lang: Lang, feature?: string): string {
+  const feat =
+    feature ||
+    (lang === 'zh-Hans'
+      ? '该功能'
+      : lang === 'zh-Hant'
+        ? '該功能'
+        : 'this feature')
+  if (lang === 'zh-Hans') {
+    return [
+      '🔒 **权限不足**',
+      '',
+      `• **${feat}** 仅 **Yan Haixiang** 可使用。`,
+      '• 你仍可发送 **帮助**／**复盘**／**排查** 等公开命令。',
+      '• 需要权限请联系 **@Yan Haixiang**。',
+    ].join('\n')
+  }
+  if (lang === 'zh-Hant') {
+    return [
+      '🔒 **權限不足**',
+      '',
+      `• **${feat}** 僅 **Yan Haixiang** 可使用。`,
+      '• 你仍可發送 **幫助**／**複盤**／**排查** 等公開命令。',
+      '• 需要權限請聯繫 **@Yan Haixiang**。',
+    ].join('\n')
+  }
+  return [
+    '🔒 **Permission denied**',
+    '',
+    `• **${feat}** is **Yan Haixiang only**.`,
+    '• You can still use public commands (**help** / **review** / **investigate**).',
+    '• Ask **@Yan Haixiang** for access.',
+  ].join('\n')
+}
+
 export function clearReviewDeniedReply(lang: Lang): string {
   if (lang === 'zh-Hans') {
     return [

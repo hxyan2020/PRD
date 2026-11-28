@@ -831,6 +831,50 @@ function investigationActionToast(
           en_us: 'Opening accept log',
         },
       }
+    case 'admin_console_refresh':
+      return {
+        type: 'success',
+        content: pick('刷新控制台', '刷新控制台', 'Refreshing console'),
+        i18n: {
+          zh_cn: '刷新控制台',
+          zh_hk: '刷新控制台',
+          zh_tw: '刷新控制台',
+          en_us: 'Refreshing console',
+        },
+      }
+    case 'admin_console_cron':
+      return {
+        type: 'info',
+        content: pick('打开 Cron 健康', '打開 Cron 健康', 'Opening cron health'),
+        i18n: {
+          zh_cn: '打开 Cron 健康',
+          zh_hk: '打開 Cron 健康',
+          zh_tw: '打開 Cron 健康',
+          en_us: 'Opening cron health',
+        },
+      }
+    case 'admin_console_token':
+      return {
+        type: 'info',
+        content: pick('打开 Token 用量', '打開 Token 用量', 'Opening token usage'),
+        i18n: {
+          zh_cn: '打开 Token 用量',
+          zh_hk: '打開 Token 用量',
+          zh_tw: '打開 Token 用量',
+          en_us: 'Opening token usage',
+        },
+      }
+    case 'admin_console_queue':
+      return {
+        type: 'info',
+        content: pick('打开待审批', '打開待審批', 'Opening submissions'),
+        i18n: {
+          zh_cn: '打开待审批',
+          zh_hk: '打開待審批',
+          zh_tw: '打開待審批',
+          en_us: 'Opening submissions',
+        },
+      }
     case 'alert_nudge_ack':
       return {
         type: 'success',

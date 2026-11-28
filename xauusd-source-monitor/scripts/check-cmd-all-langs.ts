@@ -78,6 +78,36 @@ const ROWS: Row[] = [
     hant: ['週報採納', '採納優化'],
   },
   {
+    intent: 'admin_console',
+    en: ['console', 'admin console', 'desk status'],
+    hans: ['控制台', '管理台', '私有控制台'],
+    hant: ['控制台狀態', '管理狀態'],
+  },
+  {
+    intent: 'cron_health',
+    en: ['cron health', 'health check', 'health report'],
+    hans: ['健康报告', '健康检查'],
+    hant: ['健康報告', '健康檢查'],
+  },
+  {
+    intent: 'token_usage',
+    en: ['token usage', 'tokens', 'token report'],
+    hans: ['Token用量', 'token用量', 'token消耗'],
+    hant: ['Token用量報表'],
+  },
+  {
+    intent: 'memory_queue',
+    en: ['submissions', 'submission queue', 'pending skills'],
+    hans: ['待审批', '提交队列', '审批队列'],
+    hant: ['待審批', '提交隊列', '審批隊列'],
+  },
+  {
+    intent: 'memory_log',
+    en: ['submission log', 'approval log'],
+    hans: ['审批日志', '提交日志'],
+    hant: ['審批日誌'],
+  },
+  {
     intent: 'weekly',
     en: ['weekly', 'weekly report', 'week report'],
     hans: ['周报', '本周总结'],
