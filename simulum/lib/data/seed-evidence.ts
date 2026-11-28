@@ -237,8 +237,8 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
         caption: "Zhuangzi's butterfly dream questions which layer of experience is real",
         body: {
           what: "The Daoist parable of Zhuangzi dreaming he was a butterfly asks which layer of experience is 'real'.",
-          where: "Sourced from Wikipedia (zh).",
-          when: "A classical Chinese parable; catalogue timestamps track when SIMULUM indexed modern discussions of it.",
+          where: "Sourced from Wikipedia.",
+          when: "A classical parable; catalogue timestamps track when SIMULUM indexed modern discussions of it.",
           how: "The story uses a dream/awakening reversal to unsettle confidence in ordinary waking reality.",
           why: "Posted as a cultural ancestor of simulation-style skepticism about which world is base reality.",
         },
@@ -259,13 +259,13 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
     },
     translations: {
       en: {
-        caption: "Chinese discussion of Bostrom: if many ancestor sims run, we are likely inside one",
+        caption: "If civilizations can run many ancestor simulations, we are probably inside one",
         body: {
-          what: "Chinese-language treatments place Bostrom's simulation argument alongside computational cosmology: if vast ancestor simulations can run, we are probably in one.",
-          where: "Sourced from Wikipedia (zh).",
-          when: "Timing follows the Chinese encyclopedic article and later public discussion.",
+          what: "Bostrom's simulation argument is paired with computational cosmology: if vast ancestor simulations can run, observers like us are probably in one.",
+          where: "Sourced from Wikipedia.",
+          when: "Timing follows the encyclopedic article and later public discussion.",
           how: "The claim is presented as a probability argument about posthuman civilizations running ancestor simulations.",
-          why: "Catalogued as a widely shared Chinese-language formulation of the simulation hypothesis.",
+          why: "Catalogued as a widely shared formulation of the simulation hypothesis.",
         },
       },
     },
@@ -284,13 +284,13 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
     },
     translations: {
       en: {
-        caption: "French simulation hypothesis: posthuman sims imply we probably live in one",
+        caption: "If posthuman civilizations run ancestor simulations, we probably live in one",
         body: {
-          what: "The French-language simulation hypothesis retells Bostrom's argument: if posthuman civilizations run ancestor simulations, we probably live in one.",
-          where: "Sourced from Wikipedia (fr).",
-          when: "Timing follows the French encyclopedic article and public discussion around it.",
-          how: "It presents a trilemma-style probability argument rather than a laboratory measurement.",
-          why: "Included as a major French-language entry point to the same simulation debate.",
+          what: "Bostrom's argument is retold as a trilemma: if posthuman civilizations run ancestor simulations, we probably live in one.",
+          where: "Sourced from Wikipedia.",
+          when: "Timing follows the encyclopedic article and public discussion around it.",
+          how: "It presents a probability argument rather than a laboratory measurement.",
+          why: "Included as a major entry point to the simulation debate.",
         },
       },
     },
@@ -309,13 +309,13 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
     },
     translations: {
       en: {
-        caption: "Spanish framing: observable reality as a program run by an advanced civilization",
+        caption: "Observable reality as a program run by an advanced civilization",
         body: {
-          what: "Spanish-language simulation discussions argue observable reality could be a computational program executed by an advanced civilization.",
-          where: "Sourced from Wikipedia (es).",
-          when: "Timing follows the Spanish encyclopedic article and later public discussion.",
+          what: "The simulation hypothesis argues observable reality could be a computational program executed by an advanced civilization.",
+          where: "Sourced from Wikipedia.",
+          when: "Timing follows the encyclopedic article and later public discussion.",
           how: "The claim is framed as a metaphysical and popular-science hypothesis about a programmed universe.",
-          why: "Catalogued as a distinct Spanish-language formulation of the simulation hypothesis.",
+          why: "Catalogued as a distinct formulation of the simulation hypothesis.",
         },
       },
     },
@@ -426,13 +426,13 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
     },
     translations: {
       en: {
-        caption: "German discourse links Bostrom's argument to the Matrix metaphor",
+        caption: "Bostrom's argument linked to the Matrix metaphor as cultural evidence",
         body: {
-          what: "German-language discussions connect Bostrom's simulation argument with the Matrix metaphor as cultural evidence.",
-          where: "Sourced from Wikipedia (de).",
-          when: "Timing follows the German encyclopedic article and public discussion around it.",
+          what: "Discussions connect Bostrom's simulation argument with the Matrix metaphor as cultural evidence for a simulated world.",
+          where: "Sourced from Wikipedia.",
+          when: "Timing follows the encyclopedic article and public discussion around it.",
           how: "It blends a formal probability argument with a widely known film metaphor.",
-          why: "Catalogued as a distinct German-language cultural framing of the simulation debate.",
+          why: "Catalogued as a cultural framing of the simulation debate.",
         },
       },
     },
@@ -451,13 +451,13 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
     },
     translations: {
       en: {
-        caption: "Russian retelling of Bostrom: with many sims, almost all observers are simulated",
+        caption: "With many simulations, almost all observers are simulated",
         body: {
-          what: "Russian-language sources retell Bostrom's argument: if many simulations exist, almost all observers are simulated.",
-          where: "Sourced from Wikipedia (ru).",
-          when: "Timing follows the Russian encyclopedic article and later public discussion.",
+          what: "Bostrom's argument is retold as: if many simulations exist, almost all observers are simulated.",
+          where: "Sourced from Wikipedia.",
+          when: "Timing follows the encyclopedic article and later public discussion.",
           how: "It presents a probabilistic ancestor-simulation argument rather than a lab result.",
-          why: "Included as a major Russian-language presentation of the simulation hypothesis.",
+          why: "Included as a major presentation of the simulation hypothesis.",
         },
       },
     },
@@ -476,13 +476,13 @@ export const SEED_EVIDENCE: EvidenceCandidate[] = [
     },
     translations: {
       en: {
-        caption: "Japanese intro: if civilizations run many ancestor sims, odds favor us being in one",
+        caption: "If civilizations run many ancestor simulations, odds favor us being in one",
         body: {
-          what: "Japanese-language introductions argue that if civilizations can run many ancestor simulations, we are likely inside one.",
-          where: "Sourced from Wikipedia (ja).",
-          when: "Timing follows the Japanese encyclopedic article and public discussion around it.",
+          what: "If civilizations can run many ancestor simulations, the odds favor observers like us already being inside one.",
+          where: "Sourced from Wikipedia.",
+          when: "Timing follows the encyclopedic article and public discussion around it.",
           how: "It frames a probability argument about ancestor simulations and observer selection.",
-          why: "Catalogued as a distinct Japanese-language entry into the simulation hypothesis.",
+          why: "Catalogued as an entry into the simulation hypothesis.",
         },
       },
     },

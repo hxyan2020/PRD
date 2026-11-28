@@ -429,6 +429,8 @@ export async function mergeIntoEvidence(input: {
   detailAppend?: string;
   images?: EvidenceImage[];
   translation?: { locale: string; pack: EvidenceLocalePack };
+  /** Overlay packs (e.g. refreshed English seed copy) onto stored translations. */
+  translations?: Record<string, EvidenceLocalePack>;
 }): Promise<Evidence | null> {
   const rows = await sql(`select * from evidence where id = $1 limit 1`, [
     input.evidenceId,
@@ -457,6 +459,9 @@ export async function mergeIntoEvidence(input: {
     existing.translations,
     {},
   );
+  if (input.translations) {
+    Object.assign(translations, input.translations);
+  }
   if (input.translation) {
     translations[input.translation.locale] = input.translation.pack;
   }

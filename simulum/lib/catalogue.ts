@@ -114,6 +114,9 @@ export async function ingestCandidate(
   }
 
   if (match) {
+    const packs = localePack(candidate, caption, body, language);
+    // Refresh source-locale + English packs so seed copy edits (e.g. language-label
+    // scrubbing) land on merge, not only on first insert.
     const merged = await mergeIntoEvidence({
       evidenceId: match.id,
       language,
@@ -123,8 +126,9 @@ export async function ingestCandidate(
       images,
       translation: {
         locale: language,
-        pack: { caption, body },
+        pack: packs[language] ?? { caption, body },
       },
+      translations: packs,
     });
     if (!merged) return { action: "skipped", reason: "merge-failed" };
     return {

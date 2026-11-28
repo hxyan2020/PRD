@@ -96,13 +96,15 @@ describe("presentEvidence", () => {
     expect(ja.presentation).toBe("stored");
   });
 
-  it("scrubs English boilerplate and does not leak Japanese into English UI body", () => {
+  it("scrubs English boilerplate and does not leak Japanese into English UI", () => {
     const en = presentEvidence(sample(), "en");
     expect(en.available).toBe(true);
     expect(en.caption).not.toMatch(/Documented claim about simulated reality/i);
     expect(en.caption).not.toMatch(/originally discussed in/i);
+    expect(en.caption).not.toMatch(/シミュレーション|日本語/);
     expect(en.body.what).not.toMatch(/^A publicly discussed claim connected/i);
-    expect(en.body.what).not.toMatch(/日本語の本文/);
+    expect(en.body.what).not.toMatch(/シミュレーション|日本語/);
+    expect(en.body.where).not.toMatch(/\(ja\)/);
     expect(en.presentation).toBe("stored");
   });
 

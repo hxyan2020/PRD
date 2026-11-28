@@ -46,11 +46,32 @@ describe("summarize", () => {
       },
     };
     const pack = englishFacingPack(es);
-    expect(pack.caption).toBe("Simulación: el universo como programa");
+    expect(pack.caption).toMatch(/Simulation-hypothesis claim via Wikipedia/i);
+    expect(pack.caption).not.toMatch(/Simulación|universo como programa/i);
     expect(pack.caption).not.toMatch(/Documented claim/i);
     expect(pack.caption).not.toMatch(/originally discussed/i);
+    expect(pack.body.what).not.toMatch(/En español|hipótesis de simulación sostiene/i);
     expect(pack.body.what).not.toMatch(/^A publicly discussed claim connected/i);
     expect(pack.body.what.length).toBeGreaterThan(20);
-    expect(pack.body.what).not.toEqual(pack.caption);
+    expect(pack.body.how).not.toMatch(/En español/i);
+  });
+
+  it("strips language labels from mixed copy", async () => {
+    const { stripLanguageLabel } = await import("@/lib/summarize");
+    expect(stripLanguageLabel("Japanese intro: ancestor simulations")).toBe(
+      "Ancestor simulations",
+    );
+    expect(stripLanguageLabel("German discourse links Bostrom to the Matrix")).toBe(
+      "Links Bostrom to the Matrix",
+    );
+    expect(stripLanguageLabel("Russian retelling of Bostrom")).toBe(
+      "Of Bostrom",
+    );
+    expect(stripLanguageLabel("French-language discussion of Bostrom")).toMatch(
+      /the discussion of Bostrom/i,
+    );
+    expect(stripLanguageLabel("Sourced from Wikipedia (zh).")).toBe(
+      "Sourced from Wikipedia.",
+    );
   });
 });
